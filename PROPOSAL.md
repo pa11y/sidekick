@@ -29,7 +29,7 @@ When gathering feedback and working on Pa11y Sidekick, we aim to follow these gu
 
   - **Develop in the open**. Similarly, pa11y-dashboard was developed in a closed-first way as a private repository. Pa11y Sidekick will be open source from the [architecture stage](#architecture-).
 
-  - **No knowledge silos**. We have some serious knowledge silos with the existing projects, and a lot of the code has a bus facor of one. Our documentation and guides need to be _way_ better for Pa11y Sidekick.
+  - **No knowledge silos**. We have some serious knowledge silos with the existing projects, and a lot of the code has a bus factor of one. Our documentation and guides need to be _way_ better for Pa11y Sidekick.
 
   - **Make it easy to deploy**. The existing projects are all difficult to deploy. We want one-click (or as few clicks as possible) deployment to cloud services.
 
