@@ -40,7 +40,7 @@ When gathering feedback and working on Pa11y Sidekick, we aim to follow these gu
 
 ## Outline
 
-We'd like to avoid going into too many specifics at this early stage. We have lots of ideas for features, and we're sure you do to! If we overly prescribe now then we could miss out on your input. Here are a few technical and architectural decisions we'd like to propose:
+We'd like to avoid going into too many specifics at this early stage. We have lots of ideas for features, and we're sure you do too! If we overly prescribe now then we could miss out on your input. Here are a few technical and architectural decisions we'd like to propose:
 
   - **An updated model**. Currently, pa11y-dashboard allows you to add URLs at the top level and results are stored within those. We'd like to introduce the idea of "Sites" and "URLs". Users would be able to create sites in the interface and add multiple URLs to them. It would then be possible to view graphs at both levels, and run tests against either an entire site or individual URLs.
 
