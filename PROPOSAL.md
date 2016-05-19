@@ -110,7 +110,7 @@ Once Pa11y Sidekick reaches `1.0.0`, pa11y-dashboard and pa11y-webservice will b
 
 ### How can I help?
 
-In the early stages, by requesting features and discussing the ones already [over in the issues](issues). Later we're going to need people to write code, tests, and documentation. We'll also need designers and comms people to help us promote the beta.
+In the early stages, by requesting features and discussing the ones already [over in the issues][issues]. Later we're going to need people to write code, tests, and documentation. We'll also need designers and comms people to help us promote the beta.
 
 We're in the process of updating our website, which will have more information on contributing to Pa11y as a whole.
 
@@ -149,13 +149,14 @@ Now that you've read through the proposal, we'd love your feedback!
   - Want to help out?
   - Think we're doing this all wrong?
 
-[Raise an issue on this repo](/pa11y/sidekick/issues), or get in touch on [Twitter].
+[Raise an issue on this repo][issues], or get in touch on [Twitter].
 
 Additionally, feel free to open a pull request to suggest changes to the proposal.
 
 
 
 [hollie kay]: http://www.hollsk.co.uk/
+[issues]: https://github.com/pa11y/sidekick/issues
 [josé bolos]: https://github.com/joseluisbolos
 [jude robinson]: https://github.com/dotcode
 [nature publishing group]: http://www.nature.com/
