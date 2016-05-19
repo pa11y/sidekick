@@ -100,6 +100,10 @@ We'll attempt to cover frequently asked questions here. If this section is thin 
 
 This is a very big question, and it has a big answer. We've attempted to cover this in the [history section of this proposal](#history).
 
+### What will happen to pa11y-dashboard and pa11y-webservice?
+
+Both will go into maintenance mode during the development of Pa11y Sidekick, we'll fix bugs, but no new features. We'll deprecate them and recommend the use of Pa11y Sidekick once it reaches 1.0.0 stable.
+
 ### How can I help?
 
 In the early stages, by requesting features and discussing the ones already [over in the issues](issues). Later we're going to need people to write code, tests, and documentation. We'll also need designers and comms people to help us promote the beta.
