@@ -102,7 +102,11 @@ This is a very big question, and it has a big answer. We've attempted to cover t
 
 ### What will happen to pa11y-dashboard and pa11y-webservice?
 
-Both will go into maintenance mode during the development of Pa11y Sidekick, we'll fix bugs, but no new features. We'll deprecate them and recommend the use of Pa11y Sidekick once it reaches 1.0.0 stable.
+Nothing will change immediately with how these projects are supported. We'll still be responding to issues and feature requests in the same way.
+
+Larger features may not be considered, but we've been in this state for some time – it's difficult to confidently make changes in these projects due to the [reasons outlined here](#history).
+
+Once Pa11y Sidekick reaches `1.0.0`, pa11y-dashboard and pa11y-webservice will be deprecated (with a long support end date). At this point we will recommend the use of Pa11y Sidekick over either of these projects.
 
 ### How can I help?
 
