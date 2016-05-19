@@ -1,7 +1,7 @@
 
 # Pa11y Sidekick Proposal
 
-The Pa11y team is very excited to announce plans for our next big project. We're code-naming this project "Sidekick".
+The Pa11y team is very excited to announce plans for our next project. We're code-naming this project "Sidekick".
 
 We're proposing Pa11y Sidekick as the successor to both [pa11y-dashboard] and [pa11y-webservice]. We have put together this document to gather feedback and input from the vibrant community that's built up around Pa11y.
 
