@@ -149,7 +149,7 @@ Now that you've read through the proposal, we'd love your feedback!
   - Want to help out?
   - Think we're doing this all wrong?
 
-[Raise an issue on this repo](issues), or get in touch on [Twitter].
+[Raise an issue on this repo](/pa11y/sidekick/issues), or get in touch on [Twitter].
 
 Additionally, feel free to open a pull request to suggest changes to the proposal.
 
