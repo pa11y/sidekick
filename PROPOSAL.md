@@ -75,7 +75,7 @@ The purpose of this is to build a stable platform that we can all work on togeth
 
 At this stage, the core team will have decided on a feature set that we can commit to for launch of a stable `1.0.0`. Everybody is welcome to contribute, but at this stage of the project it's not recommended to use in production.
 
-The code will be versioned with an alpha label (`1.0.0-alpha.x`), and most releases will include breaking changes.
+The code will be versioned with a `0` major version (`0.x.x`), and most releases will include breaking changes.
 
 The purpose of this stage is to gather feedback on early implementations of features, and to allow for some user testing.
 
@@ -83,7 +83,7 @@ The purpose of this stage is to gather feedback on early implementations of feat
 
 At beta stage, we look for wider adoption and start considering the release process. Features at this stage of the project should be complete and well tested.
 
-The code will be versioned with a beta label (`1.0.0-beta.x`), and will still include breaking changes (but hopefully fewer of them).
+The code will continue to be versioned with a `0` major version (`0.x.x`), and releases will include breaking changes (but hopefully fewer of them). We'll communicate the start of the beta in the repo and via Twitter.
 
 The purpose of this stage is to reach a level of stability and maintainability that will allow us to jump to `1.0.0`. Community participation and bug reports are essential at this point.
 
