@@ -3,7 +3,9 @@
 
 The Pa11y team is very excited to announce plans for our next project. We're code-naming this project "Sidekick".
 
-We're proposing Pa11y Sidekick as the successor to both [pa11y-dashboard] and [pa11y-webservice]. We have put together this document to gather feedback and input from the vibrant community that's built up around Pa11y.
+What is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage: "like Travis, but for a11y testing, and with graphs". A spangly replacement for [pa11y-dashboard] and [pa11y-webservice].
+
+We've put together this document to gather feedback and input from the vibrant community that's built up around Pa11y. Please feel free to submit pull requests and provide feedback :)
 
 
 ## Table of Contents
