@@ -1,0 +1,30 @@
+{>"layout/default"/}
+
+{<title}
+	Error {error.status}: {error.message} - {appName}
+{/title}
+
+{<content}
+
+	<h1>Error {error.status}: {error.message}</h1>
+
+	{@select key=error.status}
+
+		{@eq value=404}
+			<p>The page you're looking for can't be found.</p>
+		{/eq}
+
+		{@eq value=500}
+			<p>Something went wrong with {appName}.</p>
+		{/eq}
+
+	{/select}
+
+	{! We only send the stack if the app is running in development mode !}
+	{?error.stack}
+		<hr/>
+		<p>Note: you can see the full error because {appName} is running in development mode:</p>
+		<pre>{error.stack}</pre>
+	{/error.stack}
+
+{/content}

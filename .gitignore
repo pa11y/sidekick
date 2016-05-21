@@ -1,0 +1,5 @@
+coverage
+node_modules
+npm-debug.log
+public/main.css
+public/main.js

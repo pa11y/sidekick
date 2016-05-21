@@ -1,0 +1,27 @@
+{>"layout/default"/}
+
+{<title}
+	Home - {appName}
+{/title}
+
+{<content}
+	<h1>{appName}</h1>
+	<p>
+		This is the proposal for a new project based around Pa11y. The project is code-named{~s}
+		"Sidekick". Well done for getting it up-and-running locally!
+	</p>
+	<p>
+		We maintain an Architecture Guide (see below) which outlines how the application works,{~s}
+		and how everything fits together. It's strongly recommended that you read through it if{~s}
+		you want to contribute. We're currently in the architecture stage of development so this{~s}
+		application has no features – it's purely a demo how <i>how</i> we want to build things.{~s}
+	</p>
+	<ul>
+		<li>
+			<a href="https://github.com/pa11y/sidekick/blob/master/PROPOSAL.md">Full proposal document, project roadmap, and FAQs</a>
+		</li>
+		<li>
+			<a href="https://github.com/pa11y/sidekick/blob/master/ARCHITECTURE.md">Architecture Guide</a>
+		</li>
+	</ul>
+{/content}

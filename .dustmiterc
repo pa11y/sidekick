@@ -1,0 +1,25 @@
+{
+	"escapeCharactersMustBeValid": true,
+	"helperMustBeInsideSection": [
+		"first",
+		"last",
+		"sep"
+	],
+	"helperMustBeInsideSelect": [
+		"any",
+		"none"
+	],
+	"helperMustHaveBody": [
+		"first",
+		"last",
+		"sep"
+	],
+	"helperMustNotBeUsed": [
+		"default",
+		"idx",
+		"if"
+	],
+	"helpersMustBeCamelCase": true,
+	"logicHelpersMustHaveKeyAndValue": true,
+	"referencesMustBeCamelCase": true
+}

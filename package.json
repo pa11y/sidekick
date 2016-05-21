@@ -1,0 +1,53 @@
+{
+  "name": "pa11y-sidekick",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The Pa11y Sidekick application",
+  "keywords": [],
+  "author": "Team Pa11y",
+  "contributors": [
+    "Rowan Manning (http://rowanmanning.com/)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pa11y/sidekick.git"
+  },
+  "homepage": "https://github.com/pa11y/sidekick",
+  "bugs": "https://github.com/pa11y/sidekick/issues",
+  "license": "LGPL-3.0",
+  "engines": {
+    "node": ">=4"
+  },
+  "dependencies": {
+    "adaro": "^1",
+    "allow-methods": "^1",
+    "express": "^4",
+    "http-errors": "^1",
+    "knex": "~0.10",
+    "lodash": "^4",
+    "pg": "^4",
+    "require-all": "^2",
+    "require-header": "^1",
+    "resave-browserify": "^1",
+    "resave-sass": "^1",
+    "uuid": "^2"
+  },
+  "devDependencies": {
+    "dustmite": "^2",
+    "istanbul": "^0",
+    "jscs": "^2",
+    "jshint": "^2",
+    "mocha": "^2",
+    "mockery": "^1",
+    "nodemon": "^1",
+    "proclaim": "^3",
+    "sinon": "^1",
+    "sinon-as-promised": "^4",
+    "supertest": "^1"
+  },
+  "main": "./lib/sidekick.js",
+  "scripts": {
+    "test": "make ci",
+    "start": "node index.js"
+  }
+}

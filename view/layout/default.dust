@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="{language}">
+<head>
+	<meta charset="utf-8"/>
+	<title>{+title/}</title>
+	<link rel="stylesheet" href="/main.css"/>
+</head>
+<body>
+
+	<div role="banner">
+		{>"partial/header"/}
+	</div>
+
+	<div role="main">
+		{+content/}
+	</div>
+
+	<div role="contentinfo">
+		{>"partial/footer"/}
+	</div>
+
+	<script src="/main.js"></script>
+
+</body>
+</html>
