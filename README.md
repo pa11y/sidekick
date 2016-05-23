@@ -5,6 +5,11 @@ This is the proposal for a new project based around Pa11y. The project is code-n
 
 :point_right: **[Click here for the full proposal document, project roadmap, and FAQs](PROPOSAL.md)** :point_left:
 
+[![Node.js version support][shield-node]][info-node]
+[![Build status][shield-build]][info-build]
+[![Dependencies][shield-dependencies]][info-dependencies]
+[![LGPL-3.0 licensed][shield-license]][info-license]
+
 
 ## Understanding the Architecture
 
@@ -80,3 +85,12 @@ Copyright &copy; 2016, Team Pa11y.
 [node.js]: https://nodejs.org/
 [postgresql]: http://www.postgresql.org/
 [status-badge]: https://img.shields.io/badge/status-architecture-orange.svg
+
+[info-dependencies]: https://gemnasium.com/pa11y/sidekick
+[info-license]: LICENSE
+[info-node]: package.json
+[info-build]: https://travis-ci.org/pa11y/sidekick
+[shield-dependencies]: https://img.shields.io/gemnasium/pa11y/sidekick.svg
+[shield-license]: https://img.shields.io/badge/license-LGPL%203.0-blue.svg
+[shield-node]: https://img.shields.io/badge/node.js%20support-4–6-brightgreen.svg
+[shield-build]: https://img.shields.io/travis/pa11y/sidekick/master.svg
