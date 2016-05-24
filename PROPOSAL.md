@@ -163,9 +163,9 @@ Additionally, feel free to open a pull request to suggest changes to the proposa
 [jude robinson]: https://github.com/dotcode
 [nature publishing group]: http://www.nature.com/
 [nick call]: https://github.com/nickcall
-[`pa11y`]: https://github.com/springernature/pa11y
-[pa11y-dashboard]: https://github.com/springernature/pa11y-dashboard
-[pa11y-webservice]: https://github.com/springernature/pa11y-webservice
+[`pa11y`]: https://github.com/pa11y/pa11y
+[pa11y-dashboard]: https://github.com/pa11y/pa11y-dashboard
+[pa11y-webservice]: https://github.com/pa11y/pa11y-webservice
 [perry harlock]: http://www.phwebs.co.uk/
 [postgresql]: http://www.postgresql.org/
 [rowan manning]: http://rowanmanning.com/
