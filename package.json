@@ -25,12 +25,14 @@
     "http-errors": "^1",
     "knex": "~0.10",
     "lodash": "^4",
+    "morgan": "^1",
     "pg": "^4",
     "require-all": "^2",
     "require-header": "^1",
     "resave-browserify": "^1",
     "resave-sass": "^1",
-    "uuid": "^2"
+    "uuid": "^2",
+    "winston": "^2"
   },
   "devDependencies": {
     "dustmite": "^2",

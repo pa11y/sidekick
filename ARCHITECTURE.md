@@ -16,6 +16,7 @@ This guide does not cover basic running, testing, or deployment of Pa11y Sidekic
     - [Entry-Points](#entry-points)
     - [Controllers](#controllers)
     - [Middleware](#middleware)
+    - [Logging](#logging)
   - [Front End](#front-end)
     - [View Templates](#view-templates)
       - [Layouts](#layouts)
@@ -190,6 +191,12 @@ As well as the view data that you pass into the view from your controller, there
 ### Middleware
 
 Middleware can be used to reduce repetition between [controllers](#controllers), middleware files live in the `middleware` folder. These files don't have a prescribed structure or exports.
+
+### Logging
+
+For logging, we use [winston] and [morgan]. Winston is set up outside of the main application files in [`config.js`](config.js), this allows us to inject a mock/silent logger in the [integration tests](#integration-tests).
+
+Morgan is used to log requests, and this is mounted as an Express middleware. We actually stream morgan's request logs into winston under the `verbose` level. This allows users to easily ignore them by tweaking their preferred log level.
 
 
 ## Front End
@@ -402,6 +409,7 @@ Dig into the [`test/integration`](test/integration) folder to get an idea of wha
 [make]: https://www.gnu.org/software/make/
 [mocha]: https://mochajs.org/
 [mockery]: https://github.com/mfncooper/mockery
+[morgan]: https://github.com/expressjs/morgan
 [node.js]: https://nodejs.org/
 [postgresql]: http://www.postgresql.org/
 [proclaim]: https://github.com/rowanmanning/proclaim
@@ -412,3 +420,4 @@ Dig into the [`test/integration`](test/integration) folder to get an idea of wha
 [sass]: http://sass-lang.com/
 [sinon]: http://sinonjs.org/
 [supertest]: https://github.com/visionmedia/supertest
+[winston]: https://github.com/winstonjs/winston

@@ -17,6 +17,7 @@ describe('lib/sidekick', () => {
 	let fs;
 	let knex;
 	let log;
+	let morgan;
 	let resaveBrowserify;
 	let resaveSass;
 	let sidekick;
@@ -53,6 +54,9 @@ describe('lib/sidekick', () => {
 		mockery.registerMock('knex', knex);
 
 		log = require('../mock/log.mock');
+
+		morgan = require('../mock/morgan.mock');
+		mockery.registerMock('morgan', morgan);
 
 		requireAll = sinon.stub();
 		mockery.registerMock('require-all', requireAll);
@@ -98,7 +102,7 @@ describe('lib/sidekick', () => {
 		});
 
 		it('has an `environment` property', () => {
-			assert.strictEqual(defaults.environment, 'production');
+			assert.strictEqual(defaults.environment, 'development');
 		});
 
 		it('has a `log` property', () => {
@@ -117,12 +121,25 @@ describe('lib/sidekick', () => {
 			assert.isFunction(defaults.log.info);
 		});
 
+		it('has a `log.request` stream', () => {
+			assert.isObject(defaults.log.request);
+			assert.isFunction(defaults.log.request.write);
+		});
+
+		it('has a `log.verbose` method', () => {
+			assert.isFunction(defaults.log.verbose);
+		});
+
 		it('has a `log.warn` method', () => {
 			assert.isFunction(defaults.log.warn);
 		});
 
 		it('has a `port` property', () => {
 			assert.strictEqual(defaults.port, 8080);
+		});
+
+		it('has a `requestLogFormat` property', () => {
+			assert.strictEqual(defaults.requestLogFormat, 'combined');
 		});
 
 		it('has a `start` property', () => {
@@ -166,7 +183,8 @@ describe('lib/sidekick', () => {
 				database: 'postgres://localhost:1234/foo',
 				environment: 'test',
 				log: log,
-				port: 1234
+				port: 1234,
+				requestLogFormat: 'rlf'
 			};
 			returnedPromise = sidekick(userOptions);
 		});
@@ -217,6 +235,14 @@ describe('lib/sidekick', () => {
 
 			it('enables case sensitive routing', () => {
 				assert.calledWithExactly(express.mockApp.enable, 'case sensitive routing');
+			});
+
+			it('creates and mounts a morgan request logger', () => {
+				assert.calledOnce(morgan);
+				assert.calledWithExactly(morgan, userOptions.requestLogFormat, {
+					stream: log.request
+				});
+				assert.calledWithExactly(express.mockApp.use, morgan.mockMiddleware);
 			});
 
 			it('creates and mounts a static file serving middleware', () => {
@@ -298,7 +324,9 @@ describe('lib/sidekick', () => {
 			});
 
 			it('logs that the application has started', () => {
-				assert.calledWithExactly(log.info, 'Pa11y Sidekick started');
+				assert.calledWithExactly(log.info, 'Pa11y Sidekick started', {
+					port: express.mockAddress.port
+				});
 			});
 
 			it('resolves with an object', () => {
