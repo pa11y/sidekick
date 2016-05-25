@@ -45,6 +45,31 @@ This application requires [Node.js] 4+ and [PostgreSQL].
      make start-dev
      ```
 
+## Configuration
+
+Pa11y Sidekick is highly configurable. You can configure the application with the following [environment variables]:
+
+  - `DATABASE`:<br/>
+    A PostgreSQL connection string, used to connect to the database. Default: `postgres://localhost:5432/pa11y_sidekick_alpha`, Aliases: `DATABASE_URL`.
+
+  - `LOG_LEVEL`:<br/>
+    The lowest level of logs to output, one of `error`, `warn`, `info`, `verbose`, `debug`. Default: `verbose` in production and `debug` in development.
+
+  - `NODE_ENV`:<br/>
+    The environment to run the application in, one of `production`, `development`, `test`. Default: `development`.
+
+  - `PORT`:<br/>
+    The HTTP port to run the application on. If set to an empty string, a random port will be assigned. Default: `8080`.
+
+  - `REQUEST_LOG_FORMAT`:<br/>
+    The log format to use for request logging, one of [morgan's predefined formats][morgan-formats]. Default: `combined`.
+
+Here's an example of some of these configurations in use:
+
+```sh
+LOG_LEVEL=debug PORT=1234 REQUEST_LOG_FORMAT=tiny make start
+```
+
 
 ## Contributing
 
@@ -82,6 +107,8 @@ Copyright &copy; 2016, Team Pa11y.
 
 
 
+[environment variables]: https://en.wikipedia.org/wiki/Environment_variable
+[morgan-formats]: https://github.com/expressjs/morgan#predefined-formats
 [node.js]: https://nodejs.org/
 [postgresql]: http://www.postgresql.org/
 [status-badge]: https://img.shields.io/badge/status-architecture-orange.svg
