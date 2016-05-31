@@ -1,2 +1,7 @@
+
+# NOTE: this should not really be a static file.
+# Once/if we build a user-system, then this should
+# be set on a page-by-page basis as a <meta> tag.
+
 User-agent: *
 Disallow: /
