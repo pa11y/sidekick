@@ -2,6 +2,8 @@
 
 const httpError = require('http-errors');
 
-module.exports = (request, response, next) => {
+module.exports = notFound;
+
+function notFound(request, response, next) {
 	next(httpError(404));
-};
+}

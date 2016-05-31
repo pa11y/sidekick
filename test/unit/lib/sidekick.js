@@ -9,6 +9,7 @@ const sinon = require('sinon');
 describe('lib/sidekick', () => {
 	let adaro;
 	let basePath;
+	let cors;
 	let defaults;
 	let defaultViewData;
 	let expectedMigrationConfig;
@@ -32,6 +33,9 @@ describe('lib/sidekick', () => {
 
 		adaro = require('../mock/adaro.mock');
 		mockery.registerMock('adaro', adaro);
+
+		cors = sinon.stub();
+		mockery.registerMock('../middleware/cors', cors);
 
 		defaults = sinon.spy(require('lodash/defaultsDeep'));
 		mockery.registerMock('lodash/defaultsDeep', defaults);
@@ -243,6 +247,10 @@ describe('lib/sidekick', () => {
 					stream: log.request
 				});
 				assert.calledWithExactly(express.mockApp.use, morgan.mockMiddleware);
+			});
+
+			it('creates and mounts a CORS middleware', () => {
+				assert.calledWithExactly(express.mockApp.use, cors);
 			});
 
 			it('creates and mounts a static file serving middleware', () => {

@@ -2,7 +2,6 @@
 'use strict';
 
 const assert = require('proclaim');
-const mockery = require('mockery');
 const sinon = require('sinon');
 
 describe('middleware/handle-errors', () => {
@@ -12,13 +11,8 @@ describe('middleware/handle-errors', () => {
 	let sidekick;
 
 	beforeEach(() => {
-
 		express = require('../mock/express.mock');
-		mockery.registerMock('express', express);
-
 		sidekick = require('../mock/sidekick.mock');
-		mockery.registerMock('sidekick', sidekick);
-
 		handleErrors = require('../../../middleware/handle-errors');
 
 		return sidekick().then(value => {
