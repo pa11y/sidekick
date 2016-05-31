@@ -21,6 +21,7 @@
   "dependencies": {
     "adaro": "^1",
     "allow-methods": "^1",
+    "compression": "^1",
     "express": "^4",
     "http-errors": "^1",
     "knex": "~0.10",

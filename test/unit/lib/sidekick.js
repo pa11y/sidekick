@@ -9,6 +9,7 @@ const sinon = require('sinon');
 describe('lib/sidekick', () => {
 	let adaro;
 	let basePath;
+	let compression;
 	let cors;
 	let defaults;
 	let defaultViewData;
@@ -33,6 +34,9 @@ describe('lib/sidekick', () => {
 
 		adaro = require('../mock/adaro.mock');
 		mockery.registerMock('adaro', adaro);
+
+		compression = require('../mock/compression.mock');
+		mockery.registerMock('compression', compression);
 
 		cors = sinon.stub();
 		mockery.registerMock('../middleware/cors', cors);
@@ -253,6 +257,12 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.use, cors);
 			});
 
+			it('creates and mounts a compression middleware', () => {
+				assert.calledOnce(compression);
+				assert.calledWithExactly(compression);
+				assert.calledWithExactly(express.mockApp.use, compression.mockMiddleware);
+			});
+
 			it('creates and mounts a static file serving middleware', () => {
 				assert.calledOnce(express.static);
 				assert.calledWith(express.static, `${basePath}/public`, {
@@ -324,6 +334,18 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(controllers.foo, dashboard);
 				assert.calledOnce(controllers.bar);
 				assert.calledWithExactly(controllers.bar, dashboard);
+			});
+
+			it('should mount middleware and controllers in the correct order', () => {
+				assert.callOrder(
+					express.mockApp.use.withArgs(morgan.mockMiddleware).named('morgan'),
+					express.mockApp.use.withArgs(cors).named('cors'),
+					express.mockApp.use.withArgs(compression.mockMiddleware).named('compression'),
+					express.mockApp.use.withArgs(express.mockStaticMiddleware).named('static'),
+					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),
+					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass')
+				);
+
 			});
 
 			it('starts the Express application on the port in `options.port`', () => {
