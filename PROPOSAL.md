@@ -3,7 +3,7 @@
 
 The Pa11y team is very excited to announce plans for our next project. We're code-naming this project "Sidekick".
 
-What is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage: "like Travis, but for a11y testing, and with graphs". A spangly replacement for [pa11y-dashboard] and [pa11y-webservice].
+What is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage: "like Travis, but for a11y testing, and with graphs". A spangly replacement for [Pa11y Dashboard] and [Pa11y Webservice].
 
 We've put together this document to gather feedback and input from the vibrant community that's built up around Pa11y. Please feel free to submit pull requests and provide feedback :)
 
@@ -27,9 +27,9 @@ We've put together this document to gather feedback and input from the vibrant c
 
 When gathering feedback and working on Pa11y Sidekick, we aim to follow these guiding principles. These are all based on traps we have fallen into during the development of the dashboard and webservices ([which you can read about here](#history)).
 
-  - **Plan in the open**. We planned pa11y-dashboard behind closed doors, it didn't work out that well for the project in the long term. Pa11y Sidekick will be planned in the open.
+  - **Plan in the open**. We planned Pa11y Dashboard behind closed doors, it didn't work out that well for the project in the long term. Pa11y Sidekick will be planned in the open.
 
-  - **Develop in the open**. Similarly, pa11y-dashboard was developed in a closed-first way as a private repository. Pa11y Sidekick will be open source from the [architecture stage](#architecture-).
+  - **Develop in the open**. Similarly, Pa11y Dashboard was developed in a closed-first way as a private repository. Pa11y Sidekick will be open source from the [architecture stage](#architecture-).
 
   - **No knowledge silos**. We have some serious knowledge silos with the existing projects, and a lot of the code has a bus factor of one. Our documentation and guides need to be _way_ better for Pa11y Sidekick.
 
@@ -44,7 +44,7 @@ When gathering feedback and working on Pa11y Sidekick, we aim to follow these gu
 
 We'd like to avoid going into too many specifics at this early stage. We have lots of ideas for features, and we're sure you do too! If we overly prescribe now then we could miss out on your input. Here are a few technical and architectural decisions we'd like to propose:
 
-  - **An updated model**. Currently, pa11y-dashboard allows you to add URLs at the top level and results are stored within those. We'd like to introduce the idea of "Sites" and "URLs". Users would be able to create sites in the interface and add multiple URLs to them. It would then be possible to view graphs at both levels, and run tests against either an entire site or individual URLs.
+  - **An updated model**. Currently, Pa11y Dashboard allows you to add URLs at the top level and results are stored within those. We'd like to introduce the idea of "Sites" and "URLs". Users would be able to create sites in the interface and add multiple URLs to them. It would then be possible to view graphs at both levels, and run tests against either an entire site or individual URLs.
 
   - **Logins**. We think Pa11y Sidekick could really benefit from a login system. This could allow admins to set permission levels on a per-site basis, or make the graphs publicly viewable but restrict editing to just the development team.
 
@@ -98,17 +98,17 @@ Version `1.0.0` will be stable, well tested, and a viable application to extend 
 
 We'll attempt to cover frequently asked questions here. If this section is thin on the ground, it's because we haven't been asked many yet.
 
-### Why not iterate on pa11y-dashboard?
+### Why not iterate on Pa11y Dashboard?
 
 This is a very big question, and it has a big answer. We've attempted to cover this in the [history section of this proposal](#history).
 
-### What will happen to pa11y-dashboard and pa11y-webservice?
+### What will happen to Pa11y Dashboard and Pa11y Webservice?
 
 Nothing will change immediately with how these projects are supported. We'll still be responding to issues and feature requests in the same way.
 
 Larger features may not be considered, but we've been in this state for some time – it's difficult to confidently make changes in these projects due to the [reasons outlined here](#history).
 
-Once Pa11y Sidekick reaches `1.0.0`, pa11y-dashboard and pa11y-webservice will be deprecated (with a long support end date). At this point we will recommend the use of Pa11y Sidekick over either of these projects.
+Once Pa11y Sidekick reaches `1.0.0`, Pa11y Dashboard and Pa11y Webservice will be deprecated (with a long support end date). At this point we will recommend the use of Pa11y Sidekick over either of these projects.
 
 ### How can I help?
 
@@ -123,7 +123,7 @@ We were originally a group of front end developers at [Nature Publishing Group].
 
 ## History
 
-Work began on the dashboard and webservice back in 2013, and they took around two months to reach a stable version `1.0`. This work was done by [Rowan Manning] and [Perry Harlock] in between sprint work at [Nature Publishing Group], with direction from [Jude Robinson].
+Work began on Pa11y Dashboard and Pa11y Webservice back in 2013, and they took around two months to reach a stable version `1.0`. This work was done by [Rowan Manning] and [Perry Harlock] in between sprint work at [Nature Publishing Group], with direction from [Jude Robinson].
 
 Despite building something that worked, there were a few key issues:
 
@@ -164,8 +164,8 @@ Additionally, feel free to open a pull request to suggest changes to the proposa
 [nature publishing group]: http://www.nature.com/
 [nick call]: https://github.com/nickcall
 [`pa11y`]: https://github.com/pa11y/pa11y
-[pa11y-dashboard]: https://github.com/pa11y/pa11y-dashboard
-[pa11y-webservice]: https://github.com/pa11y/pa11y-webservice
+[pa11y dashboard]: https://github.com/pa11y/dashboard
+[pa11y webservice]: https://github.com/pa11y/webservice
 [perry harlock]: http://www.phwebs.co.uk/
 [postgresql]: http://www.postgresql.org/
 [rowan manning]: http://rowanmanning.com/
