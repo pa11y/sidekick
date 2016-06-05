@@ -49,9 +49,6 @@
 	"requireCurlyBraces": true,
 	"requireDotNotation": true,
 	"requireFunctionDeclarations": true,
-	"requireKeywordsOnNewLine": [
-		"else"
-	],
 	"requireLineBreakAfterVariableAssignment": true,
 	"requireLineFeedAtFileEnd": true,
 	"requireObjectKeysOnNewLine": true,
