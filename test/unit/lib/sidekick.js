@@ -106,7 +106,7 @@ describe('lib/sidekick', () => {
 		});
 
 		it('has a `database` property', () => {
-			assert.strictEqual(defaults.database, 'postgres://localhost:5432/pa11y_sidekick_alpha');
+			assert.strictEqual(defaults.database, 'postgres://localhost:5432/pa11y_sidekick');
 		});
 
 		it('has an `environment` property', () => {

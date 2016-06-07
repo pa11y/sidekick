@@ -4,7 +4,7 @@
 const sidekick = require('../..');
 const supertest = require('supertest');
 
-const defaultTestDatabase = 'postgres://localhost:5432/pa11y_sidekick_alpha_test';
+const defaultTestDatabase = 'postgres://localhost:5432/pa11y_sidekick_test';
 
 before(() => {
 	return sidekick({

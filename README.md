@@ -56,7 +56,7 @@ This application requires [Node.js] 4+ and [PostgreSQL].
 Pa11y Sidekick is highly configurable. You can configure the application with the following [environment variables]:
 
   - **`DATABASE`**: A PostgreSQL connection string, used to connect to the database.<br/>
-    Default: `postgres://localhost:5432/pa11y_sidekick_alpha`,<br/>
+    Default: `postgres://localhost:5432/pa11y_sidekick`,<br/>
     Aliases: `DATABASE_URL`.
 
   - **`LOG_LEVEL`**: The lowest level of logs to output, one of `error`, `warn`, `info`, `verbose`, `debug`.<br/>

@@ -1,5 +1,5 @@
 
-# Pa11y Sidekick Alpha Architecture
+# Pa11y Sidekick Architecture
 
 Hello! This is Pa11y Sidekick's architecture guide. We're really excited to show you how to get started with contributing.
 

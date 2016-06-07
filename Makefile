@@ -14,11 +14,11 @@ start-dev:
 # --------------
 
 db-create:
-	@psql -c "CREATE DATABASE pa11y_sidekick_alpha"
+	@psql -c "CREATE DATABASE pa11y_sidekick"
 	@$(TASK_DONE)
 
 db-create-test:
-	@psql -c "CREATE DATABASE pa11y_sidekick_alpha_test"
+	@psql -c "CREATE DATABASE pa11y_sidekick_test"
 	@$(TASK_DONE)
 
 db-migrate-up:
