@@ -43,7 +43,7 @@ Pa11y Sidekick is a [Node.js] application. You'll need to have a few skills you'
     Beginner–intermediate [Node.js] knowledge will be required. We make use of [Promises] for the core library and models. A working knowledge of [Express] is helpful but not required.
 
   - **[Front End](#front-end)**:
-    Either HTML/CSS knowledge and/or client-side JavaScript knowledge will be required. We use [Sass] for styling and [Browserify] to bundle our client-side JavaScript; for templating, we use [Dust.js]. An understanding of these is useful but not a pre-requisite.
+    Either HTML/CSS knowledge and/or client-side JavaScript knowledge will be required. We use [Sass] for styling and [Browserify] to bundle our client-side JavaScript; for templating, we use [Dust.js]. An understanding of these is useful but not a prerequisite.
 
   - **[Databases](#databases)**:
     We use [PostgreSQL] to persist data, and the [Knex.js] client library to communicate with it.
