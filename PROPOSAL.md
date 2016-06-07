@@ -1,9 +1,11 @@
 
 # Pa11y Sidekick Proposal
 
-The Pa11y team is very excited to announce plans for our next project. We're code-naming this project "Sidekick".
+The Pa11y team is very excited to announce plans for our next project. We're code-naming this project "Sidekick". What is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage:
 
-What is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage: "like Travis, but for a11y testing, and with graphs". A spangly replacement for [Pa11y Dashboard] and [Pa11y Webservice].
+  > like Travis, but for a11y testing, and with graphs.
+
+Pa11y Sidekick will be a modern and well thought out replacement for [Pa11y Dashboard] and [Pa11y Webservice].
 
 We've put together this document to gather feedback and input from the vibrant community that's built up around Pa11y. Please feel free to submit pull requests and provide feedback :)
 
@@ -151,9 +153,9 @@ Now that you've read through the proposal, we'd love your feedback!
   - Want to help out?
   - Think we're doing this all wrong?
 
-[Raise an issue on this repo][issues], or get in touch on [Twitter].
+[Raise an issue on this repo][issues], or get in touch on [Twitter][twitter] (our DMs are open).
 
-Additionally, feel free to open a pull request to suggest changes to the proposal.
+Also, feel free to open a pull request to suggest changes to the proposal.
 
 
 

@@ -1,9 +1,14 @@
 
 # Pa11y Sidekick ![architecture stage][status-badge]
 
-This is the proposal for a new project based around Pa11y. The project is code-named "Sidekick".
+This is a new project based around Pa11y, code-named "Sidekick". Pa11y Sidekick will be a modern and well thought out replacement for [Pa11y Dashboard] and [Pa11y Webservice]. What exactly is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage:
 
-:point_right: **[Click here for the full proposal document, project roadmap, and FAQs](PROPOSAL.md)** :point_left:
+  > like Travis, but for a11y testing, and with graphs.
+
+:sparkles: [Click here for the full proposal document, project roadmap, and FAQs](PROPOSAL.md) :sparkles:
+
+---
+
 
 [![Node.js version support][shield-node]][info-node]
 [![Build status][shield-build]][info-build]
@@ -11,9 +16,17 @@ This is the proposal for a new project based around Pa11y. The project is code-n
 [![LGPL-3.0 licensed][shield-license]][info-license]
 
 
-## Understanding the Architecture
+## The Architecture
 
 We maintain an [Architecture Guide](ARCHITECTURE.md) which outlines how the application works, and how everything fits together. It's strongly recommended that you read through it if you want to contribute. We're currently in the architecture stage of development so this application has no features – it's purely a demo how _how_ we want to build things.
+
+If you have any feedback, we'd love to hear it! This architecture is not yet set in stone.
+
+  - Have an idea for a feature?
+  - Want to help out?
+  - Think we're doing this all wrong?
+
+[Raise an issue on this repo][issues], or get in touch on [Twitter][twitter] (our DMs are open). Also, feel free to open a PR to suggest changes.
 
 
 ## Running locally
@@ -115,10 +128,14 @@ Copyright &copy; 2016, Team Pa11y.
 
 
 [environment variables]: https://en.wikipedia.org/wiki/Environment_variable
+[issues]: https://github.com/pa11y/sidekick/issues
 [morgan-formats]: https://github.com/expressjs/morgan#predefined-formats
 [node.js]: https://nodejs.org/
+[pa11y dashboard]: https://github.com/pa11y/dashboard
+[pa11y webservice]: https://github.com/pa11y/webservice
 [postgresql]: http://www.postgresql.org/
 [status-badge]: https://img.shields.io/badge/status-architecture-orange.svg
+[twitter]: https://twitter.com/pa11yorg
 
 [info-dependencies]: https://gemnasium.com/pa11y/sidekick
 [info-license]: LICENSE
