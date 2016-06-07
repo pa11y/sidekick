@@ -32,37 +32,44 @@ This application requires [Node.js] 4+ and [PostgreSQL].
      make db-create db-migrate-up
      ```
 
-  3. Optionally seed the database with test data if you want to see the app in full swing:
+  3. Optionally seed the database with test data if you want to see all of the features more quickly:
 
      ```sh
      make db-seed
      ```
 
-  4. Start the application in either production or development mode (with auto-reloading):
+  4. Start the application in either production mode:
 
      ```sh
      make start
+     ```
+
+     or development mode (with auto reloading):
+
+     ```sh
      make start-dev
      ```
+
 
 ## Configuration
 
 Pa11y Sidekick is highly configurable. You can configure the application with the following [environment variables]:
 
-  - `DATABASE`:<br/>
-    A PostgreSQL connection string, used to connect to the database. Default: `postgres://localhost:5432/pa11y_sidekick_alpha`, Aliases: `DATABASE_URL`.
+  - **`DATABASE`**: A PostgreSQL connection string, used to connect to the database.<br/>
+    Default: `postgres://localhost:5432/pa11y_sidekick_alpha`,<br/>
+    Aliases: `DATABASE_URL`.
 
-  - `LOG_LEVEL`:<br/>
-    The lowest level of logs to output, one of `error`, `warn`, `info`, `verbose`, `debug`. Default: `verbose` in production and `debug` in development.
+  - **`LOG_LEVEL`**: The lowest level of logs to output, one of `error`, `warn`, `info`, `verbose`, `debug`.<br/>
+    Default: `verbose` in production and `debug` in development.
 
-  - `NODE_ENV`:<br/>
-    The environment to run the application in, one of `production`, `development`, `test`. Default: `development`.
+  - **`NODE_ENV`**: The environment to run the application in, one of `production`, `development`, `test`.<br/>
+    Default: `development`.
 
-  - `PORT`:<br/>
-    The HTTP port to run the application on. If set to an empty string, a random port will be assigned. Default: `8080`.
+  - **`PORT`**: The HTTP port to run the application on. If set to an empty string, a random port will be assigned.<br/>
+    Default: `8080`.
 
-  - `REQUEST_LOG_FORMAT`:<br/>
-    The log format to use for request logging, one of [morgan's predefined formats][morgan-formats]. Default: `combined`.
+  - **`REQUEST_LOG_FORMAT`**: The log format to use for request logging, one of [morgan's predefined formats][morgan-formats].<br/>
+    Default: `combined`.
 
 Here's an example of some of these configurations in use:
 
@@ -75,7 +82,7 @@ LOG_LEVEL=debug PORT=1234 REQUEST_LOG_FORMAT=tiny make start
 
 To contribute to Pa11y Sidekick, clone this repo locally and commit your code on a new branch. It's useful to read the [Architecture Guide](ARCHITECTURE.md) before contributing.
 
-Please write unit tests for your code, and check that everything works by running the following before opening a pull-request:
+Please write unit tests for your code, and check that everything works by running the following before opening a <abbr title="pull request">PR</abbr>:
 
 1. Create a test database (assumes you have the `psql` command on your path):
 
