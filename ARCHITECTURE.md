@@ -260,7 +260,7 @@ Hello {thing}!
 
 ### View Helpers
 
-View helpers are used to extend the templating language, and to ensure that your views themselves don't have as much logic in them.
+View helpers are used to extend the templating language, and to ensure that your views themselves don't have as much logic in them. You should avoid writing these unless absolutely necessary – try to get the data into the format you need in the controller first.
 
 These files live in the `view/helper` folder; they should be JavaScript files that export a function which accepts a [Dust.js] instance as an argument:
 
