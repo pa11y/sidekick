@@ -1,9 +1,9 @@
 'use strict';
 
-const uuid = require('uuid').v4;
+const shortid = require('shortid');
 
 exports.seed = (database, Promise) => {
-	const siteId = uuid();
+	const siteId = shortid.generate()
 
 	return Promise.resolve()
 		.then(() => {
@@ -17,19 +17,19 @@ exports.seed = (database, Promise) => {
 			// Add a bunch of URLs to the site
 			return database('urls').insert([
 				{
-					id: uuid(),
+					id: shortid.generate(),
 					site: siteId,
 					name: 'Home',
 					address: 'http://pa11y.github.io/'
 				},
 				{
-					id: uuid(),
+					id: shortid.generate(),
 					site: siteId,
 					name: 'Contact',
 					address: 'http://pa11y.github.io/contact/'
 				},
 				{
-					id: uuid(),
+					id: shortid.generate(),
 					site: siteId,
 					name: 'Contributing',
 					address: 'http://pa11y.github.io/contributing/'

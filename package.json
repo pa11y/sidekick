@@ -32,7 +32,7 @@
     "require-header": "^1",
     "resave-browserify": "^1",
     "resave-sass": "^1",
-    "uuid": "^2",
+    "shortid": "^2.2.6",
     "winston": "^2"
   },
   "devDependencies": {
