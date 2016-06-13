@@ -300,7 +300,7 @@ Pa11y Sidekick uses [Resave Browserify][resave-browserify] to do this.
 
 ## Databases
 
-Hello! This section will teach you how to manage Pa11y Sidekick's database. We'll be covering models, migrations, and seeding. We use [PostgreSQL] to persist data with [Knex.js] as a client library. We use [shortid](https://github.com/dylang/shortid) to create url-friendly unique identifiers.
+Hello! This section will teach you how to manage Pa11y Sidekick's database. We'll be covering models, migrations, and seeding. We use [PostgreSQL] to persist data with [Knex.js] as a client library. We use [shortid] to create url-friendly unique identifiers.
 
 ### Models
 
@@ -418,6 +418,7 @@ Dig into the [`test/integration`](test/integration) folder to get an idea of wha
 [resave-browserify]: https://github.com/rowanmanning/resave-browserify
 [resave-sass]: https://github.com/rowanmanning/resave-sass
 [sass]: http://sass-lang.com/
+[shortid]: https://github.com/dylang/shortid
 [sinon]: http://sinonjs.org/
 [supertest]: https://github.com/visionmedia/supertest
 [winston]: https://github.com/winstonjs/winston
