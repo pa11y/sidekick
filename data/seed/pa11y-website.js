@@ -3,7 +3,7 @@
 const shortid = require('shortid');
 
 exports.seed = (database, Promise) => {
-	const siteId = shortid.generate()
+	const siteId = shortid.generate();
 
 	return Promise.resolve()
 		.then(() => {
