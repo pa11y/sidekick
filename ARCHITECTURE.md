@@ -300,7 +300,7 @@ Pa11y Sidekick uses [Resave Browserify][resave-browserify] to do this.
 
 ## Databases
 
-Hello! This section will teach you how to manage Pa11y Sidekick's database. We'll be covering models, migrations, and seeding. We use [PostgreSQL] to persist data with [Knex.js] as a client library.
+Hello! This section will teach you how to manage Pa11y Sidekick's database. We'll be covering models, migrations, and seeding. We use [PostgreSQL] to persist data with [Knex.js] as a client library. We use [shortid] to create url-friendly unique identifiers.
 
 ### Models
 
@@ -357,7 +357,7 @@ make db-migrate-down
 
 ### Seeding
 
-Seed files live in `data/seed`, and are loaded into a database through either a Make target or automatically when [integration tests](#integration-tests) are run. It's useful to copy an existing seed file when adding new test data, also be aware that modifications to exising seed files may cause issues with the tests.
+Seed files live in `data/seed`, and are loaded into a database through either a Make target or automatically when [integration tests](#integration-tests) are run. It's useful to copy an existing seed file when adding new test data, also be aware that modifications to existing seed files may cause issues with the tests.
 
 For more information on the structure of these files, read the [Knex.js documentation on seeding][knex-seeding].
 
@@ -418,6 +418,7 @@ Dig into the [`test/integration`](test/integration) folder to get an idea of wha
 [resave-browserify]: https://github.com/rowanmanning/resave-browserify
 [resave-sass]: https://github.com/rowanmanning/resave-sass
 [sass]: http://sass-lang.com/
+[shortid]: https://github.com/dylang/shortid
 [sinon]: http://sinonjs.org/
 [supertest]: https://github.com/visionmedia/supertest
 [winston]: https://github.com/winstonjs/winston

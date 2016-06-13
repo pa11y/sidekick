@@ -11,7 +11,7 @@ exports.up = (database, Promise) => {
 			return database.schema.createTable('sites', table => {
 
 				// Sites table columns
-				table.uuid('id').unique().primary();
+				table.string('id').unique().primary();
 				table.string('name').notNullable();
 				table.timestamp('created_at').defaultTo(database.fn.now());
 				table.timestamp('updated_at').defaultTo(database.fn.now());
@@ -23,8 +23,8 @@ exports.up = (database, Promise) => {
 			return database.schema.createTable('urls', table => {
 
 				// URLs table columns
-				table.uuid('id').unique().primary();
-				table.uuid('site');
+				table.string('id').unique().primary();
+				table.string('site');
 				table.string('name').notNullable();
 				table.string('address').notNullable();
 				table.timestamp('created_at').defaultTo(database.fn.now());
