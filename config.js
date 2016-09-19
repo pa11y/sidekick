@@ -1,6 +1,12 @@
 'use strict';
 
 const winston = require('winston');
+const dotenv = require('dotenv');
+
+// Load configurations from a .env file if present
+dotenv.config({
+	silent: true
+});
 
 // Create and export the config object
 const config = module.exports = {

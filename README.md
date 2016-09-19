@@ -84,7 +84,13 @@ Pa11y Sidekick is highly configurable. You can configure the application with th
   - **`REQUEST_LOG_FORMAT`**: The log format to use for request logging, one of [morgan's predefined formats][morgan-formats].<br/>
     Default: `combined`.
 
-Here's an example of some of these configurations in use:
+Pa11y Sidekick will first attempt to load an `.env` file in the root of the project and read configurations from there. You can copy the sample environment config as a starting point:
+
+```sh
+make config
+```
+
+Alternatively you can set environment variables before running your command. Here's an example:
 
 ```sh
 LOG_LEVEL=debug PORT=1234 REQUEST_LOG_FORMAT=tiny make start
