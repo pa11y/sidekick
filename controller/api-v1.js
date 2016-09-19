@@ -12,16 +12,33 @@ module.exports = dashboard => {
 
 	// API documentation (example route)
 	app.all('/api/v1', allow.get, (request, response) => {
-		response.send({
-			apiV1: true
+		response.render('api-v1');
+	});
+
+	// Get all sites
+	app.all('/api/v1/sites', allow.get, (request, response) => {
+		dashboard.model.site.getAll().then(sites => {
+			response.send({sites});
 		});
 	});
 
-	// All sites (example route)
-	app.all('/api/v1/sites', allow.get, (request, response) => {
-		dashboard.model.site.getAll().then(sites => {
-			response.send(sites);
-		});
+	// Get a site by ID
+	app.all('/api/v1/sites/:siteId', allow.get, (request, response, next) => {
+		const json = {};
+		dashboard.model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					return next();
+				}
+				json.site = site;
+				return dashboard.model.url.getAllBySite(site.id);
+			})
+			.then(urls => {
+				if (json.site) {
+					json.urls = urls;
+					response.send(json);
+				}
+			});
 	});
 
 	// API 404 handler

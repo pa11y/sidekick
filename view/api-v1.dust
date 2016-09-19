@@ -1,0 +1,48 @@
+{>"layout/default"/}
+
+{<title}
+	API - {appName}
+{/title}
+
+{<content}
+
+	<h1>{appName} API</h1>
+	<p>
+		This is the documentation for the {appName} API version 1.
+	</p>
+
+	<h2><code>GET /api/v1/sites</code></h2>
+
+	<p>
+		Get a list of all sites as a JSON array.
+	</p>
+
+	<pre>{`{
+	sites: [
+		{
+			// site object
+		},
+		{
+			// site object
+		}
+	]
+}`}</pre>
+
+	<h2><code>GET /api/v1/sites/<var>:id</var></code></h2>
+
+	<p>
+		Get a single site as a JSON object.
+	</p>
+
+	<pre>{`{
+	site: {
+		// site object
+		urls: [
+			{
+				// url object
+			}
+		]
+	}
+}`}</pre>
+
+{/content}
