@@ -10,6 +10,17 @@ start-dev:
 	@NODE_ENV=development nodemon -e dust,js,json index.js
 
 
+# Configuration tasks
+# -------------------
+
+config: .env
+
+.env:
+	@echo "Creating .env file from env.sample"
+	@cp ./env.sample ./.env;
+	@$(TASK_DONE)
+
+
 # Database tasks
 # --------------
 
