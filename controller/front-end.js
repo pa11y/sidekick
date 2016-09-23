@@ -11,6 +11,11 @@ module.exports = dashboard => {
 		response.render('index');
 	});
 
+	// API page (redirect to latest version)
+	app.get('/api', (request, response) => {
+		response.redirect('/api/v1');
+	});
+
 	// Error handling
 	app.use(notFound);
 	app.use(handleErrors.html(dashboard));

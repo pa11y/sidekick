@@ -14,8 +14,8 @@ describe('GET /api/v1', () => {
 		request.expect(200).end(done);
 	});
 
-	it('responds with JSON', done => {
-		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+	it('responds with HTML', done => {
+		request.expect('Content-Type', 'text/html; charset=utf-8').end(done);
 	});
 
 	describe('with no User-Agent header', () => {
@@ -29,7 +29,7 @@ describe('GET /api/v1', () => {
 			request.expect(400).end(done);
 		});
 
-		it('responds with JSON', done => {
+		it('responds with HTML', done => {
 			request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
 		});
 
@@ -66,9 +66,47 @@ describe('GET /api/v1/sites', () => {
 			.then(sites => {
 				const jsonifiedSites = JSON.parse(JSON.stringify(sites));
 				request.expect(response => {
-					assert.isArray(response.body);
+					assert.isObject(response.body);
+					assert.isArray(response.body.sites);
 					assert.greaterThan(response.body.length, 0);
-					assert.deepEqual(response.body, jsonifiedSites);
+					assert.deepEqual(response.body.sites, jsonifiedSites);
+				}).end(done);
+			})
+			.catch(done);
+	});
+
+});
+
+describe('GET /api/v1/sites/:siteId', () => {
+	let request;
+	let siteId;
+
+	beforeEach(done => {
+		dashboard.database.select('*').from('sites')
+			.then(sites => {
+				siteId = sites[0].id;
+				request = agent.get(`/api/v1/sites/${siteId}`);
+				done();
+			})
+			.catch(done);
+	});
+
+	it('responds with a 200 status', done => {
+		request.expect(200).end(done);
+	});
+
+	it('responds with JSON', done => {
+		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+	});
+
+	it('responds with the site as an object', done => {
+		dashboard.database.select('*').from('sites').where({id: siteId})
+			.then(sites => {
+				const jsonifiedSite = JSON.parse(JSON.stringify(sites[0]));
+				request.expect(response => {
+					assert.isObject(response.body);
+					assert.isObject(response.body.site);
+					assert.deepEqual(response.body.site, jsonifiedSite);
 				}).end(done);
 			})
 			.catch(done);

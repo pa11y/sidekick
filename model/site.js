@@ -1,3 +1,4 @@
+// jscs:disable disallowDanglingUnderscores
 'use strict';
 
 module.exports = dashboard => {
@@ -6,18 +7,36 @@ module.exports = dashboard => {
 
 	const model = {
 
+		// Get all sites
 		getAll() {
-			return this.getAllRaw().then(sites => {
+			return this._rawGetAll().then(sites => {
 				return sites.map(this.prepareForOutput);
 			});
 		},
 
-		getAllRaw() {
+		// Get a single site by ID
+		getById(id) {
+			return this._rawGetById(id).then(site => {
+				return (site ? this.prepareForOutput(site) : site);
+			});
+		},
+
+		// Prepare a site object for output
+		prepareForOutput(site) {
+			return site;
+		},
+
+		// "Raw" methods used to get data that's not
+		// prepared for output to the user
+
+		_rawGetAll() {
 			return database.select('*').from(table);
 		},
 
-		prepareForOutput(site) {
-			return site;
+		_rawGetById(id) {
+			return database.select('*').from(table).where({id}).limit(1).then(sites => {
+				return sites[0];
+			});
 		}
 
 	};
