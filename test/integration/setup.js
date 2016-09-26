@@ -39,12 +39,9 @@ function deleteAllTables(database) {
 			return database.raw(query);
 		})
 		.then(result => {
-			return result.rows.map(row => row.tablename);
+			return result.rows.map(row => `DROP TABLE ${row.tablename} CASCADE`).join(';');
 		})
-		.then(tablenames => {
-			return Promise.all(tablenames.map(tablename => {
-				const query = `DROP TABLE ${tablename} CASCADE`;
-				return database.raw(query);
-			}));
+		.then(query => {
+			return database.raw(query);
 		});
 }
