@@ -99,7 +99,9 @@ LOG_LEVEL=debug PORT=1234 REQUEST_LOG_FORMAT=tiny make start
 
 ## Contributing
 
-To contribute to Pa11y Sidekick, clone this repo locally and commit your code on a new branch. It's useful to read the [Architecture Guide](ARCHITECTURE.md) before contributing.
+There are many ways to contribute to Pa11y Sidekick, we cover these in the [contributing guide](CONTRIBUTING.md) for this repo.
+
+If you're ready to contribute some code, clone this repo locally and commit your code on a new branch. It's useful to read the [Architecture Guide](ARCHITECTURE.md) before contributing.
 
 Please write unit tests for your code, and check that everything works by running the following before opening a <abbr title="pull request">PR</abbr>:
 
