@@ -130,8 +130,8 @@ make test-integration    # Run the integration tests
 
 ## Licence
 
-Licensed under the [Lesser General Public License (LGPL-3.0)](LICENSE).  
-Copyright &copy; 2016, Team Pa11y.
+Licensed under the [Lesser General Public License (LGPL-3.0)](LICENSE).<br/>
+Copyright &copy; 2016–2017, Team Pa11y
 
 
 
