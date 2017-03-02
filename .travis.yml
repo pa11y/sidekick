@@ -25,6 +25,9 @@ matrix:
     - node_js: '6'
       env: NODE=6
 
+    - node_js: '7'
+      env: NODE=7
+
     # Run integration tests with varying
     # PostgreSQL and default Node.js (6)
 

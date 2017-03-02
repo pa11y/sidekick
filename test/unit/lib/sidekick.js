@@ -639,6 +639,54 @@ describe('lib/sidekick', () => {
 
 		});
 
+		describe('when `options.port` is a string', () => {
+
+			beforeEach(() => {
+				userOptions.port = '5678';
+				express.mockApp.listen.reset();
+				returnedPromise = sidekick(userOptions);
+			});
+
+			describe('.then()', () => {
+				let dashboard;
+
+				beforeEach(() => returnedPromise.then(value => {
+					dashboard = value;
+				}));
+
+				it('starts the Express application on the port in `options.port`, as a number', () => {
+					assert.calledOnce(express.mockApp.listen);
+					assert.calledWith(express.mockApp.listen, 5678);
+				});
+
+			});
+
+		});
+
+		describe('when `options.port` is `null`', () => {
+
+			beforeEach(() => {
+				userOptions.port = null;
+				express.mockApp.listen.reset();
+				returnedPromise = sidekick(userOptions);
+			});
+
+			describe('.then()', () => {
+				let dashboard;
+
+				beforeEach(() => returnedPromise.then(value => {
+					dashboard = value;
+				}));
+
+				it('starts the Express application with an undefined port', () => {
+					assert.calledOnce(express.mockApp.listen);
+					assert.calledWith(express.mockApp.listen, undefined);
+				});
+
+			});
+
+		});
+
 		describe('when the Express application errors on startup', () => {
 			let expressError;
 
