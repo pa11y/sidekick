@@ -21,6 +21,8 @@ env:
 # Services setup
 services:
   - postgresql
+addons:
+  postgresql: '9.2'
 
 # Restrict builds on branches
 branches:
