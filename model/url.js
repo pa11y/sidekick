@@ -8,8 +8,8 @@ module.exports = dashboard => {
 	const model = {
 
 		// Get all URLs for a site
-		getAllBySite(id) {
-			return this._rawGetAllBySite(id).then(urls => {
+		getAllBySite(siteId) {
+			return this._rawGetAllBySite(siteId).then(urls => {
 				return urls.map(this.prepareForOutput);
 			});
 		},
@@ -21,22 +21,59 @@ module.exports = dashboard => {
 			});
 		},
 
+		// Get a single URL by ID and site ID
+		getByIdAndSite(id, siteId) {
+			return this._rawGetByIdAndSite(id, siteId).then(url => {
+				return (url ? this.prepareForOutput(url) : url);
+			});
+		},
+
 		// Prepare a URL object for output
 		prepareForOutput(url) {
+			url.paths = {
+				api: `/api/v1/sites/${url.site}/urls/${url.id}`
+			};
 			return url;
 		},
 
 		// "Raw" methods used to get data that's not
 		// prepared for output to the user
 
-		_rawGetAllBySite(id) {
-			return database.select('*').from(table).where({site: id});
+		_rawGetAllBySite(site) {
+			return database
+				.select('*')
+				.from(table)
+				.where({
+					site
+				})
+				.orderBy('name');
 		},
 
 		_rawGetById(id) {
-			return database.select('*').from(table).where({id}).limit(1).then(urls => {
-				return urls[0];
-			});
+			return database
+				.select('*')
+				.from(table)
+				.where({
+					id
+				})
+				.limit(1)
+				.then(urls => {
+					return urls[0];
+				});
+		},
+
+		_rawGetByIdAndSite(id, site) {
+			return database
+				.select('*')
+				.from(table)
+				.where({
+					id,
+					site
+				})
+				.limit(1)
+				.then(urls => {
+					return urls[0];
+				});
 		}
 
 	};

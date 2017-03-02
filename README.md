@@ -31,7 +31,7 @@ If you have any feedback, we'd love to hear it! This architecture is not yet set
 
 ## Running locally
 
-This application requires [Node.js] 4+ and [PostgreSQL].
+This application requires [Node.js] 4+ and [PostgreSQL] 9.2+.
 
   1. Install dependencies:
 

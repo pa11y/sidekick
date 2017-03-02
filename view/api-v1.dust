@@ -6,43 +6,172 @@
 
 {<content}
 
-	<h1>{appName} API</h1>
-	<p>
-		This is the documentation for the {appName} API version 1.
-	</p>
+<h1>{appName} API</h1>
+<p>
+	This is the documentation for the {appName} API version 1.
+</p>
+<ul>
+	<li><a href="#endpoints">Endpoints</a></li>
+	<li><a href="#entities">Entities</a></li>
+</ul>
 
-	<h2><code>GET /api/v1/sites</code></h2>
 
-	<p>
-		Get a list of all sites as a JSON array.
-	</p>
+<h2 id="endpoints">Endpoints</h2>
 
-	<pre>{`{
+
+<h3><code>GET /api/v1/sites</code></h3>
+
+<p>
+	Get a list of all <a href="#entities-site">sites</a> as a JSON array.
+</p>
+
+<pre>{`{
 	sites: [
 		{
-			// site object
+			// site entity
 		},
 		{
-			// site object
+			// site entity
 		}
 	]
 }`}</pre>
 
-	<h2><code>GET /api/v1/sites/<var>:id</var></code></h2>
 
-	<p>
-		Get a single site as a JSON object.
-	</p>
+<h3><code>GET /api/v1/sites/<var>:siteId</var></code></h3>
 
-	<pre>{`{
+<p>
+	Get a single <a href="#entities-site">site</a> as a JSON object.
+</p>
+
+<pre>{`{
 	site: {
-		// site object
-		urls: [
-			{
-				// url object
-			}
-		]
+		// site entity
 	}
+}`}</pre>
+
+
+<h3><code>GET /api/v1/sites/<var>:siteId</var>/results</code></h3>
+
+<p>
+	Get a list of all site <a href="#entities-result">results</a> as a JSON array.
+</p>
+
+<pre>{`{
+	results: [
+		{
+			// result entity
+		},
+		{
+			// result entity
+		}
+	]
+}`}</pre>
+
+
+<h3><code>GET /api/v1/sites/<var>:siteId</var>/urls</code></h3>
+
+<p>
+	Get a list of all site <a href="#entities-url">URLs</a> as a JSON array.
+</p>
+
+<pre>{`{
+	urls: [
+		{
+			// url entity
+		},
+		{
+			// url entity
+		}
+	]
+}`}</pre>
+
+
+<h3><code>GET /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var></code></h3>
+
+<p>
+	Get a single <a href="#entities-url">URL</a> as a JSON object.
+</p>
+
+<pre>{`{
+	url: {
+		// url entity
+	}
+}`}</pre>
+
+
+<h3><code>GET /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var>/results</code></h3>
+
+<p>
+	Get a list of all URL <a href="#entities-result">results</a> as a JSON array.
+</p>
+
+<pre>{`{
+	results: [
+		{
+			// result entity
+		},
+		{
+			// result entity
+		}
+	]
+}`}</pre>
+
+
+<h3><code>GET /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var>/results/<var>:resultId</var></code></h3>
+
+<p>
+	Get a single <a href="#entities-result">result</a> as a JSON object.
+</p>
+
+<pre>{`{
+	result: {
+		// result entity
+	}
+}`}</pre>
+
+
+<h2 id="entities">Entities</h2>
+
+
+<h3 id="entities-site">Site entity</h3>
+
+<p>A site is a collection of URLs, and has the following properties:</p>
+
+<pre>{`{
+	id: String, // Unique ID
+	createdAt: String, // ISO-formatted date/time
+	updatedAt: String, // ISO-formatted date/time
+	name: String // The human-readable name of the site
+}`}</pre>
+
+
+<h3 id="entities-url">URL entity</h3>
+
+<p>A URL represents a URL in a site as well as a collection of results, and has the following properties:</p>
+
+<pre>{`{
+	id: String, // Unique ID
+	site: String, // Unique ID of the site this URL belongs to
+	createdAt: String, // ISO-formatted date/time
+	updatedAt: String, // ISO-formatted date/time
+	name: String, // The human-readable name of the URL
+	address: String // The actual URL address
+}`}</pre>
+
+
+<h3 id="entities-result">Result entity</h3>
+
+<p>A result represents a single run of Pa11y against a specific URL, and has the following properties:</p>
+
+<pre>{`{
+	id: String, // Unique ID
+	url: String, // Unique ID of the URL this result belongs to
+	site: String, // Unique ID of the site this result belongs to
+	createdAt: String, // ISO-formatted date/time
+	errorCount: Number, // The number of errors in this result set
+	warningCount: Number, // The number of warnings in this result set
+	noticeCount: Number, // The number of notices in this result set
+	messages: Array // An array of Pa11y result messages
 }`}</pre>
 
 {/content}

@@ -39,7 +39,7 @@
 	"disallowVar": true,
 	"disallowYodaConditions": true,
 
-	"maximumLineLength": 100,
+	"maximumLineLength": 120,
 
 	"requireArrowFunctions": true,
 	"requireBlocksOnNewline": true,

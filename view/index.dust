@@ -23,5 +23,8 @@
 		<li>
 			<a href="https://github.com/pa11y/sidekick/blob/master/ARCHITECTURE.md">Architecture Guide</a>
 		</li>
+		<li>
+			<a href="/api/v1">API Documentation</a>
+		</li>
 	</ul>
 {/content}

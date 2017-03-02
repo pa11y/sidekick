@@ -23,6 +23,9 @@ module.exports = dashboard => {
 
 		// Prepare a site object for output
 		prepareForOutput(site) {
+			site.paths = {
+				api: `/api/v1/sites/${site.id}`
+			};
 			return site;
 		},
 
@@ -30,13 +33,23 @@ module.exports = dashboard => {
 		// prepared for output to the user
 
 		_rawGetAll() {
-			return database.select('*').from(table);
+			return database
+				.select('*')
+				.orderBy('name')
+				.from(table);
 		},
 
 		_rawGetById(id) {
-			return database.select('*').from(table).where({id}).limit(1).then(sites => {
-				return sites[0];
-			});
+			return database
+				.select('*')
+				.from(table)
+				.where({
+					id
+				})
+				.limit(1)
+				.then(sites => {
+					return sites[0];
+				});
 		}
 
 	};

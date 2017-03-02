@@ -2,11 +2,13 @@
 
 const allow = require('../middleware/allow');
 const handleErrors = require('../middleware/handle-errors');
+const httpError = require('http-errors');
 const notFound = require('../middleware/not-found');
 const requireUserAgent = require('../middleware/require-user-agent');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
+	const model = dashboard.model;
 
 	app.use('/api/v1', requireUserAgent);
 
@@ -16,29 +18,105 @@ module.exports = dashboard => {
 	});
 
 	// Get all sites
-	app.all('/api/v1/sites', allow.get, (request, response) => {
-		dashboard.model.site.getAll().then(sites => {
-			response.send({sites});
-		});
+	app.all('/api/v1/sites', allow.get, (request, response, next) => {
+		model.site.getAll()
+			.then(sites => {
+				response.send({sites});
+			})
+			.catch(next);
 	});
 
 	// Get a site by ID
 	app.all('/api/v1/sites/:siteId', allow.get, (request, response, next) => {
 		const json = {};
-		dashboard.model.site.getById(request.params.siteId)
+		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
-					return next();
+					throw httpError(404);
 				}
 				json.site = site;
-				return dashboard.model.url.getAllBySite(site.id);
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site's URLs
+	app.all('/api/v1/sites/:siteId/urls', allow.get, (request, response, next) => {
+		const json = {};
+		model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					throw httpError(404);
+				}
+				return model.url.getAllBySite(site.id);
 			})
 			.then(urls => {
-				if (json.site) {
-					json.urls = urls;
-					response.send(json);
+				json.urls = urls;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site's results
+	app.all('/api/v1/sites/:siteId/results', allow.get, (request, response, next) => {
+		const json = {};
+		model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					throw httpError(404);
 				}
-			});
+				return model.result.getAllBySite(site.id);
+			})
+			.then(results => {
+				json.results = results;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site/URL by ID
+	app.all('/api/v1/sites/:siteId/urls/:urlId', allow.get, (request, response, next) => {
+		const json = {};
+		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
+			.then(url => {
+				if (!url) {
+					throw httpError(404);
+				}
+				json.url = url;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site/URL results
+	app.all('/api/v1/sites/:siteId/urls/:urlId/results', allow.get, (request, response, next) => {
+		const json = {};
+		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
+			.then(url => {
+				if (!url) {
+					throw httpError(404);
+				}
+				return model.result.getAllByUrl(request.params.urlId);
+			})
+			.then(results => {
+				json.results = results;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site/URL/result by ID
+	app.all('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', allow.get, (request, response, next) => {
+		const json = {};
+		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
+			.then(result => {
+				if (!result) {
+					throw httpError(404);
+				}
+				json.result = result;
+				response.send(json);
+			})
+			.catch(next);
 	});
 
 	// API 404 handler
