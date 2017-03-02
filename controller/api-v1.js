@@ -1,6 +1,5 @@
 'use strict';
 
-const allow = require('../middleware/allow');
 const handleErrors = require('../middleware/handle-errors');
 const httpError = require('http-errors');
 const notFound = require('../middleware/not-found');
@@ -13,12 +12,12 @@ module.exports = dashboard => {
 	app.use('/api/v1', requireUserAgent);
 
 	// API documentation (example route)
-	app.all('/api/v1', allow.get, (request, response) => {
+	app.get('/api/v1', (request, response) => {
 		response.render('api-v1');
 	});
 
 	// Get all sites
-	app.all('/api/v1/sites', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites', (request, response, next) => {
 		model.site.getAll()
 			.then(sites => {
 				response.send({sites});
@@ -27,7 +26,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site by ID
-	app.all('/api/v1/sites/:siteId', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites/:siteId', (request, response, next) => {
 		const json = {};
 		model.site.getById(request.params.siteId)
 			.then(site => {
@@ -41,7 +40,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site's URLs
-	app.all('/api/v1/sites/:siteId/urls', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls', (request, response, next) => {
 		const json = {};
 		model.site.getById(request.params.siteId)
 			.then(site => {
@@ -58,7 +57,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site's results
-	app.all('/api/v1/sites/:siteId/results', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/results', (request, response, next) => {
 		const json = {};
 		model.site.getById(request.params.siteId)
 			.then(site => {
@@ -75,7 +74,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site/URL by ID
-	app.all('/api/v1/sites/:siteId/urls/:urlId', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls/:urlId', (request, response, next) => {
 		const json = {};
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
 			.then(url => {
@@ -89,7 +88,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site/URL results
-	app.all('/api/v1/sites/:siteId/urls/:urlId/results', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls/:urlId/results', (request, response, next) => {
 		const json = {};
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
 			.then(url => {
@@ -106,7 +105,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site/URL/result by ID
-	app.all('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', allow.get, (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', (request, response, next) => {
 		const json = {};
 		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
 			.then(result => {
