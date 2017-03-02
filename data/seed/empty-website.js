@@ -1,3 +1,4 @@
+// jscs:disable maximumLineLength
 'use strict';
 
 // Note: IDs in here are referenced in the integration

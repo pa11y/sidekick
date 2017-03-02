@@ -35,6 +35,7 @@ module.exports = dashboard => {
 		_rawGetAll() {
 			return database
 				.select('*')
+				.orderBy('name')
 				.from(table);
 		},
 

@@ -57,6 +57,23 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
+	// Get a site's results
+	app.all('/api/v1/sites/:siteId/results', allow.get, (request, response, next) => {
+		const json = {};
+		model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					throw httpError(404);
+				}
+				return model.result.getAllBySite(site.id);
+			})
+			.then(results => {
+				json.results = results;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
 	// Get a site/URL by ID
 	app.all('/api/v1/sites/:siteId/urls/:urlId', allow.get, (request, response, next) => {
 		const json = {};
@@ -66,6 +83,37 @@ module.exports = dashboard => {
 					throw httpError(404);
 				}
 				json.url = url;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site/URL results
+	app.all('/api/v1/sites/:siteId/urls/:urlId/results', allow.get, (request, response, next) => {
+		const json = {};
+		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
+			.then(url => {
+				if (!url) {
+					throw httpError(404);
+				}
+				return model.result.getAllByUrl(request.params.urlId);
+			})
+			.then(results => {
+				json.results = results;
+				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Get a site/URL/result by ID
+	app.all('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', allow.get, (request, response, next) => {
+		const json = {};
+		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
+			.then(result => {
+				if (!result) {
+					throw httpError(404);
+				}
+				json.result = result;
 				response.send(json);
 			})
 			.catch(next);

@@ -12,9 +12,9 @@ exports.up = (database, Promise) => {
 
 				// Sites table columns
 				table.string('id').unique().primary();
+				table.timestamp('createdAt').defaultTo(database.fn.now());
+				table.timestamp('updatedAt').defaultTo(database.fn.now());
 				table.string('name').notNullable();
-				table.timestamp('created_at').defaultTo(database.fn.now());
-				table.timestamp('updated_at').defaultTo(database.fn.now());
 
 			});
 		})
@@ -25,12 +25,32 @@ exports.up = (database, Promise) => {
 				// URLs table columns
 				table.string('id').unique().primary();
 				table.string('site');
+				table.timestamp('createdAt').defaultTo(database.fn.now());
+				table.timestamp('updatedAt').defaultTo(database.fn.now());
 				table.string('name').notNullable();
 				table.string('address').notNullable();
-				table.timestamp('created_at').defaultTo(database.fn.now());
-				table.timestamp('updated_at').defaultTo(database.fn.now());
 
 				// Foreign key contraints
+				table.foreign('site').references('sites.id');
+
+			});
+		})
+		.then(() => {
+			// Create the results table
+			return database.schema.createTable('results', table => {
+
+				// Results table columns
+				table.string('id').unique().primary();
+				table.string('url');
+				table.string('site');
+				table.timestamp('createdAt').defaultTo(database.fn.now());
+				table.integer('errorCount').notNullable().defaultTo(0);
+				table.integer('warningCount').notNullable().defaultTo(0);
+				table.integer('noticeCount').notNullable().defaultTo(0);
+				table.json('messages').notNullable().defaultTo('[]');
+
+				// Foreign key contraints
+				table.foreign('url').references('urls.id');
 				table.foreign('site').references('sites.id');
 
 			});
@@ -39,6 +59,9 @@ exports.up = (database, Promise) => {
 
 exports.down = (database, Promise) => {
 	return Promise.resolve()
+		.then(() => {
+			return database.schema.dropTable('results');
+		})
 		.then(() => {
 			return database.schema.dropTable('urls');
 		})

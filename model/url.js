@@ -43,7 +43,10 @@ module.exports = dashboard => {
 			return database
 				.select('*')
 				.from(table)
-				.where({site});
+				.where({
+					site
+				})
+				.orderBy('name');
 		},
 
 		_rawGetById(id) {
