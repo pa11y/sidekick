@@ -1,4 +1,9 @@
 
+# Container version
+# (important for modern PostgreSQL)
+dist: trusty
+sudo: false
+
 # Build matrix
 language: node_js
 matrix:
@@ -8,10 +13,40 @@ matrix:
     - node_js: '6'
       env: LINT=true
 
-    # Run tests
+    # Run tests with varying Node.js and
+    # default PostgreSQL (9.2)
+
     - node_js: '4'
+      env: NODE=4
+
     - node_js: '5'
+      env: NODE=5
+
     - node_js: '6'
+      env: NODE=6
+
+    # Run integration tests with varying
+    # PostgreSQL and default Node.js (6)
+
+    - node_js: '6'
+      env: POSTGRES=9.3
+      addons:
+        postgresql: '9.3'
+
+    - node_js: '6'
+      env: POSTGRES=9.4
+      addons:
+        postgresql: '9.4'
+
+    - node_js: '6'
+      env: POSTGRES=9.5
+      addons:
+        postgresql: '9.5'
+
+    - node_js: '6'
+      env: POSTGRES=9.6
+      addons:
+        postgresql: '9.6'
 
 # Global environment variables
 env:
@@ -35,4 +70,5 @@ before_script:
   - psql -c "CREATE DATABASE pa11y_sidekick_travis" -U postgres
 script:
   - 'if [ $LINT ]; then make verify; fi'
-  - 'if [ ! $LINT ]; then make test; fi'
+  - 'if [ $NODE ]; then make test; fi'
+  - 'if [ $POSTGRES ]; then make test-integration; fi'
