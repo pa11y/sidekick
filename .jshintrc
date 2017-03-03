@@ -12,7 +12,7 @@
 		"it": true
 	},
 	"latedef": "nofunc",
-	"maxcomplexity": 5,
+	"maxcomplexity": false,
 	"maxdepth": 2,
 	"maxparams": 4,
 	"noarg": true,

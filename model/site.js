@@ -1,6 +1,8 @@
 // jscs:disable disallowDanglingUnderscores
 'use strict';
 
+const shortid = require('shortid');
+
 module.exports = dashboard => {
 	const database = dashboard.database;
 	const table = 'sites';
@@ -18,6 +20,32 @@ module.exports = dashboard => {
 		getById(id) {
 			return this._rawGetById(id).then(site => {
 				return (site ? this.prepareForOutput(site) : site);
+			});
+		},
+
+		// Create a site (resolving with the new ID)
+		create(data) {
+			return this.cleanInput(data).then(cleanData => {
+				cleanData.id = shortid.generate();
+				return this._rawCreate(cleanData);
+			});
+		},
+
+		// Validate/sanitize site data input
+		cleanInput(data) {
+			try {
+				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+					throw new Error('Site should be an object');
+				}
+				if (typeof data.name !== 'string') {
+					throw new Error('Site name should be a string');
+				}
+			} catch (error) {
+				error.isValidationError = true;
+				return Promise.reject(error);
+			}
+			return Promise.resolve({
+				name: data.name
 			});
 		},
 
@@ -59,6 +87,15 @@ module.exports = dashboard => {
 				.limit(1)
 				.then(sites => {
 					return sites[0];
+				});
+		},
+
+		_rawCreate(data) {
+			return database(table)
+				.returning('id')
+				.insert(data)
+				.then(ids => {
+					return ids[0];
 				});
 		}
 
