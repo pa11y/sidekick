@@ -23,6 +23,10 @@ module.exports = dashboard => {
 
 		// Prepare a site object for output
 		prepareForOutput(site) {
+			site.urlCount = site.urlCount || null;
+			if (typeof site.urlCount === 'string') {
+				site.urlCount = parseInt(site.urlCount, 10);
+			}
 			site.paths = {
 				api: `/api/v1/sites/${site.id}`
 			};
@@ -34,17 +38,23 @@ module.exports = dashboard => {
 
 		_rawGetAll() {
 			return database
-				.select('*')
-				.orderBy('name')
-				.from(table);
+				.select(`${table}.*`)
+				.leftJoin('urls', `${table}.id`, 'urls.site')
+				.count('urls.id as urlCount')
+				.groupBy(`${table}.id`)
+				.from(table)
+				.orderBy(`${table}.name`);
 		},
 
 		_rawGetById(id) {
 			return database
-				.select('*')
+				.select(`${table}.*`)
+				.leftJoin('urls', `${table}.id`, 'urls.site')
+				.count('urls.id as urlCount')
+				.groupBy(`${table}.id`)
 				.from(table)
 				.where({
-					id
+					[`${table}.id`]: id
 				})
 				.limit(1)
 				.then(sites => {

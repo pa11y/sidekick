@@ -62,7 +62,12 @@ describe('GET /api/v1/sites', () => {
 	});
 
 	it('responds with all of the sites in the database as an array', done => {
-		dashboard.database.select('*').from('sites').orderBy('name')
+		dashboard.database.select('sites.*')
+			.leftJoin('urls', 'sites.id', 'urls.site')
+			.count('urls.id as urlCount')
+			.groupBy('sites.id')
+			.from('sites')
+			.orderBy('sites.name')
 			.then(sites => {
 				const jsonifiedSites = JSON.parse(JSON.stringify(sites))
 					.map(dashboard.model.site.prepareForOutput);
@@ -96,7 +101,12 @@ describe('GET /api/v1/sites/:siteId', () => {
 	});
 
 	it('responds with the site as an object', done => {
-		dashboard.database.select('*').from('sites').where({id: siteId})
+		dashboard.database.select('sites.*')
+			.leftJoin('urls', 'sites.id', 'urls.site')
+			.count('urls.id as urlCount')
+			.groupBy('sites.id')
+			.from('sites')
+			.where({'sites.id': siteId})
 			.then(sites => {
 				const jsonifiedSite = dashboard.model.site
 					.prepareForOutput(JSON.parse(JSON.stringify(sites[0])));

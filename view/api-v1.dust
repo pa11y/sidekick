@@ -141,7 +141,8 @@
 	id: String, // Unique ID
 	createdAt: String, // ISO-formatted date/time
 	updatedAt: String, // ISO-formatted date/time
-	name: String // The human-readable name of the site
+	name: String, // The human-readable name of the site
+	urlCount: Number // The number of URLs in the site
 }`}</pre>
 
 
