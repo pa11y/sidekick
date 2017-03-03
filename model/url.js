@@ -1,6 +1,8 @@
 // jscs:disable disallowDanglingUnderscores
 'use strict';
 
+const shortid = require('shortid');
+
 module.exports = dashboard => {
 	const database = dashboard.database;
 	const table = 'urls';
@@ -25,6 +27,40 @@ module.exports = dashboard => {
 		getByIdAndSite(id, siteId) {
 			return this._rawGetByIdAndSite(id, siteId).then(url => {
 				return (url ? this.prepareForOutput(url) : url);
+			});
+		},
+
+		// Create a URL (resolving with the new ID)
+		create(data) {
+			return this.cleanInput(data).then(cleanData => {
+				cleanData.id = shortid.generate();
+				return this._rawCreate(cleanData);
+			});
+		},
+
+		// Validate/sanitize site data input
+		cleanInput(data) {
+			try {
+				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+					throw new Error('URL should be an object');
+				}
+				if (typeof data.site !== 'string') {
+					throw new Error('URL site should be a string');
+				}
+				if (typeof data.name !== 'string') {
+					throw new Error('URL name should be a string');
+				}
+				if (typeof data.address !== 'string') {
+					throw new Error('URL address should be a string');
+				}
+			} catch (error) {
+				error.isValidationError = true;
+				return Promise.reject(error);
+			}
+			return Promise.resolve({
+				site: data.site,
+				name: data.name,
+				address: data.address
 			});
 		},
 
@@ -73,6 +109,15 @@ module.exports = dashboard => {
 				.limit(1)
 				.then(urls => {
 					return urls[0];
+				});
+		},
+
+		_rawCreate(data) {
+			return database(table)
+				.returning('id')
+				.insert(data)
+				.then(ids => {
+					return ids[0];
 				});
 		}
 

@@ -57,6 +57,29 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
+	// Create a URL
+	app.post('/api/v1/sites/:siteId/urls', parseJsonBody, (request, response, next) => {
+		model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					throw httpError(404);
+				}
+				request.body.site = site.id;
+				return model.url.create(request.body);
+			})
+			.then(urlId => {
+				response.set('Location', `/api/v1/sites/${request.params.siteId}/urls/${urlId}`);
+				response.status(201);
+				response.send({});
+			})
+			.catch(error => {
+				if (error.isValidationError) {
+					error.status = 400;
+				}
+				next(error);
+			});
+	});
+
 	// Get a site's URLs
 	app.get('/api/v1/sites/:siteId/urls', (request, response, next) => {
 		const json = {};
