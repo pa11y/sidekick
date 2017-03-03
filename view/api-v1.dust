@@ -84,6 +84,23 @@
 }`}</pre>
 
 
+<h3><code>POST /api/v1/sites/<var>:siteId</var>/urls</code></h3>
+
+<p>
+	Create a new <a href="#entities-url">URL</a> by POSTing JSON.
+	This responds with a <code>Location</code> header that points to the new URL in the API.
+</p>
+
+<p>
+	Expects the following JSON POST body:
+</p>
+
+<pre>{`{
+	name: 'Your URL Name',
+	address: 'http://www.example.com/'
+}`}</pre>
+
+
 <h3><code>GET /api/v1/sites/<var>:siteId</var>/urls</code></h3>
 
 <p>

@@ -306,6 +306,150 @@ describe('GET /api/v1/sites/:siteId/results', () => {
 
 });
 
+describe('POST /api/v1/sites/:siteId/urls', () => {
+	let request;
+	let siteId;
+	let testUrl;
+
+	beforeEach(() => {
+		siteId = 's01p_site';
+		testUrl = {
+			name: 'Test URL',
+			address: 'http://www.example.com/'
+		};
+		request = agent
+			.post(`/api/v1/sites/${siteId}/urls`)
+			.set('Content-Type', 'application/json')
+			.send(testUrl);
+	});
+
+	it('responds with a 201 status', done => {
+		request.expect(201).end(done);
+	});
+
+	it('responds with JSON', done => {
+		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+	});
+
+	it('responds with a location header pointing to the new URL', done => {
+		request.expect('Location', /^\/api\/v1\/sites\/[a-zA-Z0-9_-]+\/urls\/[a-zA-Z0-9_-]+$/).end(done);
+	});
+
+	it('creates a site in the database', done => {
+		let response;
+		request.expect(res => response = res).end(() => {
+			const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
+			dashboard.database.select('*').from('urls').where({id: urlId})
+				.then(urls => {
+					assert.strictEqual(urls.length, 1);
+					assert.strictEqual(urls[0].site, siteId);
+					assert.strictEqual(urls[0].name, 'Test URL');
+					assert.strictEqual(urls[0].address, 'http://www.example.com/');
+					done();
+				})
+				.catch(done);
+		});
+	});
+
+	it('responds with an empty object', done => {
+		request.expect(response => {
+			assert.isObject(response.body);
+			assert.deepEqual(response.body, {});
+		}).end(done);
+	});
+
+	describe('when the POST data is invalid', () => {
+
+		beforeEach(() => {
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send([]);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'URL should be an object',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
+	describe('when the URL name is invalid', () => {
+
+		beforeEach(() => {
+			testUrl.name = 123;
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'URL name should be a string',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
+	describe('when the URL address is invalid', () => {
+
+		beforeEach(() => {
+			testUrl.address = 123;
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'URL address should be a string',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
+	describe('when a site with the given ID does not exist', () => {
+
+		beforeEach(() => {
+			siteId = 'notasite';
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 404 status', done => {
+			request.expect(404).end(done);
+		});
+
+	});
+
+});
+
 describe('GET /api/v1/sites/:siteId/urls', () => {
 	let request;
 	let siteId;
