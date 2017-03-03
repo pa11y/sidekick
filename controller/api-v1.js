@@ -1,5 +1,6 @@
 'use strict';
 
+const bodyParser = require('body-parser');
 const handleErrors = require('../middleware/handle-errors');
 const httpError = require('http-errors');
 const notFound = require('../middleware/not-found');
@@ -8,12 +9,29 @@ const requireUserAgent = require('../middleware/require-user-agent');
 module.exports = dashboard => {
 	const app = dashboard.app;
 	const model = dashboard.model;
+	const parseJsonBody = bodyParser.json();
 
 	app.use('/api/v1', requireUserAgent);
 
-	// API documentation (example route)
+	// API documentation
 	app.get('/api/v1', (request, response) => {
 		response.render('api-v1');
+	});
+
+	// Create a site
+	app.post('/api/v1/sites', parseJsonBody, (request, response, next) => {
+		model.site.create(request.body)
+			.then(siteId => {
+				response.set('Location', `/api/v1/sites/${siteId}`);
+				response.status(201);
+				response.send({});
+			})
+			.catch(error => {
+				if (error.isValidationError) {
+					error.status = 400;
+				}
+				next(error);
+			});
 	});
 
 	// Get all sites

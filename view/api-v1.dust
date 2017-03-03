@@ -19,6 +19,22 @@
 <h2 id="endpoints">Endpoints</h2>
 
 
+<h3><code>POST /api/v1/sites</code></h3>
+
+<p>
+	Create a new <a href="#entities-site">site</a> by POSTing JSON.
+	This responds with a <code>Location</code> header that points to the new site in the API.
+</p>
+
+<p>
+	Expects the following JSON POST body:
+</p>
+
+<pre>{`{
+	name: 'Your Site Name'
+}`}</pre>
+
+
 <h3><code>GET /api/v1/sites</code></h3>
 
 <p>
