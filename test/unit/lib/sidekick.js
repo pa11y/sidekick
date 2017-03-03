@@ -640,20 +640,16 @@ describe('lib/sidekick', () => {
 		});
 
 		describe('when the Express application errors on startup', () => {
-			let expressError;
-
-			beforeEach(() => {
-				expressError = new Error('Express failed to start');
-				express.mockApp.listen.yieldsAsync(expressError);
-				log.info.reset();
-				returnedPromise = sidekick(userOptions);
-			});
 
 			describe('.catch()', () => {
 				let caughtError;
+				let expressError;
 
 				beforeEach(done => {
-					returnedPromise.then(done).catch(error => {
+					expressError = new Error('Express failed to start');
+					express.mockApp.listen.yieldsAsync(expressError);
+					log.info.reset();
+					sidekick(userOptions).then(done).catch(error => {
 						caughtError = error;
 						done();
 					});
