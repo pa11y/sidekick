@@ -142,6 +142,31 @@ describe('POST /api/v1/sites', () => {
 
 	});
 
+	describe('when the site name is empty', () => {
+
+		beforeEach(() => {
+			testSite.name = ' ';
+			request = agent
+				.post('/api/v1/sites')
+				.set('Content-Type', 'application/json')
+				.send(testSite);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'Site name cannot be empty',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
 	describe('when the site data includes an ID', () => {
 
 		beforeEach(() => {
@@ -369,6 +394,31 @@ describe('POST /api/v1/sites/:siteId', () => {
 
 	});
 
+	describe('when the site name is empty', () => {
+
+		beforeEach(() => {
+			testEdits.name = ' ';
+			request = agent
+				.post(`/api/v1/sites/${siteId}`)
+				.set('Content-Type', 'application/json')
+				.send(testEdits);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'Site name cannot be empty',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
 	describe('when the site data includes an ID', () => {
 
 		beforeEach(() => {
@@ -571,6 +621,31 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 
 	});
 
+	describe('when the URL name is empty', () => {
+
+		beforeEach(() => {
+			testUrl.name = ' ';
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'URL name cannot be empty',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
 	describe('when the URL address is invalid', () => {
 
 		beforeEach(() => {
@@ -589,6 +664,31 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 			request.expect({
 				error: {
 					message: 'URL address should be a string',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
+	describe('when the URL address is empty', () => {
+
+		beforeEach(() => {
+			testUrl.address = ' ';
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'URL address cannot be empty',
 					status: 400
 				}
 			}).end(done);

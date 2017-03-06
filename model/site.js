@@ -52,12 +52,15 @@ module.exports = dashboard => {
 				if (typeof data.name !== 'string') {
 					throw new Error('Site name should be a string');
 				}
+				if (!data.name.trim()) {
+					throw new Error('Site name cannot be empty');
+				}
 			} catch (error) {
 				error.isValidationError = true;
 				return Promise.reject(error);
 			}
 			return Promise.resolve({
-				name: data.name
+				name: data.name.trim()
 			});
 		},
 

@@ -54,8 +54,14 @@ module.exports = dashboard => {
 				if (typeof data.name !== 'string') {
 					throw new Error('URL name should be a string');
 				}
+				if (!data.name.trim()) {
+					throw new Error('URL name cannot be empty');
+				}
 				if (typeof data.address !== 'string') {
 					throw new Error('URL address should be a string');
+				}
+				if (!data.address.trim()) {
+					throw new Error('URL address cannot be empty');
 				}
 			} catch (error) {
 				error.isValidationError = true;
@@ -63,8 +69,8 @@ module.exports = dashboard => {
 			}
 			return Promise.resolve({
 				site: data.site,
-				name: data.name,
-				address: data.address
+				name: data.name.trim(),
+				address: data.address.trim()
 			});
 		},
 
