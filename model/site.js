@@ -37,6 +37,9 @@ module.exports = dashboard => {
 				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
 					throw new Error('Site should be an object');
 				}
+				if (data.id) {
+					throw new Error('Site ID cannot be set manually');
+				}
 				if (typeof data.name !== 'string') {
 					throw new Error('Site name should be a string');
 				}

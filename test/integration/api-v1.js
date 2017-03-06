@@ -142,6 +142,31 @@ describe('POST /api/v1/sites', () => {
 
 	});
 
+	describe('when the site data includes an ID', () => {
+
+		beforeEach(() => {
+			testSite.id = '12345';
+			request = agent
+				.post('/api/v1/sites')
+				.set('Content-Type', 'application/json')
+				.send(testSite);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'Site ID cannot be set manually',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
 });
 
 describe('GET /api/v1/sites', () => {
@@ -425,6 +450,31 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 			request.expect({
 				error: {
 					message: 'URL address should be a string',
+					status: 400
+				}
+			}).end(done);
+		});
+
+	});
+
+	describe('when the URL data includes an ID', () => {
+
+		beforeEach(() => {
+			testUrl.id = '12345';
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 400 status', done => {
+			request.expect(400).end(done);
+		});
+
+		it('responds with an error message', done => {
+			request.expect({
+				error: {
+					message: 'URL ID cannot be set manually',
 					status: 400
 				}
 			}).end(done);
