@@ -282,7 +282,7 @@ describe('GET /api/v1/sites/:siteId', () => {
 
 });
 
-describe('POST /api/v1/sites/:siteId', () => {
+describe('PATCH /api/v1/sites/:siteId', () => {
 	let request;
 	let siteId;
 	let testEdits;
@@ -293,7 +293,7 @@ describe('POST /api/v1/sites/:siteId', () => {
 			name: 'Edited'
 		};
 		request = agent
-			.post(`/api/v1/sites/${siteId}`)
+			.patch(`/api/v1/sites/${siteId}`)
 			.set('Content-Type', 'application/json')
 			.send(testEdits);
 	});
@@ -334,7 +334,7 @@ describe('POST /api/v1/sites/:siteId', () => {
 		beforeEach(() => {
 			siteId = 'notasite';
 			request = agent
-				.post(`/api/v1/sites/${siteId}`)
+				.patch(`/api/v1/sites/${siteId}`)
 				.set('Content-Type', 'application/json')
 				.send(testEdits);
 		});
@@ -349,7 +349,7 @@ describe('POST /api/v1/sites/:siteId', () => {
 
 		beforeEach(() => {
 			request = agent
-				.post(`/api/v1/sites/${siteId}`)
+				.patch(`/api/v1/sites/${siteId}`)
 				.set('Content-Type', 'application/json')
 				.send([]);
 		});
@@ -374,7 +374,7 @@ describe('POST /api/v1/sites/:siteId', () => {
 		beforeEach(() => {
 			testEdits.name = 123;
 			request = agent
-				.post(`/api/v1/sites/${siteId}`)
+				.patch(`/api/v1/sites/${siteId}`)
 				.set('Content-Type', 'application/json')
 				.send(testEdits);
 		});
@@ -399,7 +399,7 @@ describe('POST /api/v1/sites/:siteId', () => {
 		beforeEach(() => {
 			testEdits.name = ' ';
 			request = agent
-				.post(`/api/v1/sites/${siteId}`)
+				.patch(`/api/v1/sites/${siteId}`)
 				.set('Content-Type', 'application/json')
 				.send(testEdits);
 		});
@@ -424,7 +424,7 @@ describe('POST /api/v1/sites/:siteId', () => {
 		beforeEach(() => {
 			testEdits.id = '12345';
 			request = agent
-				.post(`/api/v1/sites/${siteId}`)
+				.patch(`/api/v1/sites/${siteId}`)
 				.set('Content-Type', 'application/json')
 				.send(testEdits);
 		});

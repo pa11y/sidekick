@@ -58,7 +58,7 @@ module.exports = dashboard => {
 	});
 
 	// Edit a site by ID
-	app.post('/api/v1/sites/:siteId', parseJsonBody, (request, response, next) => {
+	app.patch('/api/v1/sites/:siteId', parseJsonBody, (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {

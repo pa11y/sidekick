@@ -66,7 +66,7 @@
 }`}</pre>
 
 
-<h3><code>POST /api/v1/sites/<var>:siteId</var></code></h3>
+<h3><code>PATCH /api/v1/sites/<var>:siteId</var></code></h3>
 
 <p>
 	Edit a <a href="#entities-site">site</a> by POSTing JSON.

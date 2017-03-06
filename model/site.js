@@ -32,7 +32,7 @@ module.exports = dashboard => {
 			});
 		},
 
-		// Edit a site (resolving with the updated site)
+		// Edit a site (resolving with site ID)
 		edit(id, data) {
 			return this.cleanInput(data).then(cleanData => {
 				cleanData.updatedAt = new Date();
