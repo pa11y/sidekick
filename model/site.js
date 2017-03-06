@@ -71,7 +71,9 @@ module.exports = dashboard => {
 				site.urlCount = parseInt(site.urlCount, 10);
 			}
 			site.paths = {
-				api: `/api/v1/sites/${site.id}`
+				api: `/api/v1/sites/${site.id}`,
+				apiResults: `/api/v1/sites/${site.id}/results`,
+				apiUrls: `/api/v1/sites/${site.id}/urls`
 			};
 			return site;
 		},

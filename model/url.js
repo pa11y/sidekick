@@ -77,7 +77,9 @@ module.exports = dashboard => {
 		// Prepare a URL object for output
 		prepareForOutput(url) {
 			url.paths = {
-				api: `/api/v1/sites/${url.site}/urls/${url.id}`
+				api: `/api/v1/sites/${url.site}/urls/${url.id}`,
+				apiResults: `/api/v1/sites/${url.site}/urls/${url.id}/results`,
+				apiSite: `/api/v1/sites/${url.site}`
 			};
 			return url;
 		},
