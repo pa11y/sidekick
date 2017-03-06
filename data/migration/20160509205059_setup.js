@@ -54,11 +54,32 @@ exports.up = (database, Promise) => {
 				table.foreign('site').references('sites.id');
 
 			});
+		})
+		.then(() => {
+			// Create the users table
+			return database.schema.createTable('users', table => {
+
+				// Users table columns
+				table.string('id').unique().primary();
+				table.timestamp('createdAt').defaultTo(database.fn.now());
+				table.timestamp('updatedAt').defaultTo(database.fn.now());
+				table.string('username').notNullable().unique();
+				table.string('password').notNullable();
+				table.string('apiKey').notNullable().unique();
+				table.boolean('allowRead').notNullable().defaultTo(true);
+				table.boolean('allowWrite').notNullable().defaultTo(true);
+				table.boolean('allowDelete').notNullable().defaultTo(false);
+				table.boolean('allowAdmin').notNullable().defaultTo(false);
+
+			});
 		});
 };
 
 exports.down = (database, Promise) => {
 	return Promise.resolve()
+		.then(() => {
+			return database.schema.dropTable('users');
+		})
 		.then(() => {
 			return database.schema.dropTable('results');
 		})
