@@ -148,6 +148,23 @@
 }`}</pre>
 
 
+<h3><code>PATCH /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var></code></h3>
+
+<p>
+	Edit a <a href="#entities-url">URL</a> by POSTing JSON.
+	This responds with a <code>Location</code> header that points to the edited URL in the API.
+</p>
+
+<p>
+	Expects the following JSON POST body:
+</p>
+
+<pre>{`{
+	name: 'Your Updated URL Name',
+	address: 'http://www.example.com/'
+}`}</pre>
+
+
 <h3><code>GET /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var>/results</code></h3>
 
 <p>

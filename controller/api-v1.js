@@ -135,7 +135,7 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
-	// Get a site/URL by ID
+	// Get a URL by ID
 	app.get('/api/v1/sites/:siteId/urls/:urlId', (request, response, next) => {
 		const json = {};
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
@@ -149,7 +149,28 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
-	// Get a site/URL results
+	// Edit a URL by ID
+	app.patch('/api/v1/sites/:siteId/urls/:urlId', parseJsonBody, (request, response, next) => {
+		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
+			.then(url => {
+				if (!url) {
+					throw httpError(404);
+				}
+				return model.url.edit(url.id, request.body);
+			})
+			.then(() => {
+				response.set('Location', `/api/v1/sites/${request.params.siteId}/urls/${request.params.urlId}`);
+				response.send({});
+			})
+			.catch(error => {
+				if (error.isValidationError) {
+					error.status = 400;
+				}
+				next(error);
+			});
+	});
+
+	// Get a URL's results
 	app.get('/api/v1/sites/:siteId/urls/:urlId/results', (request, response, next) => {
 		const json = {};
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
@@ -166,7 +187,7 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
-	// Get a site/URL/result by ID
+	// Get a result by ID
 	app.get('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', (request, response, next) => {
 		const json = {};
 		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)

@@ -39,6 +39,16 @@ module.exports = dashboard => {
 			});
 		},
 
+		// Edit a URL (resolving with the URL ID)
+		edit(id, data) {
+			data.site = '-'; // site cannot be changed
+			return this.cleanInput(data).then(cleanData => {
+				delete cleanData.site; // site cannot be changed
+				cleanData.updatedAt = new Date();
+				return this._rawEdit(id, cleanData);
+			});
+		},
+
 		// Validate/sanitize site data input
 		cleanInput(data) {
 			try {
@@ -128,6 +138,15 @@ module.exports = dashboard => {
 			return database(table)
 				.returning('id')
 				.insert(data)
+				.then(ids => {
+					return ids[0];
+				});
+		},
+
+		_rawEdit(id, data) {
+			return database(table)
+				.where({id})
+				.update(data, 'id')
 				.then(ids => {
 					return ids[0];
 				});
