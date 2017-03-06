@@ -27,7 +27,16 @@ module.exports = dashboard => {
 		create(data) {
 			return this.cleanInput(data).then(cleanData => {
 				cleanData.id = shortid.generate();
+				cleanData.createdAt = cleanData.updatedAt = new Date();
 				return this._rawCreate(cleanData);
+			});
+		},
+
+		// Edit a site (resolving with the updated site)
+		edit(id, data) {
+			return this.cleanInput(data).then(cleanData => {
+				cleanData.updatedAt = new Date();
+				return this._rawEdit(id, cleanData);
 			});
 		},
 
@@ -97,6 +106,15 @@ module.exports = dashboard => {
 			return database(table)
 				.returning('id')
 				.insert(data)
+				.then(ids => {
+					return ids[0];
+				});
+		},
+
+		_rawEdit(id, data) {
+			return database(table)
+				.where({id})
+				.update(data, 'id')
 				.then(ids => {
 					return ids[0];
 				});

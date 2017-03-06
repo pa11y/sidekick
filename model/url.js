@@ -34,6 +34,7 @@ module.exports = dashboard => {
 		create(data) {
 			return this.cleanInput(data).then(cleanData => {
 				cleanData.id = shortid.generate();
+				cleanData.createdAt = cleanData.updatedAt = new Date();
 				return this._rawCreate(cleanData);
 			});
 		},
