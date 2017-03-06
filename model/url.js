@@ -34,6 +34,7 @@ module.exports = dashboard => {
 		create(data) {
 			return this.cleanInput(data).then(cleanData => {
 				cleanData.id = shortid.generate();
+				cleanData.createdAt = cleanData.updatedAt = new Date();
 				return this._rawCreate(cleanData);
 			});
 		},
@@ -44,14 +45,23 @@ module.exports = dashboard => {
 				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
 					throw new Error('URL should be an object');
 				}
+				if (data.id) {
+					throw new Error('URL ID cannot be set manually');
+				}
 				if (typeof data.site !== 'string') {
 					throw new Error('URL site should be a string');
 				}
 				if (typeof data.name !== 'string') {
 					throw new Error('URL name should be a string');
 				}
+				if (!data.name.trim()) {
+					throw new Error('URL name cannot be empty');
+				}
 				if (typeof data.address !== 'string') {
 					throw new Error('URL address should be a string');
+				}
+				if (!data.address.trim()) {
+					throw new Error('URL address cannot be empty');
 				}
 			} catch (error) {
 				error.isValidationError = true;
@@ -59,8 +69,8 @@ module.exports = dashboard => {
 			}
 			return Promise.resolve({
 				site: data.site,
-				name: data.name,
-				address: data.address
+				name: data.name.trim(),
+				address: data.address.trim()
 			});
 		},
 

@@ -66,6 +66,22 @@
 }`}</pre>
 
 
+<h3><code>PATCH /api/v1/sites/<var>:siteId</var></code></h3>
+
+<p>
+	Edit a <a href="#entities-site">site</a> by POSTing JSON.
+	This responds with a <code>Location</code> header that points to the edited site in the API.
+</p>
+
+<p>
+	Expects the following JSON POST body:
+</p>
+
+<pre>{`{
+	name: 'Your Updated Site Name'
+}`}</pre>
+
+
 <h3><code>GET /api/v1/sites/<var>:siteId</var>/results</code></h3>
 
 <p>

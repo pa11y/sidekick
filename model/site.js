@@ -27,7 +27,16 @@ module.exports = dashboard => {
 		create(data) {
 			return this.cleanInput(data).then(cleanData => {
 				cleanData.id = shortid.generate();
+				cleanData.createdAt = cleanData.updatedAt = new Date();
 				return this._rawCreate(cleanData);
+			});
+		},
+
+		// Edit a site (resolving with site ID)
+		edit(id, data) {
+			return this.cleanInput(data).then(cleanData => {
+				cleanData.updatedAt = new Date();
+				return this._rawEdit(id, cleanData);
 			});
 		},
 
@@ -37,15 +46,21 @@ module.exports = dashboard => {
 				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
 					throw new Error('Site should be an object');
 				}
+				if (data.id) {
+					throw new Error('Site ID cannot be set manually');
+				}
 				if (typeof data.name !== 'string') {
 					throw new Error('Site name should be a string');
+				}
+				if (!data.name.trim()) {
+					throw new Error('Site name cannot be empty');
 				}
 			} catch (error) {
 				error.isValidationError = true;
 				return Promise.reject(error);
 			}
 			return Promise.resolve({
-				name: data.name
+				name: data.name.trim()
 			});
 		},
 
@@ -94,6 +109,15 @@ module.exports = dashboard => {
 			return database(table)
 				.returning('id')
 				.insert(data)
+				.then(ids => {
+					return ids[0];
+				});
+		},
+
+		_rawEdit(id, data) {
+			return database(table)
+				.where({id})
+				.update(data, 'id')
 				.then(ids => {
 					return ids[0];
 				});
