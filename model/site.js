@@ -55,13 +55,27 @@ module.exports = dashboard => {
 				if (!data.name.trim()) {
 					throw new Error('Site name cannot be empty');
 				}
+				if (
+					data.pa11yConfig !== undefined &&
+					(
+						typeof data.pa11yConfig !== 'object' ||
+						Array.isArray(data.pa11yConfig) ||
+						data.pa11yConfig === null
+					)
+				) {
+					throw new Error('Site Pa11y config should be an object');
+				}
 			} catch (error) {
 				error.isValidationError = true;
 				return Promise.reject(error);
 			}
-			return Promise.resolve({
+			const cleanData = {
 				name: data.name.trim()
-			});
+			};
+			if (data.pa11yConfig) {
+				cleanData.pa11yConfig = JSON.stringify(data.pa11yConfig);
+			}
+			return Promise.resolve(cleanData);
 		},
 
 		// Prepare a site object for output
