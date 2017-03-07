@@ -233,6 +233,10 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.set, 'env', userOptions.environment);
 			});
 
+			it('sets the Express application `json spaces` configuration', () => {
+				assert.calledWithExactly(express.mockApp.set, 'json spaces', 4);
+			});
+
 			it('disables the `X-Powered-By` header', () => {
 				assert.calledWithExactly(express.mockApp.disable, 'x-powered-by');
 			});
