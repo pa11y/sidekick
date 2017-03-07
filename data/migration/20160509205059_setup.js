@@ -15,6 +15,7 @@ exports.up = (database, Promise) => {
 				table.timestamp('createdAt').defaultTo(database.fn.now());
 				table.timestamp('updatedAt').defaultTo(database.fn.now());
 				table.string('name').notNullable();
+				table.json('pa11yConfig').notNullable().defaultTo('{}');
 
 			});
 		})
@@ -29,6 +30,7 @@ exports.up = (database, Promise) => {
 				table.timestamp('updatedAt').defaultTo(database.fn.now());
 				table.string('name').notNullable();
 				table.string('address').notNullable();
+				table.json('pa11yConfig').notNullable().defaultTo('{}');
 
 				// Foreign key contraints
 				table.foreign('site').references('sites.id');

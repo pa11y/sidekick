@@ -93,6 +93,40 @@ describe('POST /api/v1/sites', () => {
 		}).end(done);
 	});
 
+	describe('when the POST data includes Pa11y config', () => {
+
+		beforeEach(() => {
+			testSite.pa11yConfig = {
+				foo: 'bar'
+			};
+			request = agent
+				.post('/api/v1/sites')
+				.set('Content-Type', 'application/json')
+				.send(testSite);
+		});
+
+		it('responds with a 201 status', done => {
+			request.expect(201).end(done);
+		});
+
+		it('creates a site in the database', done => {
+			let response;
+			request.expect(res => response = res).end(() => {
+				const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
+				dashboard.database.select('*').from('sites').where({id: siteId})
+					.then(sites => {
+						assert.strictEqual(sites.length, 1);
+						assert.deepEqual(sites[0].pa11yConfig, {
+							foo: 'bar'
+						});
+						done();
+					})
+					.catch(done);
+			});
+		});
+
+	});
+
 	describe('when the POST data is invalid', () => {
 
 		beforeEach(() => {
@@ -329,6 +363,38 @@ describe('PATCH /api/v1/sites/:siteId', () => {
 		}).end(done);
 	});
 
+	describe('when the POST data includes Pa11y config', () => {
+
+		beforeEach(() => {
+			testEdits.pa11yConfig = {
+				foo: 'bar'
+			};
+			request = agent
+				.patch(`/api/v1/sites/${siteId}`)
+				.set('Content-Type', 'application/json')
+				.send(testEdits);
+		});
+
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+		it('updates the site in the database', done => {
+			request.end(() => {
+				dashboard.database.select('*').from('sites').where({id: siteId})
+					.then(sites => {
+						assert.strictEqual(sites.length, 1);
+						assert.deepEqual(sites[0].pa11yConfig, {
+							foo: 'bar'
+						});
+						done();
+					})
+					.catch(done);
+			});
+		});
+
+	});
+
 	describe('when a site with the given ID does not exist', () => {
 
 		beforeEach(() => {
@@ -549,7 +615,7 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 		request.expect('Location', /^\/api\/v1\/sites\/[a-zA-Z0-9_-]+\/urls\/[a-zA-Z0-9_-]+$/).end(done);
 	});
 
-	it('creates a site in the database', done => {
+	it('creates a URL in the database', done => {
 		let response;
 		request.expect(res => response = res).end(() => {
 			const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
@@ -570,6 +636,40 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 			assert.isObject(response.body);
 			assert.deepEqual(response.body, {});
 		}).end(done);
+	});
+
+	describe('when the POST data includes Pa11y config', () => {
+
+		beforeEach(() => {
+			testUrl.pa11yConfig = {
+				foo: 'bar'
+			};
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
+		});
+
+		it('responds with a 201 status', done => {
+			request.expect(201).end(done);
+		});
+
+		it('creates a URL in the database', done => {
+			let response;
+			request.expect(res => response = res).end(() => {
+				const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
+				dashboard.database.select('*').from('urls').where({id: urlId})
+					.then(urls => {
+						assert.strictEqual(urls.length, 1);
+						assert.deepEqual(urls[0].pa11yConfig, {
+							foo: 'bar'
+						});
+						done();
+					})
+					.catch(done);
+			});
+		});
+
 	});
 
 	describe('when the POST data is invalid', () => {
@@ -934,6 +1034,38 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 			assert.isObject(response.body);
 			assert.deepEqual(response.body, {});
 		}).end(done);
+	});
+
+	describe('when the POST data includes Pa11y config', () => {
+
+		beforeEach(() => {
+			testEdits.pa11yConfig = {
+				foo: 'bar'
+			};
+			request = agent
+				.patch(`/api/v1/sites/${siteId}/urls/${urlId}`)
+				.set('Content-Type', 'application/json')
+				.send(testEdits);
+		});
+
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+		it('updates the URL in the database', done => {
+			request.end(() => {
+				dashboard.database.select('*').from('urls').where({id: urlId})
+					.then(urls => {
+						assert.strictEqual(urls.length, 1);
+						assert.deepEqual(urls[0].pa11yConfig, {
+							foo: 'bar'
+						});
+						done();
+					})
+					.catch(done);
+			});
+		});
+
 	});
 
 	describe('when the POST data is invalid', () => {

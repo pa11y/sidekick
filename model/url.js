@@ -73,15 +73,29 @@ module.exports = dashboard => {
 				if (!data.address.trim()) {
 					throw new Error('URL address cannot be empty');
 				}
+				if (
+					data.pa11yConfig !== undefined &&
+					(
+						typeof data.pa11yConfig !== 'object' ||
+						Array.isArray(data.pa11yConfig) ||
+						data.pa11yConfig === null
+					)
+				) {
+					throw new Error('URL Pa11y config should be an object');
+				}
 			} catch (error) {
 				error.isValidationError = true;
 				return Promise.reject(error);
 			}
-			return Promise.resolve({
+			const cleanData = {
 				site: data.site,
 				name: data.name.trim(),
 				address: data.address.trim()
-			});
+			};
+			if (data.pa11yConfig) {
+				cleanData.pa11yConfig = JSON.stringify(data.pa11yConfig);
+			}
+			return Promise.resolve(cleanData);
 		},
 
 		// Prepare a URL object for output
