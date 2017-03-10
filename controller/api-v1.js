@@ -78,6 +78,21 @@ module.exports = dashboard => {
 			});
 	});
 
+	// Delete a site by ID
+	app.delete('/api/v1/sites/:siteId', (request, response, next) => {
+		model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					throw httpError(404);
+				}
+				return model.site.delete(site.id);
+			})
+			.then(deleted => {
+				response.send({deleted});
+			})
+			.catch(next);
+	});
+
 	// Create a URL
 	app.post('/api/v1/sites/:siteId/urls', parseJsonBody, (request, response, next) => {
 		model.site.getById(request.params.siteId)

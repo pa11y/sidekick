@@ -82,6 +82,23 @@
 }`}</pre>
 
 
+<h3><code>DELETE /api/v1/sites/<var>:siteId</var></code></h3>
+
+<p>
+	Delete a <a href="#entities-site">site</a> by ID.
+	This also deletes all associated <a href="#entities-url">URL</a> and <a href="#entities-result">result</a> objects,
+	returning JSON which outlines how many records were deleted:
+</p>
+
+<pre>{`{
+	deleted: {
+		sites: 1,
+		urls: 5,
+		results: 40
+	}
+}`}</pre>
+
+
 <h3><code>GET /api/v1/sites/<var>:siteId</var>/results</code></h3>
 
 <p>
