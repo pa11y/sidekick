@@ -231,6 +231,21 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
+	// Delete a result by ID
+	app.delete('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', (request, response, next) => {
+		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
+			.then(result => {
+				if (!result) {
+					throw httpError(404);
+				}
+				return model.result.delete(result.id);
+			})
+			.then(deleted => {
+				response.send({deleted});
+			})
+			.catch(next);
+	});
+
 	// API 404 handler
 	app.use('/api/v1', notFound);
 
