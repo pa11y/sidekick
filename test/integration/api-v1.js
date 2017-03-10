@@ -1363,6 +1363,99 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 
 });
 
+describe('DELETE /api/v1/sites/:siteId/urls/:urlId', () => {
+	let request;
+	let siteId;
+	let urlId;
+
+	beforeEach(() => {
+		siteId = 's04d_site';
+		urlId = 's04d_u03d';
+		return Promise.resolve()
+			.then(() => dashboard.database('results').where('site', siteId).delete())
+			.then(() => dashboard.database('urls').where('site', siteId).delete())
+			.then(() => dashboard.database('sites').where('id', siteId).delete())
+			.then(() => require('../../data/seed/delete-website').seed(dashboard.database, Promise))
+			.then(() => {
+				request = agent.delete(`/api/v1/sites/${siteId}/urls/${urlId}`);
+			});
+	});
+
+	it('responds with a 200 status', done => {
+		request.expect(200).end(done);
+	});
+
+	it('responds with JSON', done => {
+		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+	});
+
+	it('removes the URL and results from the database', done => {
+		request.end(() => {
+			Promise.all([
+				dashboard.database.select('*').from('urls').where({id: urlId}),
+				dashboard.database.select('*').from('results').where({url: urlId})
+			])
+			.then(results => {
+				assert.strictEqual(results[0].length, 0);
+				assert.strictEqual(results[1].length, 0);
+				done();
+			})
+			.catch(done);
+		});
+	});
+
+	it('responds with an object which outlines what was deleted', done => {
+		request.expect(response => {
+			assert.isObject(response.body);
+			assert.isObject(response.body.deleted);
+			assert.deepEqual(response.body.deleted, {
+				urls: 1,
+				results: 2
+			});
+		}).end(done);
+	});
+
+	describe('when a site with the given ID does not exist', () => {
+
+		beforeEach(() => {
+			siteId = 'notasite';
+			request = agent.delete(`/api/v1/sites/${siteId}/urls/${urlId}`).send();
+		});
+
+		it('responds with a 404 status', done => {
+			request.expect(404).end(done);
+		});
+
+	});
+
+	describe('when a url with the given ID does not exist', () => {
+
+		beforeEach(() => {
+			urlId = 'notaurl';
+			request = agent.delete(`/api/v1/sites/${siteId}/urls/${urlId}`).send();
+		});
+
+		it('responds with a 404 status', done => {
+			request.expect(404).end(done);
+		});
+
+	});
+
+	describe('when the site ID and url ID are mismatched', () => {
+
+		beforeEach(() => {
+			urlId = 's02g_u01h';
+			request = agent.delete(`/api/v1/sites/${siteId}/urls/${urlId}`).send();
+		});
+
+		it('responds with a 404 status', done => {
+			request.expect(404).end(done);
+		});
+
+	});
+
+});
+
 describe('GET /api/v1/sites/:siteId/urls/:urlId/results', () => {
 	let request;
 	let siteId;

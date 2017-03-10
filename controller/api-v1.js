@@ -185,6 +185,21 @@ module.exports = dashboard => {
 			});
 	});
 
+	// Delete a URL by ID
+	app.delete('/api/v1/sites/:siteId/urls/:urlId', (request, response, next) => {
+		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
+			.then(url => {
+				if (!url) {
+					throw httpError(404);
+				}
+				return model.url.delete(url.id);
+			})
+			.then(deleted => {
+				response.send({deleted});
+			})
+			.catch(next);
+	});
+
 	// Get a URL's results
 	app.get('/api/v1/sites/:siteId/urls/:urlId/results', (request, response, next) => {
 		const json = {};
