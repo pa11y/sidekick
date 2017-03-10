@@ -49,6 +49,11 @@ module.exports = dashboard => {
 			});
 		},
 
+		// Delete a URL and all child results (resolving with the number of things deleted)
+		delete(id) {
+			return this._rawDelete(id);
+		},
+
 		// Validate/sanitize site data input
 		cleanInput(data) {
 			try {
@@ -163,6 +168,29 @@ module.exports = dashboard => {
 				.update(data, 'id')
 				.then(ids => {
 					return ids[0];
+				});
+		},
+
+		_rawDelete(id) {
+			const totals = {
+				urls: 0,
+				results: 0
+			};
+			return Promise.resolve()
+				.then(() => {
+					return database('results')
+						.where({url: id})
+						.delete();
+				})
+				.then(resultsDeleted => {
+					totals.results = resultsDeleted;
+					return database(table)
+						.where({id})
+						.delete();
+				})
+				.then(urlsDeleted => {
+					totals.urls = urlsDeleted;
+					return totals;
 				});
 		}
 

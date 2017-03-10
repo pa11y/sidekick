@@ -78,6 +78,21 @@ module.exports = dashboard => {
 			});
 	});
 
+	// Delete a site by ID
+	app.delete('/api/v1/sites/:siteId', (request, response, next) => {
+		model.site.getById(request.params.siteId)
+			.then(site => {
+				if (!site) {
+					throw httpError(404);
+				}
+				return model.site.delete(site.id);
+			})
+			.then(deleted => {
+				response.send({deleted});
+			})
+			.catch(next);
+	});
+
 	// Create a URL
 	app.post('/api/v1/sites/:siteId/urls', parseJsonBody, (request, response, next) => {
 		model.site.getById(request.params.siteId)
@@ -170,6 +185,21 @@ module.exports = dashboard => {
 			});
 	});
 
+	// Delete a URL by ID
+	app.delete('/api/v1/sites/:siteId/urls/:urlId', (request, response, next) => {
+		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
+			.then(url => {
+				if (!url) {
+					throw httpError(404);
+				}
+				return model.url.delete(url.id);
+			})
+			.then(deleted => {
+				response.send({deleted});
+			})
+			.catch(next);
+	});
+
 	// Get a URL's results
 	app.get('/api/v1/sites/:siteId/urls/:urlId/results', (request, response, next) => {
 		const json = {};
@@ -197,6 +227,21 @@ module.exports = dashboard => {
 				}
 				json.result = result;
 				response.send(json);
+			})
+			.catch(next);
+	});
+
+	// Delete a result by ID
+	app.delete('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', (request, response, next) => {
+		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
+			.then(result => {
+				if (!result) {
+					throw httpError(404);
+				}
+				return model.result.delete(result.id);
+			})
+			.then(deleted => {
+				response.send({deleted});
 			})
 			.catch(next);
 	});

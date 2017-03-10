@@ -35,6 +35,11 @@ module.exports = dashboard => {
 			});
 		},
 
+		// Delete a result object (resolving with the number of results deleted)
+		delete(id) {
+			return this._rawDelete(id);
+		},
+
 		// Prepare a result object for output
 		prepareForOutput(result) {
 			result.paths = {
@@ -91,6 +96,17 @@ module.exports = dashboard => {
 				.limit(1)
 				.then(results => {
 					return results[0];
+				});
+		},
+
+		_rawDelete(id) {
+			return database(table)
+				.where({id})
+				.delete()
+				.then(resultsDeleted => {
+					return {
+						results: resultsDeleted
+					};
 				});
 		}
 
