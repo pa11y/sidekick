@@ -92,7 +92,8 @@ module.exports = dashboard => {
 			site.paths = {
 				api: `/api/v1/sites/${site.id}`,
 				apiResults: `/api/v1/sites/${site.id}/results`,
-				apiUrls: `/api/v1/sites/${site.id}/urls`
+				apiUrls: `/api/v1/sites/${site.id}/urls`,
+				main: `/sites/${site.id}`
 			};
 			return site;
 		},
