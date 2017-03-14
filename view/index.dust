@@ -5,7 +5,9 @@
 {/title}
 
 {<content}
+
 	<h1>{appName}</h1>
+
 	<p>
 		This is the proposal for a new project based around Pa11y. The project is code-named{~s}
 		"Sidekick". Well done for getting it up-and-running locally!
@@ -27,4 +29,23 @@
 			<a href="/api/v1">API Documentation</a>
 		</li>
 	</ul>
+
+	<hr/>
+
+	<h2>Sites</h2>
+
+	{?sites}
+		<ul>
+			{#sites}
+				<li>
+					<h3><a href="{paths.main}">{name}</a></h3>
+				</li>
+			{/sites}
+		</ul>
+	{:else}
+		<p>
+			You haven't added any sites yet.
+		</p>
+	{/sites}
+
 {/content}

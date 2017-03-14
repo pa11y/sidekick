@@ -1,0 +1,28 @@
+{>"layout/default"/}
+
+{<title}
+	{site.name} - Sites - {appName}
+{/title}
+
+{<content}
+
+	<h1>{site.name}</h1>
+
+	<h2>URLs</h2>
+
+	{?urls}
+		<ul>
+			{#urls}
+				<li>
+					<h3>{name}</h3>
+					<p>{address}</p>
+				</li>
+			{/urls}
+		</ul>
+	{:else}
+		<p>
+			You haven't added any URLs yet.
+		</p>
+	{/urls}
+
+{/content}
