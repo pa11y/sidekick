@@ -9,7 +9,7 @@ module.exports = {
 // an error handler. This responds with HTML errors
 function handleErrorsHtml(dashboard) {
 	return (error, request, response, next) => {
-		// jshint unused:false
+		/* eslint no-unused-vars: 'off' */
 		const renderContext = buildRenderContext(dashboard, error);
 
 		// First attempt to render the "error" view, which
@@ -41,7 +41,7 @@ function handleErrorsHtml(dashboard) {
 // an error handler. This responds with JSON errors
 function handleErrorsJson(dashboard) {
 	return (error, request, response, next) => {
-		// jshint unused:false
+		/* eslint no-unused-vars: 'off' */
 		const renderContext = buildRenderContext(dashboard, error);
 
 		response.status(renderContext.error.status).send(renderContext);

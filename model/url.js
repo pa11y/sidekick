@@ -1,4 +1,4 @@
-// jscs:disable disallowDanglingUnderscores
+/* eslint no-underscore-dangle: 'off' */
 'use strict';
 
 const shortid = require('shortid');

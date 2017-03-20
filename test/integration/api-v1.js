@@ -74,7 +74,9 @@ describe('POST /api/v1/sites', () => {
 
 	it('creates a site in the database', done => {
 		let response;
-		request.expect(res => response = res).end(() => {
+		request.expect(requestResponse => {
+			response = requestResponse;
+		}).end(() => {
 			const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
 			dashboard.database.select('*').from('sites').where({id: siteId})
 				.then(sites => {
@@ -111,7 +113,9 @@ describe('POST /api/v1/sites', () => {
 
 		it('creates a site in the database', done => {
 			let response;
-			request.expect(res => response = res).end(() => {
+			request.expect(requestResponse => {
+				response = requestResponse;
+			}).end(() => {
 				const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
 				dashboard.database.select('*').from('sites').where({id: siteId})
 					.then(sites => {
@@ -685,7 +689,9 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 
 	it('creates a URL in the database', done => {
 		let response;
-		request.expect(res => response = res).end(() => {
+		request.expect(requestResponse => {
+			response = requestResponse;
+		}).end(() => {
 			const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
 			dashboard.database.select('*').from('urls').where({id: urlId})
 				.then(urls => {
@@ -724,7 +730,9 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 
 		it('creates a URL in the database', done => {
 			let response;
-			request.expect(res => response = res).end(() => {
+			request.expect(requestResponse => {
+				response = requestResponse;
+			}).end(() => {
 				const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
 				dashboard.database.select('*').from('urls').where({id: urlId})
 					.then(urls => {
