@@ -1,4 +1,4 @@
-// jscs:disable maximumLineLength
+/* eslint max-len: 'off' */
 'use strict';
 
 // Note: IDs in here are referenced in the integration

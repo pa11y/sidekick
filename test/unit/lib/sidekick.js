@@ -1,4 +1,5 @@
-// jscs:disable maximumLineLength
+/* eslint max-len: 'off' */
+/* eslint max-statements: 'off' */
 'use strict';
 
 const assert = require('proclaim');
@@ -617,11 +618,8 @@ describe('lib/sidekick', () => {
 			});
 
 			describe('.then()', () => {
-				let dashboard;
 
-				beforeEach(() => returnedPromise.then(value => {
-					dashboard = value;
-				}));
+				beforeEach(() => returnedPromise.then());
 
 				it('creates the Resave Browserify middleware with a save path', () => {
 					const resaveOptions = resaveBrowserify.firstCall.args[0];
