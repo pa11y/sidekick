@@ -18,13 +18,16 @@ describe('lib/sidekick', () => {
 	let expectedSeedConfig;
 	let express;
 	let fs;
+	let handleErrors;
 	let knex;
 	let log;
 	let morgan;
+	let notFound;
+	let requireAll;
+	let requireUserAgent;
 	let resaveBrowserify;
 	let resaveSass;
 	let sidekick;
-	let requireAll;
 
 	beforeEach(() => {
 
@@ -59,6 +62,9 @@ describe('lib/sidekick', () => {
 		fs = require('../mock/fs.mock');
 		mockery.registerMock('fs', fs);
 
+		handleErrors = require('../mock/handle-errors.mock');
+		mockery.registerMock('../middleware/handle-errors', handleErrors);
+
 		knex = require('../mock/knex.mock');
 		mockery.registerMock('knex', knex);
 
@@ -67,8 +73,14 @@ describe('lib/sidekick', () => {
 		morgan = require('../mock/morgan.mock');
 		mockery.registerMock('morgan', morgan);
 
+		notFound = sinon.stub();
+		mockery.registerMock('../middleware/not-found', notFound);
+
 		requireAll = sinon.stub();
 		mockery.registerMock('require-all', requireAll);
+
+		requireUserAgent = sinon.stub();
+		mockery.registerMock('../middleware/require-user-agent', requireUserAgent);
 
 		resaveBrowserify = require('../mock/resave-browserify.mock');
 		mockery.registerMock('resave-browserify', resaveBrowserify);
@@ -158,7 +170,8 @@ describe('lib/sidekick', () => {
 	});
 
 	describe('sidekick(options)', () => {
-		let controllers;
+		let apiControllers;
+		let frontEndControllers;
 		let models;
 		let returnedPromise;
 		let userOptions;
@@ -167,11 +180,17 @@ describe('lib/sidekick', () => {
 
 		beforeEach(() => {
 
-			controllers = {
+			apiControllers = {
 				foo: sinon.stub(),
 				bar: sinon.stub()
 			};
-			requireAll.withArgs(`${basePath}/controller`).returns(controllers);
+			requireAll.withArgs(`${basePath}/controller/api`).returns(apiControllers);
+
+			frontEndControllers = {
+				foo: sinon.stub(),
+				bar: sinon.stub()
+			};
+			requireAll.withArgs(`${basePath}/controller/front-end`).returns(frontEndControllers);
 
 			mockSettings = {
 				example: 'mock-setting'
@@ -341,24 +360,60 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.set, 'view engine', 'dust');
 			});
 
-			it('loads all of the controllers and calls them with the resolved object', () => {
-				assert.calledWithExactly(requireAll, `${basePath}/controller`);
-				assert.calledOnce(controllers.foo);
-				assert.calledWithExactly(controllers.foo, dashboard);
-				assert.calledOnce(controllers.bar);
-				assert.calledWithExactly(controllers.bar, dashboard);
+			it('mounts require-user-agent middleware for the `/api` route', () => {
+				assert.calledWithExactly(express.mockApp.use, '/api', requireUserAgent);
 			});
 
-			it('should mount middleware and controllers in the correct order', () => {
+			it('loads all of the API controllers and calls them with the resolved object', () => {
+				assert.calledWithExactly(requireAll, `${basePath}/controller/api`);
+				assert.calledOnce(apiControllers.foo);
+				assert.calledWithExactly(apiControllers.foo, dashboard);
+				assert.calledOnce(apiControllers.bar);
+				assert.calledWithExactly(apiControllers.bar, dashboard);
+			});
+
+			it('mounts not-found middleware for the `/api` route', () => {
+				assert.calledWithExactly(express.mockApp.use, '/api', notFound);
+			});
+
+			it('creates and mounts JSON handle-errors middleware for the `/api` route', () => {
+				assert.calledOnce(handleErrors.json);
+				assert.calledWithExactly(handleErrors.json, dashboard);
+				assert.calledWithExactly(express.mockApp.use, '/api', handleErrors.mockJsonMiddleware);
+			});
+
+			it('loads all of the front end controllers and calls them with the resolved object', () => {
+				assert.calledWithExactly(requireAll, `${basePath}/controller/front-end`);
+				assert.calledOnce(frontEndControllers.foo);
+				assert.calledWithExactly(frontEndControllers.foo, dashboard);
+				assert.calledOnce(frontEndControllers.bar);
+				assert.calledWithExactly(frontEndControllers.bar, dashboard);
+			});
+
+			it('mounts not-found middleware for the default route', () => {
+				assert.calledWithExactly(express.mockApp.use, notFound);
+			});
+
+			it('creates and mounts HTML handle-errors middleware for the default route', () => {
+				assert.calledOnce(handleErrors.html);
+				assert.calledWithExactly(handleErrors.html, dashboard);
+				assert.calledWithExactly(express.mockApp.use, handleErrors.mockHtmlMiddleware);
+			});
+
+			it('mounts middleware and controllers in the correct order', () => {
 				assert.callOrder(
 					express.mockApp.use.withArgs(morgan.mockMiddleware).named('morgan'),
 					express.mockApp.use.withArgs(cors).named('cors'),
 					express.mockApp.use.withArgs(compression.mockMiddleware).named('compression'),
 					express.mockApp.use.withArgs(express.mockStaticMiddleware).named('static'),
 					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),
-					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass')
+					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass'),
+					express.mockApp.use.withArgs('/api', requireUserAgent).named('apiRequireUserAgent'),
+					express.mockApp.use.withArgs('/api', notFound).named('apiNotFound'),
+					express.mockApp.use.withArgs('/api', handleErrors.mockJsonMiddleware).named('apiErrorHandler'),
+					express.mockApp.use.withArgs(notFound).named('frontEndNotFound'),
+					express.mockApp.use.withArgs(handleErrors.mockHtmlMiddleware).named('frontEndErrorHandler')
 				);
-
 			});
 
 			it('loads application settings from the database', () => {

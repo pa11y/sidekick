@@ -1,17 +1,12 @@
 'use strict';
 
 const bodyParser = require('body-parser');
-const handleErrors = require('../middleware/handle-errors');
 const httpError = require('http-errors');
-const notFound = require('../middleware/not-found');
-const requireUserAgent = require('../middleware/require-user-agent');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
 	const model = dashboard.model;
 	const parseJsonBody = bodyParser.json();
-
-	app.use('/api/v1', requireUserAgent);
 
 	// API documentation
 	app.get('/api/v1', (request, response) => {
@@ -243,11 +238,5 @@ module.exports = dashboard => {
 			})
 			.catch(next);
 	});
-
-	// API 404 handler
-	app.use('/api/v1', notFound);
-
-	// API error handler
-	app.use('/api/v1', handleErrors.json(dashboard));
 
 };
