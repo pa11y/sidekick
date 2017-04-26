@@ -33,9 +33,4 @@ module.exports = dashboard => {
 			.catch(next);
 	});
 
-	// API page (redirect to latest version)
-	app.get('/api', (request, response) => {
-		response.redirect('/api/v1');
-	});
-
 };
