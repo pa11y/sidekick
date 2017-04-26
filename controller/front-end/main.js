@@ -1,8 +1,6 @@
 'use strict';
 
-const handleErrors = require('../middleware/handle-errors');
 const httpError = require('http-errors');
-const notFound = require('../middleware/not-found');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
@@ -34,14 +32,5 @@ module.exports = dashboard => {
 			})
 			.catch(next);
 	});
-
-	// API page (redirect to latest version)
-	app.get('/api', (request, response) => {
-		response.redirect('/api/v1');
-	});
-
-	// Error handling
-	app.use(notFound);
-	app.use(handleErrors.html(dashboard));
 
 };
