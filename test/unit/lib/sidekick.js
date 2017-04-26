@@ -162,6 +162,7 @@ describe('lib/sidekick', () => {
 		let models;
 		let returnedPromise;
 		let userOptions;
+		let mockSettings;
 		let viewHelpers;
 
 		beforeEach(() => {
@@ -172,12 +173,19 @@ describe('lib/sidekick', () => {
 			};
 			requireAll.withArgs(`${basePath}/controller`).returns(controllers);
 
+			mockSettings = {
+				example: 'mock-setting'
+			};
+
 			models = {
 				foo: sinon.stub().returns({
 					fooModel: true
 				}),
 				bar: sinon.stub().returns({
 					barModel: true
+				}),
+				settings: sinon.stub().returns({
+					get: sinon.stub().resolves(mockSettings)
 				})
 			};
 			requireAll.withArgs(`${basePath}/model`).returns(models);
@@ -351,6 +359,12 @@ describe('lib/sidekick', () => {
 					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass')
 				);
 
+			});
+
+			it('loads application settings from the database', () => {
+				const settingsModel = models.settings.firstCall.returnValue;
+				assert.calledOnce(settingsModel.get);
+				assert.calledWith(settingsModel.get);
 			});
 
 			it('starts the Express application on the port in `options.port`', () => {
@@ -569,6 +583,10 @@ describe('lib/sidekick', () => {
 					assert.strictEqual(dashboard.server, express.mockApp.listen.firstCall.returnValue);
 				});
 
+				it('has a `settings` property set to the loaded settings object', () => {
+					assert.strictEqual(dashboard.settings, mockSettings);
+				});
+
 			});
 
 		});
@@ -577,6 +595,8 @@ describe('lib/sidekick', () => {
 
 			beforeEach(() => {
 				userOptions.start = false;
+				models.settings.firstCall.returnValue.get.reset();
+				models.settings.reset();
 				express.mockApp.listen.reset();
 				returnedPromise = sidekick(userOptions);
 			});
@@ -587,6 +607,11 @@ describe('lib/sidekick', () => {
 				beforeEach(() => returnedPromise.then(value => {
 					dashboard = value;
 				}));
+
+				it('does not load application settings from the database', () => {
+					const settingsModel = models.settings.firstCall.returnValue;
+					assert.notCalled(settingsModel.get);
+				});
 
 				it('does not start the Express application', () => {
 					assert.notCalled(express.mockApp.listen);
