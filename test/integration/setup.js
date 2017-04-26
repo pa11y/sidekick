@@ -7,23 +7,35 @@ const supertest = require('supertest');
 const defaultTestDatabase = 'postgres://localhost:5432/pa11y_sidekick_test';
 
 before(() => {
+	let nonStarter;
+
+	// First we have to create a non-starting app
+	// so that we can run migrations
 	return sidekick({
 		database: process.env.TEST_DATABASE || defaultTestDatabase,
-		environment: 'test',
-		port: process.env.PORT || null
+		start: false
+	})
+	.then(dashboard => {
+		nonStarter = dashboard;
+		return deleteAllTables(nonStarter.database);
+	})
+	.then(() => {
+		return nonStarter.migrations.latest();
+	})
+	.then(() => {
+		return nonStarter.migrations.seed();
+	})
+	.then(() => {
+		// Now we create an app that actually runs
+		return sidekick({
+			database: process.env.TEST_DATABASE || defaultTestDatabase,
+			environment: 'test',
+			port: process.env.PORT || null
+		});
 	})
 	.then(dashboard => {
 		global.agent = supertest.agent(dashboard.app);
 		global.dashboard = dashboard;
-	})
-	.then(() => {
-		return deleteAllTables(dashboard.database);
-	})
-	.then(() => {
-		return dashboard.migrations.latest();
-	})
-	.then(() => {
-		return dashboard.migrations.seed();
 	});
 });
 

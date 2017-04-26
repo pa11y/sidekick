@@ -7,6 +7,16 @@
 exports.up = (database, Promise) => {
 	return Promise.resolve()
 		.then(() => {
+			// Create the settings table
+			return database.schema.createTable('settings', table => {
+
+				// Settings table columns
+				table.string('id').unique().primary();
+				table.json('data').notNullable().defaultTo('{}');
+
+			});
+		})
+		.then(() => {
 			// Create the sites table
 			return database.schema.createTable('sites', table => {
 
@@ -65,7 +75,7 @@ exports.up = (database, Promise) => {
 				table.string('id').unique().primary();
 				table.timestamp('createdAt').defaultTo(database.fn.now());
 				table.timestamp('updatedAt').defaultTo(database.fn.now());
-				table.string('username').notNullable().unique();
+				table.string('email').notNullable().unique();
 				table.string('password').notNullable();
 				table.string('apiKey').notNullable().unique();
 				table.boolean('allowRead').notNullable().defaultTo(true);
@@ -79,6 +89,9 @@ exports.up = (database, Promise) => {
 
 exports.down = (database, Promise) => {
 	return Promise.resolve()
+		.then(() => {
+			return database.schema.dropTable('settings');
+		})
 		.then(() => {
 			return database.schema.dropTable('users');
 		})
