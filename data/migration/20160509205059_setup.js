@@ -65,7 +65,7 @@ exports.up = (database, Promise) => {
 				table.string('id').unique().primary();
 				table.timestamp('createdAt').defaultTo(database.fn.now());
 				table.timestamp('updatedAt').defaultTo(database.fn.now());
-				table.string('username').notNullable().unique();
+				table.string('email').notNullable().unique();
 				table.string('password').notNullable();
 				table.string('apiKey').notNullable().unique();
 				table.boolean('allowRead').notNullable().defaultTo(true);

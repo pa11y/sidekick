@@ -9,7 +9,7 @@ exports.seed = (database, Promise) => {
 		return database('users').insert([
 			{
 				id: 'user_01',
-				username: 'admin',
+				email: 'admin@example.com',
 				password: 'user_01_pw',
 				apiKey: 'user_01_key',
 				allowRead: true,
@@ -19,7 +19,7 @@ exports.seed = (database, Promise) => {
 			},
 			{
 				id: 'user_02',
-				username: 'default',
+				email: 'default@example.com',
 				password: '',
 				apiKey: '',
 				allowRead: true,
@@ -29,7 +29,7 @@ exports.seed = (database, Promise) => {
 			},
 			{
 				id: 'user_03',
-				username: 'write',
+				email: 'write@example.com',
 				password: 'user_03_pw',
 				apiKey: 'user_03_key',
 				allowRead: true,
@@ -39,7 +39,7 @@ exports.seed = (database, Promise) => {
 			},
 			{
 				id: 'user_04',
-				username: 'delete',
+				email: 'delete@example.com',
 				password: 'user_04_pw',
 				apiKey: 'user_04_key',
 				allowRead: true,
