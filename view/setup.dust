@@ -64,7 +64,7 @@
 		</fieldset>
 
 		<p>
-			All done? <input type="submit" value="Setup {appName}"/>
+			All done? <input type="submit" value="Complete setup"/>
 		</p>
 
 	</form>
