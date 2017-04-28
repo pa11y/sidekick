@@ -1,6 +1,8 @@
 /* eslint no-underscore-dangle: 'off' */
 'use strict';
 
+const shortid = require('shortid');
+
 module.exports = dashboard => {
 	const database = dashboard.database;
 	const table = 'settings';
@@ -15,6 +17,30 @@ module.exports = dashboard => {
 				.limit(1)
 				.then(settings => {
 					return (settings[0] ? settings[0].data : {});
+				});
+		},
+
+		// Edit the settings
+		edit(data) {
+			data = JSON.stringify(data);
+			return database
+				.select('id')
+				.from(table)
+				.limit(1)
+				.then(results => {
+					return (results[0] ? results[0].id : null);
+				})
+				.then(id => {
+					if (id) {
+						return database(table).where({id}).update({
+							data
+						});
+					} else {
+						return database(table).insert({
+							id: shortid.generate(),
+							data
+						});
+					}
 				});
 		}
 
