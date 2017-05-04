@@ -1,0 +1,72 @@
+{>"layout/default"/}
+
+{<title}
+	Setup - {appName}
+{/title}
+
+{<content}
+
+	<h1>Setup</h1>
+
+	<p>
+		Welcome to the {appName} setup. We just need to know a few things before you can start{~s}
+		using the dashboard and testing your sites.
+	</p>
+
+	<form action="/" method="post">
+
+		{?error}
+			<output name="error" class="form-error">
+				There was an error setting up {appName}: {error.message}
+			</output>
+		{/error}
+
+		<fieldset>
+			<legend>Users</legend>
+			<p>
+				First we'll need to set you up as a <i>super</i> admin (yes that's as cool as it sounds).{~s}
+				This will ensure that you always have admin access.
+			</p>
+			<div>
+				<label for="setup-admin-email">Email Address</label>
+				<input id="setup-admin-email" type="email" name="admin-email" value="{formValues.admin-email}"/>
+			</div>
+			<div>
+				<label for="setup-admin-password">Password</label>
+				<input id="setup-admin-password" type="password" name="admin-password"/>
+			</div>
+		</fieldset>
+
+		<fieldset>
+			<legend>Default Access</legend>
+			<p>
+				Now you'll need to decide which access level anonymous users have. This setting will{~s}
+				apply to anybody who's not logged in. It's normally best to leave this as read-only.{~s}
+				To completely disable unauthenticated access, uncheck everything.
+			</p>
+
+			<div>
+				<input id="setup-default-access-read" type="checkbox" name="default-access-read" {?formValues.default-access-read}checked{/formValues.default-access-read}/>
+				<label for="setup-default-access-read">Read (view all of the a11y data)</label>
+			</div>
+			<div>
+				<input id="setup-default-access-write" type="checkbox" name="default-access-write" {?formValues.default-access-write}checked{/formValues.default-access-write}/>
+				<label for="setup-default-access-write">Write (create and edit sites and URLs)</label>
+			</div>
+			<div>
+				<input id="setup-default-access-delete" type="checkbox" name="default-access-delete" {?formValues.default-access-delete}checked{/formValues.default-access-delete}/>
+				<label for="setup-default-access-delete">Delete (delete sites and URLs)</label>
+			</div>
+			<div>
+				<input id="setup-default-access-admin" type="checkbox" name="default-access-admin" {?formValues.default-access-admin}checked{/formValues.default-access-admin}/>
+				<label for="setup-default-access-admin">Admin (add and administer users)</label>
+			</div>
+		</fieldset>
+
+		<p>
+			All done? <input type="submit" value="Complete setup"/>
+		</p>
+
+	</form>
+
+{/content}
