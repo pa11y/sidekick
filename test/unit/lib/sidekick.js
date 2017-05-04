@@ -27,7 +27,10 @@ describe('lib/sidekick', () => {
 	let requireHeader;
 	let resaveBrowserify;
 	let resaveSass;
+	let session;
+	let sessionStore;
 	let sidekick;
+	let uuid;
 
 	beforeEach(() => {
 
@@ -88,6 +91,15 @@ describe('lib/sidekick', () => {
 
 		resaveSass = require('../mock/resave-sass.mock');
 		mockery.registerMock('resave-sass', resaveSass);
+
+		session = require('../mock/express-session.mock');
+		mockery.registerMock('express-session', session);
+
+		sessionStore = require('../mock/connect-session-knex.mock');
+		mockery.registerMock('connect-session-knex', sessionStore);
+
+		uuid = sinon.stub().returns('mock-uuid');
+		mockery.registerMock('uuid/v4', uuid);
 
 		sidekick = require(basePath);
 	});
@@ -164,6 +176,10 @@ describe('lib/sidekick', () => {
 			assert.strictEqual(defaults.requestLogFormat, 'combined');
 		});
 
+		it('has a `sessionSecret` property', () => {
+			assert.isNull(defaults.sessionSecret);
+		});
+
 		it('has a `start` property', () => {
 			assert.isTrue(defaults.start);
 		});
@@ -221,7 +237,8 @@ describe('lib/sidekick', () => {
 				environment: 'test',
 				log: log,
 				port: 1234,
-				requestLogFormat: 'rlf'
+				requestLogFormat: 'rlf',
+				sessionSecret: 'mock-secret'
 			};
 			returnedPromise = sidekick(userOptions);
 		});
@@ -243,7 +260,7 @@ describe('lib/sidekick', () => {
 				assert.strictEqual(defaults.firstCall.args[2], sidekick.defaults);
 			});
 
-			it('creates an Knex client with the database option', () => {
+			it('creates a Knex client with the database option', () => {
 				assert.calledOnce(knex);
 				assert.isObject(knex.firstCall.args[0]);
 				assert.strictEqual(knex.firstCall.args[0].client, 'pg');
@@ -276,6 +293,29 @@ describe('lib/sidekick', () => {
 
 			it('enables case sensitive routing', () => {
 				assert.calledWithExactly(express.mockApp.enable, 'case sensitive routing');
+			});
+
+			it('creates a Knex session store, passing in the created Knex client', () => {
+				assert.calledOnce(sessionStore.MockKnexSessionStore);
+				assert.calledWithNew(sessionStore.MockKnexSessionStore);
+				assert.calledWith(sessionStore.MockKnexSessionStore, {
+					knex: knex.mockDatabase
+				});
+			});
+
+			it('creates and mounts a session middleware with the Knex session store', () => {
+				assert.calledOnce(session);
+				assert.calledWith(session, {
+					cookie: {
+						maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+					},
+					name: 'sidekick.sid',
+					resave: false,
+					saveUninitialized: false,
+					secret: userOptions.sessionSecret,
+					store: sessionStore.mockSessionStore
+				});
+				assert.calledWithExactly(express.mockApp.use, session.mockMiddleware);
 			});
 
 			it('creates and mounts a morgan request logger', () => {
@@ -412,6 +452,7 @@ describe('lib/sidekick', () => {
 					express.mockApp.use.withArgs(cors.mockMiddleware).named('cors'),
 					express.mockApp.use.withArgs(compression.mockMiddleware).named('compression'),
 					express.mockApp.use.withArgs(express.mockStaticMiddleware).named('static'),
+					express.mockApp.use.withArgs(session.mockMiddleware).named('session'),
 					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),
 					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass'),
 					express.mockApp.use.withArgs('/api', requireHeader.mockMiddleware).named('apiRequireHeader'),
@@ -648,6 +689,21 @@ describe('lib/sidekick', () => {
 					assert.strictEqual(dashboard.settings, mockSettings);
 				});
 
+			});
+
+		});
+
+		describe('when `options.sessionSecret` is not set', () => {
+
+			beforeEach(() => {
+				delete userOptions.sessionSecret;
+				session.reset();
+				returnedPromise = sidekick(userOptions);
+			});
+
+			it('creates and mounts a session middleware with a UUID as a secret', () => {
+				assert.calledOnce(session);
+				assert.strictEqual(session.firstCall.args[0].secret, 'mock-uuid');
 			});
 
 		});

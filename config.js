@@ -13,7 +13,8 @@ const config = module.exports = {
 	database: process.env.DATABASE || process.env.DATABASE_URL,
 	environment: process.env.NODE_ENV,
 	port: process.env.PORT,
-	requestLogFormat: process.env.REQUEST_LOG_FORMAT
+	requestLogFormat: process.env.REQUEST_LOG_FORMAT,
+	sessionSecret: process.env.SESSION_SECRET
 };
 
 // Get the log level
