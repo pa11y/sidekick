@@ -24,7 +24,7 @@ describe('lib/sidekick', () => {
 	let morgan;
 	let notFound;
 	let requireAll;
-	let requireUserAgent;
+	let requireHeader;
 	let resaveBrowserify;
 	let resaveSass;
 	let sidekick;
@@ -42,7 +42,7 @@ describe('lib/sidekick', () => {
 		compression = require('../mock/compression.mock');
 		mockery.registerMock('compression', compression);
 
-		cors = sinon.stub();
+		cors = require('../mock/cors.mock');
 		mockery.registerMock('../middleware/cors', cors);
 
 		defaults = sinon.spy(require('lodash/defaultsDeep'));
@@ -73,14 +73,15 @@ describe('lib/sidekick', () => {
 		morgan = require('../mock/morgan.mock');
 		mockery.registerMock('morgan', morgan);
 
-		notFound = sinon.stub();
+		notFound = require('../mock/not-found.mock');
 		mockery.registerMock('../middleware/not-found', notFound);
 
 		requireAll = sinon.stub();
 		mockery.registerMock('require-all', requireAll);
 
-		requireUserAgent = sinon.stub();
-		mockery.registerMock('../middleware/require-user-agent', requireUserAgent);
+		requireHeader = sinon.stub();
+		requireHeader = require('../mock/require-header.mock');
+		mockery.registerMock('require-header', requireHeader);
 
 		resaveBrowserify = require('../mock/resave-browserify.mock');
 		mockery.registerMock('resave-browserify', resaveBrowserify);
@@ -286,7 +287,8 @@ describe('lib/sidekick', () => {
 			});
 
 			it('creates and mounts a CORS middleware', () => {
-				assert.calledWithExactly(express.mockApp.use, cors);
+				assert.calledOnce(cors);
+				assert.calledWithExactly(express.mockApp.use, cors.mockMiddleware);
 			});
 
 			it('creates and mounts a compression middleware', () => {
@@ -360,8 +362,10 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.set, 'view engine', 'dust');
 			});
 
-			it('mounts require-user-agent middleware for the `/api` route', () => {
-				assert.calledWithExactly(express.mockApp.use, '/api', requireUserAgent);
+			it('creates and mounts require-header middleware for the `/api` route', () => {
+				assert.calledOnce(requireHeader);
+				assert.calledWithExactly(requireHeader, 'User-Agent');
+				assert.calledWithExactly(express.mockApp.use, '/api', requireHeader.mockMiddleware);
 			});
 
 			it('loads all of the API controllers and calls them with the resolved object', () => {
@@ -372,8 +376,9 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(apiControllers.bar, dashboard);
 			});
 
-			it('mounts not-found middleware for the `/api` route', () => {
-				assert.calledWithExactly(express.mockApp.use, '/api', notFound);
+			it('creates and mounts not-found middleware for the `/api` route', () => {
+				assert.called(notFound);
+				assert.calledWithExactly(express.mockApp.use, '/api', notFound.mockMiddleware);
 			});
 
 			it('creates and mounts JSON handle-errors middleware for the `/api` route', () => {
@@ -390,8 +395,9 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(frontEndControllers.bar, dashboard);
 			});
 
-			it('mounts not-found middleware for the default route', () => {
-				assert.calledWithExactly(express.mockApp.use, notFound);
+			it('creates and mounts not-found middleware for the default route', () => {
+				assert.called(notFound);
+				assert.calledWithExactly(express.mockApp.use, notFound.mockMiddleware);
 			});
 
 			it('creates and mounts HTML handle-errors middleware for the default route', () => {
@@ -403,15 +409,15 @@ describe('lib/sidekick', () => {
 			it('mounts middleware and controllers in the correct order', () => {
 				assert.callOrder(
 					express.mockApp.use.withArgs(morgan.mockMiddleware).named('morgan'),
-					express.mockApp.use.withArgs(cors).named('cors'),
+					express.mockApp.use.withArgs(cors.mockMiddleware).named('cors'),
 					express.mockApp.use.withArgs(compression.mockMiddleware).named('compression'),
 					express.mockApp.use.withArgs(express.mockStaticMiddleware).named('static'),
 					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),
 					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass'),
-					express.mockApp.use.withArgs('/api', requireUserAgent).named('apiRequireUserAgent'),
-					express.mockApp.use.withArgs('/api', notFound).named('apiNotFound'),
+					express.mockApp.use.withArgs('/api', requireHeader.mockMiddleware).named('apiRequireHeader'),
+					express.mockApp.use.withArgs('/api', notFound.mockMiddleware).named('apiNotFound'),
 					express.mockApp.use.withArgs('/api', handleErrors.mockJsonMiddleware).named('apiErrorHandler'),
-					express.mockApp.use.withArgs(notFound).named('frontEndNotFound'),
+					express.mockApp.use.withArgs(notFound.mockMiddleware).named('frontEndNotFound'),
 					express.mockApp.use.withArgs(handleErrors.mockHtmlMiddleware).named('frontEndErrorHandler')
 				);
 			});

@@ -4,7 +4,9 @@ module.exports = cors;
 
 // This middleware applies CORS headers to the response,
 // reducing repetition across all the routes
-function cors(request, response, next) {
-	response.set('Access-Control-Allow-Origin', '*');
-	next();
+function cors() {
+	return (request, response, next) => {
+		response.set('Access-Control-Allow-Origin', '*');
+		next();
+	};
 }

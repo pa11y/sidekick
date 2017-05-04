@@ -17,22 +17,35 @@ describe('middleware/cors', () => {
 		assert.isFunction(cors);
 	});
 
-	describe('cors(request, response, next)', () => {
-		let next;
+	describe('cors()', () => {
+		let middleware;
 
 		beforeEach(() => {
-			next = sinon.spy();
-			cors(express.mockRequest, express.mockResponse, next);
+			middleware = cors();
 		});
 
-		it('sets an Access-Control-Allow-Origin header to allow all origins', () => {
-			assert.calledOnce(express.mockResponse.set);
-			assert.calledWithExactly(express.mockResponse.set, 'Access-Control-Allow-Origin', '*');
+		it('returns a middleware function', () => {
+			assert.isFunction(middleware);
 		});
 
-		it('calls `next`', () => {
-			assert.calledOnce(next);
-			assert.calledWithExactly(next);
+		describe('middleware(request, response, next)', () => {
+			let next;
+
+			beforeEach(() => {
+				next = sinon.spy();
+				middleware(express.mockRequest, express.mockResponse, next);
+			});
+
+			it('sets an Access-Control-Allow-Origin header to allow all origins', () => {
+				assert.calledOnce(express.mockResponse.set);
+				assert.calledWithExactly(express.mockResponse.set, 'Access-Control-Allow-Origin', '*');
+			});
+
+			it('calls `next`', () => {
+				assert.calledOnce(next);
+				assert.calledWithExactly(next);
+			});
+
 		});
 
 	});
