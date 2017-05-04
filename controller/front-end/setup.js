@@ -69,6 +69,7 @@ module.exports = dashboard => {
 				if (!error.isValidationError) {
 					return next(error);
 				}
+				response.status(400);
 				response.render('setup', {
 					error: error,
 					formValues: request.body
