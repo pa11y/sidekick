@@ -35,12 +35,11 @@ module.exports = dashboard => {
 						return database(table).where({id}).update({
 							data
 						});
-					} else {
-						return database(table).insert({
-							id: shortid.generate(),
-							data
-						});
 					}
+					return database(table).insert({
+						id: shortid.generate(),
+						data
+					});
 				});
 		}
 

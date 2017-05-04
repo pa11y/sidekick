@@ -29,11 +29,11 @@
 			</p>
 			<div>
 				<label for="setup-admin-email">Email Address</label>
-				<input id="setup-admin-email" type="email" name="admin-email" value="{formValues.admin-email}"/>
+				<input id="setup-admin-email" type="email" name="adminEmail" value="{formValues.adminEmail}"/>
 			</div>
 			<div>
 				<label for="setup-admin-password">Password</label>
-				<input id="setup-admin-password" type="password" name="admin-password"/>
+				<input id="setup-admin-password" type="password" name="adminPassword"/>
 			</div>
 		</fieldset>
 
@@ -46,19 +46,19 @@
 			</p>
 
 			<div>
-				<input id="setup-default-access-read" type="checkbox" name="default-access-read" {?formValues.default-access-read}checked{/formValues.default-access-read}/>
+				<input id="setup-default-access-read" type="checkbox" name="defaultAccessRead" {?formValues.defaultAccessRead}checked{/formValues.defaultAccessRead}/>
 				<label for="setup-default-access-read">Read (view all of the a11y data)</label>
 			</div>
 			<div>
-				<input id="setup-default-access-write" type="checkbox" name="default-access-write" {?formValues.default-access-write}checked{/formValues.default-access-write}/>
+				<input id="setup-default-access-write" type="checkbox" name="defaultAccessWrite" {?formValues.defaultAccessWrite}checked{/formValues.defaultAccessWrite}/>
 				<label for="setup-default-access-write">Write (create and edit sites and URLs)</label>
 			</div>
 			<div>
-				<input id="setup-default-access-delete" type="checkbox" name="default-access-delete" {?formValues.default-access-delete}checked{/formValues.default-access-delete}/>
+				<input id="setup-default-access-delete" type="checkbox" name="defaultAccessDelete" {?formValues.defaultAccessDelete}checked{/formValues.defaultAccessDelete}/>
 				<label for="setup-default-access-delete">Delete (delete sites and URLs)</label>
 			</div>
 			<div>
-				<input id="setup-default-access-admin" type="checkbox" name="default-access-admin" {?formValues.default-access-admin}checked{/formValues.default-access-admin}/>
+				<input id="setup-default-access-admin" type="checkbox" name="defaultAccessAdmin" {?formValues.defaultAccessAdmin}checked{/formValues.defaultAccessAdmin}/>
 				<label for="setup-default-access-admin">Admin (add and administer users)</label>
 			</div>
 		</fieldset>
