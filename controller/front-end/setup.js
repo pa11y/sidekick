@@ -21,7 +21,7 @@ module.exports = dashboard => {
 		// Render the setup page
 		response.render('setup', {
 			formValues: {
-				'default-access-read': true
+				defaultAccessRead: true
 			}
 		});
 	});
@@ -37,8 +37,8 @@ module.exports = dashboard => {
 
 		// Create the admin user
 		const adminUser = {
-			email: request.body['admin-email'],
-			password: request.body['admin-password'],
+			email: request.body.adminEmail,
+			password: request.body.adminPassword,
 			allowRead: true,
 			allowWrite: true,
 			allowDelete: true,
@@ -49,10 +49,10 @@ module.exports = dashboard => {
 				// Update all of the settings
 				dashboard.settings.superAdminId = superAdminId;
 				dashboard.settings.defaultPermissions = {
-					allowRead: Boolean(request.body['default-access-read']),
-					allowWrite: Boolean(request.body['default-access-write']),
-					allowDelete: Boolean(request.body['default-access-delete']),
-					allowAdmin: Boolean(request.body['default-access-admin'])
+					allowRead: Boolean(request.body.defaultAccessRead),
+					allowWrite: Boolean(request.body.defaultAccessWrite),
+					allowDelete: Boolean(request.body.defaultAccessDelete),
+					allowAdmin: Boolean(request.body.defaultAccessAdmin)
 				};
 
 				// Mark setup as complete
