@@ -21,22 +21,35 @@ describe('middleware/not-found', () => {
 		assert.isFunction(notFound);
 	});
 
-	describe('notFound(request, response, next)', () => {
-		let next;
+	describe('notFound()', () => {
+		let middleware;
 
 		beforeEach(() => {
-			next = sinon.spy();
-			notFound({}, {}, next);
+			middleware = notFound();
 		});
 
-		it('creates a 404 HTTP error', () => {
-			assert.calledOnce(httpError);
-			assert.calledWithExactly(httpError, 404);
+		it('returns a middleware function', () => {
+			assert.isFunction(middleware);
 		});
 
-		it('calls `next` with the created error', () => {
-			assert.calledOnce(next);
-			assert.calledWithExactly(next, httpError.firstCall.returnValue);
+		describe('middleware(request, response, next)', () => {
+			let next;
+
+			beforeEach(() => {
+				next = sinon.spy();
+				middleware({}, {}, next);
+			});
+
+			it('creates a 404 HTTP error', () => {
+				assert.calledOnce(httpError);
+				assert.calledWithExactly(httpError, 404);
+			});
+
+			it('calls `next` with the created error', () => {
+				assert.calledOnce(next);
+				assert.calledWithExactly(next, httpError.firstCall.returnValue);
+			});
+
 		});
 
 	});
