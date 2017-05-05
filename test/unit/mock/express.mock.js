@@ -27,9 +27,15 @@ const mockApp = module.exports.mockApp = {
 
 const mockStaticMiddleware = module.exports.mockStaticMiddleware = sinon.stub();
 
-module.exports.mockRequest = {};
+module.exports.mockRequest = {
+	headers: {},
+	session: {}
+};
 
 module.exports.mockResponse = {
+	locals: {
+		foo: 'bar'
+	},
 	render: sinon.stub().yields(),
 	send: sinon.stub().returnsThis(),
 	set: sinon.stub().returnsThis(),

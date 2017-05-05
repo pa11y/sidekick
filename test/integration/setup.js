@@ -23,7 +23,7 @@ before(() => {
 		return nonStarter.migrations.latest();
 	})
 	.then(() => {
-		return nonStarter.migrations.seed();
+		return nonStarter.migrations.seed(`${__dirname}/../../data/seed/test/base`);
 	})
 	.then(() => {
 		// Now we create an app that actually runs

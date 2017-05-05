@@ -20,6 +20,8 @@ describe('lib/sidekick', () => {
 	let fs;
 	let handleErrors;
 	let knex;
+	let loadUserFromApiKey;
+	let loadUserFromSession;
 	let log;
 	let morgan;
 	let notFound;
@@ -59,7 +61,7 @@ describe('lib/sidekick', () => {
 			tableName: 'migrations'
 		};
 		expectedSeedConfig = {
-			directory: `${basePath}/data/seed`
+			directory: `${basePath}/data/seed/demo`
 		};
 
 		fs = require('../mock/fs.mock');
@@ -70,6 +72,12 @@ describe('lib/sidekick', () => {
 
 		knex = require('../mock/knex.mock');
 		mockery.registerMock('knex', knex);
+
+		loadUserFromApiKey = require('../mock/load-user-api-key.mock');
+		mockery.registerMock('../middleware/load-user-api-key', loadUserFromApiKey);
+
+		loadUserFromSession = require('../mock/load-user-session.mock');
+		mockery.registerMock('../middleware/load-user-session', loadUserFromSession);
 
 		log = require('../mock/log.mock');
 
@@ -295,29 +303,6 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.enable, 'case sensitive routing');
 			});
 
-			it('creates a Knex session store, passing in the created Knex client', () => {
-				assert.calledOnce(sessionStore.MockKnexSessionStore);
-				assert.calledWithNew(sessionStore.MockKnexSessionStore);
-				assert.calledWith(sessionStore.MockKnexSessionStore, {
-					knex: knex.mockDatabase
-				});
-			});
-
-			it('creates and mounts a session middleware with the Knex session store', () => {
-				assert.calledOnce(session);
-				assert.calledWith(session, {
-					cookie: {
-						maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
-					},
-					name: 'sidekick.sid',
-					resave: false,
-					saveUninitialized: false,
-					secret: userOptions.sessionSecret,
-					store: sessionStore.mockSessionStore
-				});
-				assert.calledWithExactly(express.mockApp.use, session.mockMiddleware);
-			});
-
 			it('creates and mounts a morgan request logger', () => {
 				assert.calledOnce(morgan);
 				assert.calledWithExactly(morgan, userOptions.requestLogFormat, {
@@ -408,6 +393,12 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.use, '/api', requireHeader.mockMiddleware);
 			});
 
+			it('creates and mounts load-user-api-key middleware for the `/api` route', () => {
+				assert.calledOnce(loadUserFromApiKey);
+				assert.calledWithExactly(loadUserFromApiKey, dashboard);
+				assert.calledWithExactly(express.mockApp.use, '/api', loadUserFromApiKey.mockMiddleware);
+			});
+
 			it('loads all of the API controllers and calls them with the resolved object', () => {
 				assert.calledWithExactly(requireAll, `${basePath}/controller/api`);
 				assert.calledOnce(apiControllers.foo);
@@ -425,6 +416,36 @@ describe('lib/sidekick', () => {
 				assert.calledOnce(handleErrors.json);
 				assert.calledWithExactly(handleErrors.json, dashboard);
 				assert.calledWithExactly(express.mockApp.use, '/api', handleErrors.mockJsonMiddleware);
+			});
+
+			it('creates a Knex session store, passing in the created Knex client', () => {
+				assert.calledOnce(sessionStore.MockKnexSessionStore);
+				assert.calledWithNew(sessionStore.MockKnexSessionStore);
+				assert.calledWith(sessionStore.MockKnexSessionStore, {
+					knex: knex.mockDatabase
+				});
+			});
+
+			it('creates and mounts a session middleware with the Knex session store', () => {
+				assert.calledOnce(session);
+				assert.calledWith(session, {
+					cookie: {
+						maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+					},
+					name: 'sidekick.sid',
+					resave: false,
+					saveUninitialized: false,
+					secret: userOptions.sessionSecret,
+					store: sessionStore.mockSessionStore,
+					unset: 'destroy'
+				});
+				assert.calledWithExactly(express.mockApp.use, session.mockMiddleware);
+			});
+
+			it('creates and mounts load-user-api-key middleware for the default route', () => {
+				assert.calledOnce(loadUserFromSession);
+				assert.calledWithExactly(loadUserFromSession, dashboard);
+				assert.calledWithExactly(express.mockApp.use, loadUserFromSession.mockMiddleware);
 			});
 
 			it('loads all of the front end controllers and calls them with the resolved object', () => {
@@ -452,12 +473,14 @@ describe('lib/sidekick', () => {
 					express.mockApp.use.withArgs(cors.mockMiddleware).named('cors'),
 					express.mockApp.use.withArgs(compression.mockMiddleware).named('compression'),
 					express.mockApp.use.withArgs(express.mockStaticMiddleware).named('static'),
-					express.mockApp.use.withArgs(session.mockMiddleware).named('session'),
 					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),
 					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass'),
 					express.mockApp.use.withArgs('/api', requireHeader.mockMiddleware).named('apiRequireHeader'),
+					express.mockApp.use.withArgs('/api', loadUserFromApiKey.mockMiddleware).named('apiLoadUserFromApiKey'),
 					express.mockApp.use.withArgs('/api', notFound.mockMiddleware).named('apiNotFound'),
 					express.mockApp.use.withArgs('/api', handleErrors.mockJsonMiddleware).named('apiErrorHandler'),
+					express.mockApp.use.withArgs(session.mockMiddleware).named('session'),
+					express.mockApp.use.withArgs(loadUserFromSession.mockMiddleware).named('apiLoadUserFromSession'),
 					express.mockApp.use.withArgs(notFound.mockMiddleware).named('frontEndNotFound'),
 					express.mockApp.use.withArgs(handleErrors.mockHtmlMiddleware).named('frontEndErrorHandler')
 				);
@@ -665,6 +688,43 @@ describe('lib/sidekick', () => {
 						it('seeds the database with the expected options', () => {
 							assert.calledOnce(dashboard.database.seed.run);
 							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], expectedSeedConfig);
+						});
+
+						it('resolves with the result of the seed', () => {
+							assert.strictEqual(resolvedValue, seedRunValue);
+						});
+
+					});
+
+				});
+
+				describe('.migrations.seed(directory)', () => {
+					let returnedPromise;
+					let seedRunValue;
+
+					beforeEach(() => {
+						seedRunValue = {};
+						dashboard.database.seed.run.resolves(seedRunValue);
+						returnedPromise = dashboard.migrations.seed('mock-directory');
+					});
+
+					it('returns a promise', () => {
+						assert.isObject(returnedPromise);
+						assert.isFunction(returnedPromise.then);
+					});
+
+					describe('.then()', () => {
+						let resolvedValue;
+
+						beforeEach(() => returnedPromise.then(value => {
+							resolvedValue = value;
+						}));
+
+						it('seeds the database with the expected options', () => {
+							assert.calledOnce(dashboard.database.seed.run);
+							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], {
+								directory: 'mock-directory'
+							});
 						});
 
 						it('resolves with the result of the seed', () => {

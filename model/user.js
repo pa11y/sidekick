@@ -25,6 +25,20 @@ module.exports = dashboard => {
 			});
 		},
 
+		// Get a single user by email and password
+		getByEmailAndPassword(email, password) {
+			return this._rawGetByEmailAndPassword(email, password).then(user => {
+				return (user ? this.prepareForOutput(user) : user);
+			});
+		},
+
+		// Get a single user by API key
+		getByApiKey(apiKey) {
+			return this._rawGetByApiKey(apiKey).then(user => {
+				return (user ? this.prepareForOutput(user) : user);
+			});
+		},
+
 		// Create a user (resolving with the new ID)
 		create(data) {
 			return this.cleanInput(data)
@@ -134,6 +148,46 @@ module.exports = dashboard => {
 				.limit(1)
 				.then(users => {
 					return users[0];
+				});
+		},
+
+		_rawGetByApiKey(apiKey) {
+			return database
+				.select('*')
+				.from(table)
+				.where({
+					apiKey
+				})
+				.limit(1)
+				.then(users => {
+					return users[0];
+				});
+		},
+
+		_rawGetByEmailAndPassword(email, password) {
+			const error = new Error('Incorrect email or password');
+			error.isValidationError = true;
+
+			return database
+				.select('*')
+				.from(table)
+				.where({
+					email
+				})
+				.limit(1)
+				.then(users => {
+					return users[0];
+				})
+				.then(user => {
+					if (!user) {
+						throw error;
+					}
+					return this.checkPassword(password, user.password).then(isValid => {
+						if (!isValid) {
+							throw error;
+						}
+						return user;
+					});
 				});
 		},
 

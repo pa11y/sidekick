@@ -359,6 +359,8 @@ make db-migrate-down
 
 Seed files live in `data/seed`, and are loaded into a database through either a Make target or automatically when [integration tests](#integration-tests) are run. It's useful to copy an existing seed file when adding new test data, also be aware that modifications to existing seed files may cause issues with the tests.
 
+We split seed data into folders depending on their purpose. For example, `data/seed/demo` is the seed data used to demonstrate Sidekick, while `data/seed/test/base` is used in the integration tests.
+
 For more information on the structure of these files, read the [Knex.js documentation on seeding][knex-seeding].
 
 ```sh
