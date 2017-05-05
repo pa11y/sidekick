@@ -8,44 +8,15 @@ exports.seed = (database, Promise) => {
 		// Add a bunch of users to the site
 		return database('users').insert([
 			{
-				id: 'user_01',
+				id: 'H1tA5TKkb',
 				email: 'admin@example.com',
-				password: 'user_01_pw',
-				apiKey: 'user_01_key',
+				// The password for this user is "password"
+				password: '$2a$15$SPCXYRKHbjGp9n.j2C.0AuetTTKmZktbfYIk6fdEET6HfhrcFKqaa',
+				apiKey: 'c1e35c4d-8165-4133-a557-d323515e6f45',
 				allowRead: true,
 				allowWrite: true,
 				allowDelete: true,
 				allowAdmin: true
-			},
-			{
-				id: 'user_02',
-				email: 'default@example.com',
-				password: '',
-				apiKey: '',
-				allowRead: true,
-				allowWrite: false,
-				allowDelete: false,
-				allowAdmin: false
-			},
-			{
-				id: 'user_03',
-				email: 'write@example.com',
-				password: 'user_03_pw',
-				apiKey: 'user_03_key',
-				allowRead: true,
-				allowWrite: true,
-				allowDelete: false,
-				allowAdmin: false
-			},
-			{
-				id: 'user_04',
-				email: 'delete@example.com',
-				password: 'user_04_pw',
-				apiKey: 'user_04_key',
-				allowRead: true,
-				allowWrite: true,
-				allowDelete: true,
-				allowAdmin: false
 			}
 		]);
 	});

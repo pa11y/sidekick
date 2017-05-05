@@ -17,6 +17,9 @@ module.exports = dashboard => {
 				.limit(1)
 				.then(settings => {
 					return (settings[0] ? settings[0].data : {});
+				})
+				.catch(() => {
+					return {};
 				});
 		},
 

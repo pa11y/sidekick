@@ -1,5 +1,11 @@
 include Makefile.node
 
+# Task overrides
+# --------------
+
+INTEGRATION_FLAGS=--recursive
+
+
 # Running tasks
 # -------------
 

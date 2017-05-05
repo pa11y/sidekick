@@ -9,9 +9,8 @@ exports.seed = (database, Promise) => {
 				// the seed data for settings
 				id: 'rk7rS2F1b',
 				email: 'admin@example.com',
-				// The demo data is all open so this password should never be
-				// needed. It won't work because this isn't a hashed value
-				password: '-',
+				// The password for this user is "password"
+				password: '$2a$15$SPCXYRKHbjGp9n.j2C.0AuetTTKmZktbfYIk6fdEET6HfhrcFKqaa',
 				apiKey: 'c1e35c4d-8165-4133-a557-d323515e6f45',
 				allowRead: true,
 				allowWrite: true,
