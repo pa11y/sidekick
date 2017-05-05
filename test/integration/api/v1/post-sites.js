@@ -12,46 +12,53 @@ describe('POST /api/v1/sites', () => {
 		testSite = {
 			name: 'Test Site'
 		};
-		request = agent
-			.post('/api/v1/sites')
-			.set('Content-Type', 'application/json')
-			.send(testSite);
 		return loadSeedData(dashboard, 'base');
 	});
 
-	it('responds with a 201 status', done => {
-		request.expect(201).end(done);
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with JSON', done => {
-		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
-	});
-
-	it('responds with a location header pointing to the new site', done => {
-		request.expect('Location', /^\/api\/v1\/sites\/[a-zA-Z0-9_-]+$/).end(done);
-	});
-
-	it('creates a site in the database', done => {
-		let response;
-		request.expect(requestResponse => {
-			response = requestResponse;
-		}).end(() => {
-			const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
-			dashboard.database.select('*').from('sites').where({id: siteId})
-				.then(sites => {
-					assert.strictEqual(sites.length, 1);
-					assert.strictEqual(sites[0].name, 'Test Site');
-					done();
-				})
-				.catch(done);
+		beforeEach(() => {
+			request = agent
+				.post('/api/v1/sites')
+				.set('Content-Type', 'application/json')
+				.send(testSite);
 		});
-	});
 
-	it('responds with an empty object', done => {
-		request.expect(response => {
-			assert.isObject(response.body);
-			assert.deepEqual(response.body, {});
-		}).end(done);
+		it('responds with a 201 status', done => {
+			request.expect(201).end(done);
+		});
+
+		it('responds with JSON', done => {
+			request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+		});
+
+		it('responds with a location header pointing to the new site', done => {
+			request.expect('Location', /^\/api\/v1\/sites\/[a-zA-Z0-9_-]+$/).end(done);
+		});
+
+		it('creates a site in the database', done => {
+			let response;
+			request.expect(requestResponse => {
+				response = requestResponse;
+			}).end(() => {
+				const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
+				dashboard.database.select('*').from('sites').where({id: siteId})
+					.then(sites => {
+						assert.strictEqual(sites.length, 1);
+						assert.strictEqual(sites[0].name, 'Test Site');
+						done();
+					})
+					.catch(done);
+			});
+		});
+
+		it('responds with an empty object', done => {
+			request.expect(response => {
+				assert.isObject(response.body);
+				assert.deepEqual(response.body, {});
+			}).end(done);
+		});
+
 	});
 
 	describe('when the POST data includes Pa11y config', () => {

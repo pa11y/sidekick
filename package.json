@@ -43,6 +43,7 @@
   "devDependencies": {
     "dustmite": "^2.0.4",
     "eslint": "^3.18.0",
+    "jsdom": "^10.1.0",
     "mocha": "^2.5.3",
     "mockery": "^1.7.0",
     "nodemon": "^1.11.0",
