@@ -526,7 +526,7 @@ describe('DELETE /api/v1/sites/:siteId', () => {
 			.then(() => dashboard.database('results').where('site', siteId).delete())
 			.then(() => dashboard.database('urls').where('site', siteId).delete())
 			.then(() => dashboard.database('sites').where('id', siteId).delete())
-			.then(() => require('../../data/seed/delete-website').seed(dashboard.database, Promise))
+			.then(() => require('../../data/seed/test/base/delete-website').seed(dashboard.database, Promise))
 			.then(() => {
 				request = agent.delete(`/api/v1/sites/${siteId}`);
 			});
@@ -1383,7 +1383,7 @@ describe('DELETE /api/v1/sites/:siteId/urls/:urlId', () => {
 			.then(() => dashboard.database('results').where('site', siteId).delete())
 			.then(() => dashboard.database('urls').where('site', siteId).delete())
 			.then(() => dashboard.database('sites').where('id', siteId).delete())
-			.then(() => require('../../data/seed/delete-website').seed(dashboard.database, Promise))
+			.then(() => require('../../data/seed/test/base/delete-website').seed(dashboard.database, Promise))
 			.then(() => {
 				request = agent.delete(`/api/v1/sites/${siteId}/urls/${urlId}`);
 			});
@@ -1670,7 +1670,7 @@ describe('DELETE /api/v1/sites/:siteId/urls/:urlId/results/:resultId', () => {
 			.then(() => dashboard.database('results').where('site', siteId).delete())
 			.then(() => dashboard.database('urls').where('site', siteId).delete())
 			.then(() => dashboard.database('sites').where('id', siteId).delete())
-			.then(() => require('../../data/seed/delete-website').seed(dashboard.database, Promise))
+			.then(() => require('../../data/seed/test/base/delete-website').seed(dashboard.database, Promise))
 			.then(() => {
 				request = agent.delete(`/api/v1/sites/${siteId}/urls/${urlId}/results/${resultId}`);
 			});

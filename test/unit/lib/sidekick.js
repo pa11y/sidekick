@@ -61,7 +61,7 @@ describe('lib/sidekick', () => {
 			tableName: 'migrations'
 		};
 		expectedSeedConfig = {
-			directory: `${basePath}/data/seed`
+			directory: `${basePath}/data/seed/demo`
 		};
 
 		fs = require('../mock/fs.mock');
@@ -688,6 +688,43 @@ describe('lib/sidekick', () => {
 						it('seeds the database with the expected options', () => {
 							assert.calledOnce(dashboard.database.seed.run);
 							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], expectedSeedConfig);
+						});
+
+						it('resolves with the result of the seed', () => {
+							assert.strictEqual(resolvedValue, seedRunValue);
+						});
+
+					});
+
+				});
+
+				describe('.migrations.seed(directory)', () => {
+					let returnedPromise;
+					let seedRunValue;
+
+					beforeEach(() => {
+						seedRunValue = {};
+						dashboard.database.seed.run.resolves(seedRunValue);
+						returnedPromise = dashboard.migrations.seed('mock-directory');
+					});
+
+					it('returns a promise', () => {
+						assert.isObject(returnedPromise);
+						assert.isFunction(returnedPromise.then);
+					});
+
+					describe('.then()', () => {
+						let resolvedValue;
+
+						beforeEach(() => returnedPromise.then(value => {
+							resolvedValue = value;
+						}));
+
+						it('seeds the database with the expected options', () => {
+							assert.calledOnce(dashboard.database.seed.run);
+							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], {
+								directory: 'mock-directory'
+							});
 						});
 
 						it('resolves with the result of the seed', () => {
