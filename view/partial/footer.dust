@@ -1,4 +1,15 @@
 
-<footer>
+<footer class="site-footer">
+
+	{! Footer navigation !}
+	<nav>
+		<ul>
+			<li><a href="/api/v1">API Documentation</a></li>
+			<li><a href="https://github.com/pa11y/sidekick">GitHub Repository</a></li>
+		</ul>
+	</nav>
+
+	{! Copyright notice and legal !}
 	<small>Copyright &copy; {@currentYear/}, Team Pa11y.</small>
+
 </footer>
