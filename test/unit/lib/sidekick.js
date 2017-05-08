@@ -9,6 +9,7 @@ const sinon = require('sinon');
 
 describe('lib/sidekick', () => {
 	let adaro;
+	let addResponseViewData;
 	let basePath;
 	let compression;
 	let cors;
@@ -43,6 +44,9 @@ describe('lib/sidekick', () => {
 
 		adaro = require('../mock/adaro.mock');
 		mockery.registerMock('adaro', adaro);
+
+		addResponseViewData = require('../mock/add-response-view-data.mock');
+		mockery.registerMock('../middleware/add-response-view-data', addResponseViewData);
 
 		compression = require('../mock/compression.mock');
 		mockery.registerMock('compression', compression);
@@ -443,6 +447,12 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.use, session.mockMiddleware);
 			});
 
+			it('creates and mounts add-response-view-data middleware for the default route', () => {
+				assert.calledOnce(addResponseViewData);
+				assert.calledWithExactly(addResponseViewData, dashboard);
+				assert.calledWithExactly(express.mockApp.use, addResponseViewData.mockMiddleware);
+			});
+
 			it('creates and mounts load-user-api-key middleware for the default route', () => {
 				assert.calledOnce(loadUserFromSession);
 				assert.calledWithExactly(loadUserFromSession, dashboard);
@@ -481,7 +491,8 @@ describe('lib/sidekick', () => {
 					express.mockApp.use.withArgs('/api', notFound.mockMiddleware).named('apiNotFound'),
 					express.mockApp.use.withArgs('/api', handleErrors.mockJsonMiddleware).named('apiErrorHandler'),
 					express.mockApp.use.withArgs(session.mockMiddleware).named('session'),
-					express.mockApp.use.withArgs(loadUserFromSession.mockMiddleware).named('apiLoadUserFromSession'),
+					express.mockApp.use.withArgs(addResponseViewData.mockMiddleware).named('addResponseViewData'),
+					express.mockApp.use.withArgs(loadUserFromSession.mockMiddleware).named('loadUserFromSession'),
 					express.mockApp.use.withArgs(notFound.mockMiddleware).named('frontEndNotFound'),
 					express.mockApp.use.withArgs(handleErrors.mockHtmlMiddleware).named('frontEndErrorHandler')
 				);

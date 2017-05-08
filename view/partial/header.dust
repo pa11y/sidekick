@@ -3,14 +3,16 @@
 	<a href="/">{appName}</a>
 </header>
 
-<nav>
-	{?user.isLoggedIn}
-		<ul>
-			<li>Logged in as {user.email} (<a href="/logout">Logout</a>)</li>
-		</ul>
-	{:else}
-		<ul>
-			<li><a href="/login">Login</a></li>
-		</ul>
-	{/user.isLoggedIn}
-</nav>
+{?settings.setupComplete}
+	<nav>
+		{?user.isLoggedIn}
+			<ul>
+				<li>Logged in as {user.email} (<a href="/logout">Logout</a>)</li>
+			</ul>
+		{:else}
+			<ul>
+				<li><a href="/login">Login</a></li>
+			</ul>
+		{/user.isLoggedIn}
+	</nav>
+{/settings.setupComplete}
