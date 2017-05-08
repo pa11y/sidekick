@@ -40,10 +40,7 @@ describe('POST / (setup step)', () => {
 		});
 
 		it('creates an admin user in the database', done => {
-			let response;
-			request.expect(requestResponse => {
-				response = requestResponse;
-			}).end(() => {
+			request.end(() => {
 				dashboard.database.select('*').from('users')
 					.then(users => {
 						assert.strictEqual(users.length, 1);
@@ -61,10 +58,7 @@ describe('POST / (setup step)', () => {
 		});
 
 		it('creates a settings entry in the database', done => {
-			let response;
-			request.expect(requestResponse => {
-				response = requestResponse;
-			}).end(() => {
+			request.end(() => {
 				let adminUser;
 				dashboard.database.select('*').from('users')
 					.then(users => {
