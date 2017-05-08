@@ -3,7 +3,7 @@
 
 const assert = require('proclaim');
 const bcrypt = require('bcrypt');
-const {JSDOM} = require('jsdom');
+const JSDOM = require('jsdom').JSDOM;
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('POST / (setup step)', () => {

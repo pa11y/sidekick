@@ -2,7 +2,7 @@
 'use strict';
 
 const assert = require('proclaim');
-const {JSDOM} = require('jsdom');
+const JSDOM = require('jsdom').JSDOM;
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('GET / (setup step)', () => {
