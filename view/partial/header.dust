@@ -1,18 +1,22 @@
 
-<header>
-	<a href="/">{appName}</a>
-</header>
+<header class="site-header">
 
-{?settings.setupComplete}
-	<nav>
-		{?user.isLoggedIn}
+	<a href="/">{appName}</a>
+
+	{! Header navigation (display only if setup is complete) !}
+	{?settings.setupComplete}
+		<nav>
 			<ul>
-				<li>Logged in as {user.email} (<a href="/logout">Logout</a>)</li>
+
+				{! User login/logout !}
+				{?user.isLoggedIn}
+					<li>Logged in as {user.email} (<a href="/logout">Logout</a>)</li>
+				{:else}
+					<li><a href="/login">Login</a></li>
+				{/user.isLoggedIn}
+
 			</ul>
-		{:else}
-			<ul>
-				<li><a href="/login">Login</a></li>
-			</ul>
-		{/user.isLoggedIn}
-	</nav>
-{/settings.setupComplete}
+		</nav>
+	{/settings.setupComplete}
+
+</header>
