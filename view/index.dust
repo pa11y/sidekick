@@ -16,7 +16,7 @@
 		<p>
 			We maintain an <a href="https://github.com/pa11y/sidekick/blob/master/ARCHITECTURE.md">Architecture Guide</a> which outlines how the application works, and how everything fits together.{~s}
 			It's strongly recommended that you read through it if you want to contribute.{~s}
-			We're currently in the architecture stage of development so this application has few features – it's purely a demo how <i>how</i> we want to build things.
+			We're currently in the architecture stage of development so this application has few features – it's purely a demo of <i>how</i> we want to build things.
 		</p>
 	</div>
 
