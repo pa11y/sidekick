@@ -64,4 +64,34 @@ describe('DELETE /api/v1/sites/:siteId', () => {
 
 	});
 
+	describe('when the default permissions do not allow delete access and a delete API key is specified', () => {
+
+		beforeEach(() => {
+			request = agent
+				.delete(`/api/v1/sites/${siteId}`)
+				.set('X-Api-Key', 'mock-readwritedelete-api-key');
+			return loadSeedData(dashboard, 'permissions');
+		});
+
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+	});
+
+	describe('when the default permissions do not allow delete access and no API key is specified', () => {
+
+		beforeEach(() => {
+			request = agent
+				.delete(`/api/v1/sites/${siteId}`)
+				.set('X-Api-Key', 'mock-readwrite-api-key');
+			return loadSeedData(dashboard, 'permissions');
+		});
+
+		it('responds with a 403 status', done => {
+			request.expect(403).end(done);
+		});
+
+	});
+
 });

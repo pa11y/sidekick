@@ -196,4 +196,38 @@ describe('POST /api/v1/sites', () => {
 
 	});
 
+	describe('when the default permissions do not allow write access and a write API key is specified', () => {
+
+		beforeEach(() => {
+			request = agent
+				.post('/api/v1/sites')
+				.set('Content-Type', 'application/json')
+				.set('X-Api-Key', 'mock-readwrite-api-key')
+				.send(testSite);
+			return loadSeedData(dashboard, 'permissions');
+		});
+
+		it('responds with a 201 status', done => {
+			request.expect(201).end(done);
+		});
+
+	});
+
+	describe('when the default permissions do not allow write access and no API key is specified', () => {
+
+		beforeEach(() => {
+			request = agent
+				.post('/api/v1/sites')
+				.set('Content-Type', 'application/json')
+				.set('X-Api-Key', 'mock-readonly-api-key')
+				.send(testSite);
+			return loadSeedData(dashboard, 'permissions');
+		});
+
+		it('responds with a 403 status', done => {
+			request.expect(403).end(done);
+		});
+
+	});
+
 });

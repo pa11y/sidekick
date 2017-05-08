@@ -2,6 +2,7 @@
 
 const bodyParser = require('body-parser');
 const httpError = require('http-errors');
+const requirePermission = require('../../middleware/require-permission');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
@@ -14,7 +15,7 @@ module.exports = dashboard => {
 	});
 
 	// Create a site
-	app.post('/api/v1/sites', parseJsonBody, (request, response, next) => {
+	app.post('/api/v1/sites', requirePermission('write'), parseJsonBody, (request, response, next) => {
 		model.site.create(request.body)
 			.then(siteId => {
 				response.set('Location', `/api/v1/sites/${siteId}`);
@@ -30,7 +31,7 @@ module.exports = dashboard => {
 	});
 
 	// Get all sites
-	app.get('/api/v1/sites', (request, response, next) => {
+	app.get('/api/v1/sites', requirePermission('read'), (request, response, next) => {
 		model.site.getAll()
 			.then(sites => {
 				response.locals.sites = sites;
@@ -40,7 +41,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site by ID
-	app.get('/api/v1/sites/:siteId', (request, response, next) => {
+	app.get('/api/v1/sites/:siteId', requirePermission('read'), (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
@@ -53,7 +54,7 @@ module.exports = dashboard => {
 	});
 
 	// Edit a site by ID
-	app.patch('/api/v1/sites/:siteId', parseJsonBody, (request, response, next) => {
+	app.patch('/api/v1/sites/:siteId', requirePermission('write'), parseJsonBody, (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
@@ -74,7 +75,7 @@ module.exports = dashboard => {
 	});
 
 	// Delete a site by ID
-	app.delete('/api/v1/sites/:siteId', (request, response, next) => {
+	app.delete('/api/v1/sites/:siteId', requirePermission('delete'), (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
@@ -90,7 +91,7 @@ module.exports = dashboard => {
 	});
 
 	// Create a URL
-	app.post('/api/v1/sites/:siteId/urls', parseJsonBody, (request, response, next) => {
+	app.post('/api/v1/sites/:siteId/urls', requirePermission('write'), parseJsonBody, (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
@@ -113,7 +114,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site's URLs
-	app.get('/api/v1/sites/:siteId/urls', (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls', requirePermission('read'), (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
@@ -129,7 +130,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a site's results
-	app.get('/api/v1/sites/:siteId/results', (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/results', requirePermission('read'), (request, response, next) => {
 		model.site.getById(request.params.siteId)
 			.then(site => {
 				if (!site) {
@@ -145,7 +146,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a URL by ID
-	app.get('/api/v1/sites/:siteId/urls/:urlId', (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls/:urlId', requirePermission('read'), (request, response, next) => {
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
 			.then(url => {
 				if (!url) {
@@ -158,7 +159,7 @@ module.exports = dashboard => {
 	});
 
 	// Edit a URL by ID
-	app.patch('/api/v1/sites/:siteId/urls/:urlId', parseJsonBody, (request, response, next) => {
+	app.patch('/api/v1/sites/:siteId/urls/:urlId', requirePermission('write'), parseJsonBody, (request, response, next) => {
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
 			.then(url => {
 				if (!url) {
@@ -179,7 +180,7 @@ module.exports = dashboard => {
 	});
 
 	// Delete a URL by ID
-	app.delete('/api/v1/sites/:siteId/urls/:urlId', (request, response, next) => {
+	app.delete('/api/v1/sites/:siteId/urls/:urlId', requirePermission('delete'), (request, response, next) => {
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
 			.then(url => {
 				if (!url) {
@@ -195,7 +196,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a URL's results
-	app.get('/api/v1/sites/:siteId/urls/:urlId/results', (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls/:urlId/results', requirePermission('read'), (request, response, next) => {
 		model.url.getByIdAndSite(request.params.urlId, request.params.siteId)
 			.then(url => {
 				if (!url) {
@@ -211,7 +212,7 @@ module.exports = dashboard => {
 	});
 
 	// Get a result by ID
-	app.get('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', (request, response, next) => {
+	app.get('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', requirePermission('read'), (request, response, next) => {
 		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
 			.then(result => {
 				if (!result) {
@@ -224,7 +225,7 @@ module.exports = dashboard => {
 	});
 
 	// Delete a result by ID
-	app.delete('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', (request, response, next) => {
+	app.delete('/api/v1/sites/:siteId/urls/:urlId/results/:resultId', requirePermission('delete'), (request, response, next) => {
 		model.result.getByIdAndUrlAndSite(request.params.resultId, request.params.urlId, request.params.siteId)
 			.then(result => {
 				if (!result) {

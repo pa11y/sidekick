@@ -13,13 +13,19 @@ module.exports = dashboard => {
 			return next();
 		}
 
-		// Render the home page
-		model.site.getAll()
-			.then(sites => {
-				response.locals.sites = sites;
-				response.render('index');
-			})
-			.catch(next);
+		// Render the home page if the user has permission
+		if (model.user.hasPermission(request.user, 'read')) {
+			return model.site.getAll()
+				.then(sites => {
+					response.locals.sites = sites;
+					response.render('index');
+				})
+				.catch(next);
+		}
+
+		// No read permissions, redirect to login
+		response.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+		response.redirect('/login');
 	});
 
 };
