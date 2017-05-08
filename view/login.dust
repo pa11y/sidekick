@@ -1,0 +1,33 @@
+{>"layout/default"/}
+
+{<title}
+	Login - {appName}
+{/title}
+
+{<content}
+
+	<h1>Login</h1>
+
+	<form action="/login" method="post">
+		<input type="hidden" name="referer" value="{formValues.referer}"/>
+
+		{?error}
+			<output name="error" class="form-error">
+				There was an error logging in: {error.message}
+			</output>
+		{/error}
+
+		<div>
+			<label for="login-email">Email Address</label>
+			<input id="login-email" type="email" name="email" value="{formValues.email}"/>
+		</div>
+		<div>
+			<label for="login-password">Password</label>
+			<input id="login-password" type="password" name="password"/>
+		</div>
+
+		<input type="submit" value="Log in"/>
+
+	</form>
+
+{/content}

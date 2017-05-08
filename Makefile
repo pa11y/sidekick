@@ -1,5 +1,12 @@
 include Makefile.node
 
+# Task overrides
+# --------------
+
+INTEGRATION_FLAGS=--recursive
+INTEGRATION_TIMEOUT=10000
+
+
 # Running tasks
 # -------------
 

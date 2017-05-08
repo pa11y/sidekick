@@ -4,36 +4,46 @@
 // Note: IDs in here are referenced in the integration
 // tests, so should not be changed.
 exports.seed = (database, Promise) => {
-	const siteId = 's01p_site';
-
 	return Promise.resolve()
 		.then(() => {
 			// Add a site
-			return database('sites').insert({
-				id: siteId,
-				name: 'Pa11y'
-			});
+			return database('sites').insert([
+				{
+					id: 'testsite-1',
+					name: 'Test Site 1'
+				},
+				{
+					id: 'testsite-2',
+					name: 'Test Site 2'
+				}
+			]);
 		})
 		.then(() => {
 			// Add a bunch of URLs to the site
 			return database('urls').insert([
 				{
-					id: 's01p_u01h',
-					site: siteId,
-					name: 'Home',
-					address: 'http://pa11y.github.io/'
+					id: 'testurl-1',
+					site: 'testsite-1',
+					name: 'Test URL 1',
+					address: 'http://example.com/1'
 				},
 				{
-					id: 's01p_u02c',
-					site: siteId,
-					name: 'Contact',
-					address: 'http://pa11y.github.io/contact/'
+					id: 'testurl-2',
+					site: 'testsite-1',
+					name: 'Test URL 2',
+					address: 'http://example.com/2'
 				},
 				{
-					id: 's01p_u03c',
-					site: siteId,
-					name: 'Contributing',
-					address: 'http://pa11y.github.io/contributing/'
+					id: 'testurl-3',
+					site: 'testsite-1',
+					name: 'Test URL 3',
+					address: 'http://example.com/3'
+				},
+				{
+					id: 'testurl-4',
+					site: 'testsite-2',
+					name: 'Test URL 4',
+					address: 'http://example.com/4'
 				}
 			]);
 		})
@@ -41,9 +51,9 @@ exports.seed = (database, Promise) => {
 			// Add a bunch of results to the URLs
 			return database('results').insert([
 				{
-					id: 's01p_u01h_r01',
-					url: 's01p_u01h',
-					site: siteId,
+					id: 'testresult-1',
+					url: 'testurl-1',
+					site: 'testsite-1',
 					createdAt: new Date(Date.now() - 172800000), // 2 days ago
 					errorCount: 2,
 					warningCount: 2,
@@ -92,9 +102,9 @@ exports.seed = (database, Promise) => {
 					])
 				},
 				{
-					id: 's01p_u01h_r02',
-					url: 's01p_u01h',
-					site: siteId,
+					id: 'testresult-2',
+					url: 'testurl-1',
+					site: 'testsite-1',
 					createdAt: new Date(Date.now() - 86400000), // yesterday
 					errorCount: 1,
 					warningCount: 1,
@@ -127,9 +137,9 @@ exports.seed = (database, Promise) => {
 					])
 				},
 				{
-					id: 's01p_u01h_r03',
-					url: 's01p_u01h',
-					site: siteId,
+					id: 'testresult-3',
+					url: 'testurl-1',
+					site: 'testsite-1',
 					createdAt: new Date(Date.now()), // now
 					errorCount: 0,
 					warningCount: 1,
@@ -154,9 +164,9 @@ exports.seed = (database, Promise) => {
 					])
 				},
 				{
-					id: 's01p_u03c_r01',
-					url: 's01p_u03c',
-					site: siteId,
+					id: 'testresult-4',
+					url: 'testurl-3',
+					site: 'testsite-1',
 					createdAt: new Date(Date.now()), // now
 					errorCount: 0,
 					warningCount: 1,
@@ -179,6 +189,16 @@ exports.seed = (database, Promise) => {
 							typeCode: 3
 						}
 					])
+				},
+				{
+					id: 'testresult-5',
+					url: 'testurl-4',
+					site: 'testsite-2',
+					createdAt: new Date(Date.now()), // now
+					errorCount: 0,
+					warningCount: 0,
+					noticeCount: 0,
+					messages: JSON.stringify([])
 				}
 			]);
 		});

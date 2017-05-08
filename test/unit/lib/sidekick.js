@@ -20,6 +20,8 @@ describe('lib/sidekick', () => {
 	let fs;
 	let handleErrors;
 	let knex;
+	let loadUserFromApiKey;
+	let loadUserFromSession;
 	let log;
 	let morgan;
 	let notFound;
@@ -27,7 +29,10 @@ describe('lib/sidekick', () => {
 	let requireHeader;
 	let resaveBrowserify;
 	let resaveSass;
+	let session;
+	let sessionStore;
 	let sidekick;
+	let uuid;
 
 	beforeEach(() => {
 
@@ -56,7 +61,7 @@ describe('lib/sidekick', () => {
 			tableName: 'migrations'
 		};
 		expectedSeedConfig = {
-			directory: `${basePath}/data/seed`
+			directory: `${basePath}/data/seed/demo`
 		};
 
 		fs = require('../mock/fs.mock');
@@ -67,6 +72,12 @@ describe('lib/sidekick', () => {
 
 		knex = require('../mock/knex.mock');
 		mockery.registerMock('knex', knex);
+
+		loadUserFromApiKey = require('../mock/load-user-api-key.mock');
+		mockery.registerMock('../middleware/load-user-api-key', loadUserFromApiKey);
+
+		loadUserFromSession = require('../mock/load-user-session.mock');
+		mockery.registerMock('../middleware/load-user-session', loadUserFromSession);
 
 		log = require('../mock/log.mock');
 
@@ -88,6 +99,15 @@ describe('lib/sidekick', () => {
 
 		resaveSass = require('../mock/resave-sass.mock');
 		mockery.registerMock('resave-sass', resaveSass);
+
+		session = require('../mock/express-session.mock');
+		mockery.registerMock('express-session', session);
+
+		sessionStore = require('../mock/connect-session-knex.mock');
+		mockery.registerMock('connect-session-knex', sessionStore);
+
+		uuid = sinon.stub().returns('mock-uuid');
+		mockery.registerMock('uuid/v4', uuid);
 
 		sidekick = require(basePath);
 	});
@@ -164,6 +184,10 @@ describe('lib/sidekick', () => {
 			assert.strictEqual(defaults.requestLogFormat, 'combined');
 		});
 
+		it('has a `sessionSecret` property', () => {
+			assert.isNull(defaults.sessionSecret);
+		});
+
 		it('has a `start` property', () => {
 			assert.isTrue(defaults.start);
 		});
@@ -221,7 +245,8 @@ describe('lib/sidekick', () => {
 				environment: 'test',
 				log: log,
 				port: 1234,
-				requestLogFormat: 'rlf'
+				requestLogFormat: 'rlf',
+				sessionSecret: 'mock-secret'
 			};
 			returnedPromise = sidekick(userOptions);
 		});
@@ -243,7 +268,7 @@ describe('lib/sidekick', () => {
 				assert.strictEqual(defaults.firstCall.args[2], sidekick.defaults);
 			});
 
-			it('creates an Knex client with the database option', () => {
+			it('creates a Knex client with the database option', () => {
 				assert.calledOnce(knex);
 				assert.isObject(knex.firstCall.args[0]);
 				assert.strictEqual(knex.firstCall.args[0].client, 'pg');
@@ -368,6 +393,12 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.use, '/api', requireHeader.mockMiddleware);
 			});
 
+			it('creates and mounts load-user-api-key middleware for the `/api` route', () => {
+				assert.calledOnce(loadUserFromApiKey);
+				assert.calledWithExactly(loadUserFromApiKey, dashboard);
+				assert.calledWithExactly(express.mockApp.use, '/api', loadUserFromApiKey.mockMiddleware);
+			});
+
 			it('loads all of the API controllers and calls them with the resolved object', () => {
 				assert.calledWithExactly(requireAll, `${basePath}/controller/api`);
 				assert.calledOnce(apiControllers.foo);
@@ -385,6 +416,37 @@ describe('lib/sidekick', () => {
 				assert.calledOnce(handleErrors.json);
 				assert.calledWithExactly(handleErrors.json, dashboard);
 				assert.calledWithExactly(express.mockApp.use, '/api', handleErrors.mockJsonMiddleware);
+			});
+
+			it('creates a Knex session store, passing in the created Knex client', () => {
+				assert.calledOnce(sessionStore.MockKnexSessionStore);
+				assert.calledWithNew(sessionStore.MockKnexSessionStore);
+				assert.calledWith(sessionStore.MockKnexSessionStore, {
+					knex: knex.mockDatabase,
+					createtable: false
+				});
+			});
+
+			it('creates and mounts a session middleware with the Knex session store', () => {
+				assert.calledOnce(session);
+				assert.calledWith(session, {
+					cookie: {
+						maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+					},
+					name: 'sidekick.sid',
+					resave: false,
+					saveUninitialized: false,
+					secret: userOptions.sessionSecret,
+					store: sessionStore.mockSessionStore,
+					unset: 'destroy'
+				});
+				assert.calledWithExactly(express.mockApp.use, session.mockMiddleware);
+			});
+
+			it('creates and mounts load-user-api-key middleware for the default route', () => {
+				assert.calledOnce(loadUserFromSession);
+				assert.calledWithExactly(loadUserFromSession, dashboard);
+				assert.calledWithExactly(express.mockApp.use, loadUserFromSession.mockMiddleware);
 			});
 
 			it('loads all of the front end controllers and calls them with the resolved object', () => {
@@ -415,8 +477,11 @@ describe('lib/sidekick', () => {
 					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),
 					express.mockApp.use.withArgs(resaveSass.mockResaver).named('sass'),
 					express.mockApp.use.withArgs('/api', requireHeader.mockMiddleware).named('apiRequireHeader'),
+					express.mockApp.use.withArgs('/api', loadUserFromApiKey.mockMiddleware).named('apiLoadUserFromApiKey'),
 					express.mockApp.use.withArgs('/api', notFound.mockMiddleware).named('apiNotFound'),
 					express.mockApp.use.withArgs('/api', handleErrors.mockJsonMiddleware).named('apiErrorHandler'),
+					express.mockApp.use.withArgs(session.mockMiddleware).named('session'),
+					express.mockApp.use.withArgs(loadUserFromSession.mockMiddleware).named('apiLoadUserFromSession'),
 					express.mockApp.use.withArgs(notFound.mockMiddleware).named('frontEndNotFound'),
 					express.mockApp.use.withArgs(handleErrors.mockHtmlMiddleware).named('frontEndErrorHandler')
 				);
@@ -634,6 +699,43 @@ describe('lib/sidekick', () => {
 
 				});
 
+				describe('.migrations.seed(directory)', () => {
+					let returnedPromise;
+					let seedRunValue;
+
+					beforeEach(() => {
+						seedRunValue = {};
+						dashboard.database.seed.run.resolves(seedRunValue);
+						returnedPromise = dashboard.migrations.seed('mock-directory');
+					});
+
+					it('returns a promise', () => {
+						assert.isObject(returnedPromise);
+						assert.isFunction(returnedPromise.then);
+					});
+
+					describe('.then()', () => {
+						let resolvedValue;
+
+						beforeEach(() => returnedPromise.then(value => {
+							resolvedValue = value;
+						}));
+
+						it('seeds the database with the expected options', () => {
+							assert.calledOnce(dashboard.database.seed.run);
+							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], {
+								directory: 'mock-directory'
+							});
+						});
+
+						it('resolves with the result of the seed', () => {
+							assert.strictEqual(resolvedValue, seedRunValue);
+						});
+
+					});
+
+				});
+
 				it('has an `app` property set to the created Express application', () => {
 					assert.isDefined(dashboard.app);
 					assert.strictEqual(dashboard.app, express.mockApp);
@@ -648,6 +750,21 @@ describe('lib/sidekick', () => {
 					assert.strictEqual(dashboard.settings, mockSettings);
 				});
 
+			});
+
+		});
+
+		describe('when `options.sessionSecret` is not set', () => {
+
+			beforeEach(() => {
+				delete userOptions.sessionSecret;
+				session.reset();
+				returnedPromise = sidekick(userOptions);
+			});
+
+			it('creates and mounts a session middleware with a UUID as a secret', () => {
+				assert.calledOnce(session);
+				assert.strictEqual(session.firstCall.args[0].secret, 'mock-uuid');
 			});
 
 		});

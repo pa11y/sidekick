@@ -84,6 +84,9 @@ Pa11y Sidekick is highly configurable. You can configure the application with th
   - **`REQUEST_LOG_FORMAT`**: The log format to use for request logging, one of [morgan's predefined formats][morgan-formats].<br/>
     Default: `combined`.
 
+  - **`SESSION_SECRET`**: The secret to encrypt session IDs with. If not specified, this will default to a UUID which means sessions will be destroyed every time the application restarts.<br/>
+    Default: a UUID.
+
 Pa11y Sidekick will first attempt to load an `.env` file in the root of the project and read configurations from there. You can copy the sample environment config as a starting point:
 
 ```sh

@@ -1,16 +1,12 @@
 /* eslint max-len: 'off' */
 'use strict';
 
-// Note: IDs in here are referenced in the integration
-// tests, so should not be changed.
 exports.seed = (database, Promise) => {
-	const siteId = 's02g_site';
-
 	return Promise.resolve()
 		.then(() => {
 			// Add a site
 			return database('sites').insert({
-				id: siteId,
+				id: 'rk7iwhYJb',
 				name: 'GitHub'
 			});
 		})
@@ -18,8 +14,8 @@ exports.seed = (database, Promise) => {
 			// Add a bunch of URLs to the site
 			return database('urls').insert([
 				{
-					id: 's02g_u01h',
-					site: siteId,
+					id: 'SJP3Phty-',
+					site: 'rk7iwhYJb',
 					name: 'Home',
 					address: 'https://github.com/'
 				}
@@ -29,9 +25,9 @@ exports.seed = (database, Promise) => {
 			// Add a bunch of results to the URLs
 			return database('results').insert([
 				{
-					id: 's02g_u01h_r01',
-					url: 's02g_u01h',
-					site: siteId,
+					id: 'Bk13w3Ky-',
+					url: 'SJP3Phty-',
+					site: 'rk7iwhYJb',
 					createdAt: new Date(Date.now()), // now
 					errorCount: 0,
 					warningCount: 1,

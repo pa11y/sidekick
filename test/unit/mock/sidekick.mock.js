@@ -7,7 +7,16 @@ const sidekick = module.exports = sinon.stub();
 
 const mockDashboard = module.exports.mockDashboard = {
 	environment: 'production',
-	log: require('./log.mock')
+	log: require('./log.mock'),
+	model: {},
+	settings: {
+		defaultPermissions: {
+			allowRead: true,
+			allowWrite: true,
+			allowDelete: true,
+			allowAdmin: true
+		}
+	}
 };
 
 sidekick.resolves(mockDashboard);

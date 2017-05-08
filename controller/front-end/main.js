@@ -6,16 +6,6 @@ module.exports = dashboard => {
 	const app = dashboard.app;
 	const model = dashboard.model;
 
-	// Home page
-	app.get('/', (request, response, next) => {
-		model.site.getAll()
-			.then(sites => {
-				response.locals.sites = sites;
-				response.render('index');
-			})
-			.catch(next);
-	});
-
 	// Site page
 	app.get('/sites/:siteId', (request, response, next) => {
 		model.site.getById(request.params.siteId)
