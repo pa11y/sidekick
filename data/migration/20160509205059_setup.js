@@ -1,9 +1,5 @@
 'use strict';
 
-// NOTE: during the alpha, this migration will be modified.
-// This is normally against the rules, but I'd like to leave
-// the alpha with a clean initial database setup.
-
 exports.up = (database, Promise) => {
 	return Promise.resolve()
 		.then(() => {

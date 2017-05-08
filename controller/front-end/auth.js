@@ -12,7 +12,11 @@ module.exports = dashboard => {
 
 	// Login page
 	app.get('/login', (request, response) => {
-		response.render('login');
+		response.render('login', {
+			formValues: {
+				referer: request.query.referer
+			}
+		});
 	});
 
 	// Login page form post
@@ -20,7 +24,7 @@ module.exports = dashboard => {
 		model.user.getByEmailAndPassword(request.body.email, request.body.password)
 			.then(user => {
 				request.session.userId = user.id;
-				response.redirect('/');
+				response.redirect(request.body.referer || '/');
 			})
 			.catch(error => {
 				response.status(401);

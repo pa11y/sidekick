@@ -422,7 +422,8 @@ describe('lib/sidekick', () => {
 				assert.calledOnce(sessionStore.MockKnexSessionStore);
 				assert.calledWithNew(sessionStore.MockKnexSessionStore);
 				assert.calledWith(sessionStore.MockKnexSessionStore, {
-					knex: knex.mockDatabase
+					knex: knex.mockDatabase,
+					createtable: false
 				});
 			});
 

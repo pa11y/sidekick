@@ -9,6 +9,7 @@
 	<h1>Login</h1>
 
 	<form action="/login" method="post">
+		<input type="hidden" name="referer" value="{formValues.referer}"/>
 
 		{?error}
 			<output name="error" class="form-error">
