@@ -3,7 +3,7 @@
 
 const assert = require('proclaim');
 const bcrypt = require('bcrypt');
-const JSDOM = require('jsdom').JSDOM;
+const jsdom = require('jsdom');
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('POST / (setup step)', () => {
@@ -101,22 +101,22 @@ describe('POST / (setup step)', () => {
 
 		it('responds with the setup page containing an error', done => {
 			request.expect(response => {
-				const dom = new JSDOM(response.text);
-				const document = dom.window.document;
+				jsdom.env(response.text, (error, window) => {
+					const document = window.document;
 
-				// Check page title
-				assert.match(document.querySelector('title').textContent, /setup/i);
+					// Check page title
+					assert.match(document.querySelector('title').textContent, /setup/i);
 
-				// Check error message
-				assert.match(document.querySelector('output[name="error"]').textContent, /valid email address/i);
+					// Check error message
+					assert.match(document.querySelector('output[name="error"]').textContent, /valid email address/i);
 
-				// Check that the form data is set
-				const form = document.querySelector('form[action="/"]');
-				const adminEmailField = form.querySelector('input[name="adminEmail"]');
-				assert.strictEqual(adminEmailField.getAttribute('value'), testSetupData.adminEmail);
-				const adminPasswordField = form.querySelector('input[name="adminPassword"]');
-				assert.strictEqual(adminPasswordField.getAttribute('value'), null);
-
+					// Check that the form data is set
+					const form = document.querySelector('form[action="/"]');
+					const adminEmailField = form.querySelector('input[name="adminEmail"]');
+					assert.strictEqual(adminEmailField.getAttribute('value'), testSetupData.adminEmail);
+					const adminPasswordField = form.querySelector('input[name="adminPassword"]');
+					assert.strictEqual(adminPasswordField.getAttribute('value'), null);
+				});
 			}).end(done);
 		});
 
@@ -139,15 +139,15 @@ describe('POST / (setup step)', () => {
 
 		it('responds with the setup page containing an error', done => {
 			request.expect(response => {
-				const dom = new JSDOM(response.text);
-				const document = dom.window.document;
+				jsdom.env(response.text, (error, window) => {
+					const document = window.document;
 
-				// Check page title
-				assert.match(document.querySelector('title').textContent, /setup/i);
+					// Check page title
+					assert.match(document.querySelector('title').textContent, /setup/i);
 
-				// Check error message
-				assert.match(document.querySelector('output[name="error"]').textContent, /password cannot be empty/i);
-
+					// Check error message
+					assert.match(document.querySelector('output[name="error"]').textContent, /password cannot be empty/i);
+				});
 			}).end(done);
 		});
 

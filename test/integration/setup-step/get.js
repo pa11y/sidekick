@@ -2,7 +2,7 @@
 'use strict';
 
 const assert = require('proclaim');
-const JSDOM = require('jsdom').JSDOM;
+const jsdom = require('jsdom');
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('GET / (setup step)', () => {
@@ -23,36 +23,36 @@ describe('GET / (setup step)', () => {
 
 	it('responds with the setup page', done => {
 		request.expect(response => {
-			const dom = new JSDOM(response.text);
-			const document = dom.window.document;
+			jsdom.env(response.text, (error, window) => {
+				const document = window.document;
 
-			// Check page title
-			assert.match(document.querySelector('title').textContent, /setup/i);
+				// Check page title
+				assert.match(document.querySelector('title').textContent, /setup/i);
 
-			// Check that form is present
-			const form = document.querySelector('form[action="/"]');
-			assert.strictEqual(form.getAttribute('method'), 'post');
+				// Check that form is present
+				const form = document.querySelector('form[action="/"]');
+				assert.strictEqual(form.getAttribute('method'), 'post');
 
-			// Check admin setup fields
-			const adminEmailField = form.querySelector('input[name="adminEmail"]');
-			assert.strictEqual(adminEmailField.getAttribute('type'), 'email');
-			const adminPasswordField = form.querySelector('input[name="adminPassword"]');
-			assert.strictEqual(adminPasswordField.getAttribute('type'), 'password');
+				// Check admin setup fields
+				const adminEmailField = form.querySelector('input[name="adminEmail"]');
+				assert.strictEqual(adminEmailField.getAttribute('type'), 'email');
+				const adminPasswordField = form.querySelector('input[name="adminPassword"]');
+				assert.strictEqual(adminPasswordField.getAttribute('type'), 'password');
 
-			// Check default access fields
-			const defaultAccessReadField = form.querySelector('input[name="defaultAccessRead"]');
-			assert.strictEqual(defaultAccessReadField.getAttribute('type'), 'checkbox');
-			assert.isNotNull(defaultAccessReadField.getAttribute('checked'));
-			const defaultAccessWriteField = form.querySelector('input[name="defaultAccessWrite"]');
-			assert.strictEqual(defaultAccessWriteField.getAttribute('type'), 'checkbox');
-			assert.isNull(defaultAccessWriteField.getAttribute('checked'));
-			const defaultAccessDeleteField = form.querySelector('input[name="defaultAccessDelete"]');
-			assert.strictEqual(defaultAccessDeleteField.getAttribute('type'), 'checkbox');
-			assert.isNull(defaultAccessDeleteField.getAttribute('checked'));
-			const defaultAccessAdminField = form.querySelector('input[name="defaultAccessAdmin"]');
-			assert.strictEqual(defaultAccessAdminField.getAttribute('type'), 'checkbox');
-			assert.isNull(defaultAccessAdminField.getAttribute('checked'));
-
+				// Check default access fields
+				const defaultAccessReadField = form.querySelector('input[name="defaultAccessRead"]');
+				assert.strictEqual(defaultAccessReadField.getAttribute('type'), 'checkbox');
+				assert.isNotNull(defaultAccessReadField.getAttribute('checked'));
+				const defaultAccessWriteField = form.querySelector('input[name="defaultAccessWrite"]');
+				assert.strictEqual(defaultAccessWriteField.getAttribute('type'), 'checkbox');
+				assert.isNull(defaultAccessWriteField.getAttribute('checked'));
+				const defaultAccessDeleteField = form.querySelector('input[name="defaultAccessDelete"]');
+				assert.strictEqual(defaultAccessDeleteField.getAttribute('type'), 'checkbox');
+				assert.isNull(defaultAccessDeleteField.getAttribute('checked'));
+				const defaultAccessAdminField = form.querySelector('input[name="defaultAccessAdmin"]');
+				assert.strictEqual(defaultAccessAdminField.getAttribute('type'), 'checkbox');
+				assert.isNull(defaultAccessAdminField.getAttribute('checked'));
+			});
 		}).end(done);
 	});
 

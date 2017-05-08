@@ -2,7 +2,7 @@
 'use strict';
 
 const assert = require('proclaim');
-const JSDOM = require('jsdom').JSDOM;
+const jsdom = require('jsdom').jsdom;
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('POST /login', () => {
@@ -97,21 +97,22 @@ describe('POST /login', () => {
 
 		it('responds with the login page containing an error', done => {
 			request.expect(response => {
-				const dom = new JSDOM(response.text);
-				const document = dom.window.document;
+				jsdom.env(response.text, (error, window) => {
+					const document = window.document;
 
-				// Check page title
-				assert.match(document.querySelector('title').textContent, /login/i);
+					// Check page title
+					assert.match(document.querySelector('title').textContent, /login/i);
 
-				// Check error message
-				assert.match(document.querySelector('output[name="error"]').textContent, /incorrect email or password/i);
+					// Check error message
+					assert.match(document.querySelector('output[name="error"]').textContent, /incorrect email or password/i);
 
-				// Check that the form data is set
-				const form = document.querySelector('form[action="/login"]');
-				const emailField = form.querySelector('input[name="email"]');
-				assert.strictEqual(emailField.getAttribute('value'), testLoginData.email);
-				const passwordField = form.querySelector('input[name="password"]');
-				assert.strictEqual(passwordField.getAttribute('value'), null);
+					// Check that the form data is set
+					const form = document.querySelector('form[action="/login"]');
+					const emailField = form.querySelector('input[name="email"]');
+					assert.strictEqual(emailField.getAttribute('value'), testLoginData.email);
+					const passwordField = form.querySelector('input[name="password"]');
+					assert.strictEqual(passwordField.getAttribute('value'), null);
+				});
 
 			}).end(done);
 		});
@@ -141,22 +142,22 @@ describe('POST /login', () => {
 
 		it('responds with the login page containing an error', done => {
 			request.expect(response => {
-				const dom = new JSDOM(response.text);
-				const document = dom.window.document;
+				jsdom.env(response.text, (error, window) => {
+					const document = window.document;
 
-				// Check page title
-				assert.match(document.querySelector('title').textContent, /login/i);
+					// Check page title
+					assert.match(document.querySelector('title').textContent, /login/i);
 
-				// Check error message
-				assert.match(document.querySelector('output[name="error"]').textContent, /incorrect email or password/i);
+					// Check error message
+					assert.match(document.querySelector('output[name="error"]').textContent, /incorrect email or password/i);
 
-				// Check that the form data is set
-				const form = document.querySelector('form[action="/login"]');
-				const emailField = form.querySelector('input[name="email"]');
-				assert.strictEqual(emailField.getAttribute('value'), testLoginData.email);
-				const passwordField = form.querySelector('input[name="password"]');
-				assert.strictEqual(passwordField.getAttribute('value'), null);
-
+					// Check that the form data is set
+					const form = document.querySelector('form[action="/login"]');
+					const emailField = form.querySelector('input[name="email"]');
+					assert.strictEqual(emailField.getAttribute('value'), testLoginData.email);
+					const passwordField = form.querySelector('input[name="password"]');
+					assert.strictEqual(passwordField.getAttribute('value'), null);
+				});
 			}).end(done);
 		});
 
