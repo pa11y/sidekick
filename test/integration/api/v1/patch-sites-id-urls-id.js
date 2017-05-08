@@ -17,43 +17,50 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 			name: 'Edited',
 			address: 'http://www.example.com/edited'
 		};
-		request = agent
-			.patch(`/api/v1/sites/${siteId}/urls/${urlId}`)
-			.set('Content-Type', 'application/json')
-			.send(testEdits);
 		return loadSeedData(dashboard, 'base');
 	});
 
-	it('responds with a 200 status', done => {
-		request.expect(200).end(done);
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with JSON', done => {
-		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
-	});
-
-	it('responds with a location header pointing to the updated URL', done => {
-		request.expect('Location', `/api/v1/sites/${siteId}/urls/${urlId}`).end(done);
-	});
-
-	it('updates the URL in the database', done => {
-		request.end(() => {
-			dashboard.database.select('*').from('urls').where({id: urlId})
-				.then(urls => {
-					assert.strictEqual(urls.length, 1);
-					assert.strictEqual(urls[0].name, 'Edited');
-					assert.strictEqual(urls[0].address, 'http://www.example.com/edited');
-					done();
-				})
-				.catch(done);
+		beforeEach(() => {
+			request = agent
+				.patch(`/api/v1/sites/${siteId}/urls/${urlId}`)
+				.set('Content-Type', 'application/json')
+				.send(testEdits);
 		});
-	});
 
-	it('responds with an empty object', done => {
-		request.expect(response => {
-			assert.isObject(response.body);
-			assert.deepEqual(response.body, {});
-		}).end(done);
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+		it('responds with JSON', done => {
+			request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+		});
+
+		it('responds with a location header pointing to the updated URL', done => {
+			request.expect('Location', `/api/v1/sites/${siteId}/urls/${urlId}`).end(done);
+		});
+
+		it('updates the URL in the database', done => {
+			request.end(() => {
+				dashboard.database.select('*').from('urls').where({id: urlId})
+					.then(urls => {
+						assert.strictEqual(urls.length, 1);
+						assert.strictEqual(urls[0].name, 'Edited');
+						assert.strictEqual(urls[0].address, 'http://www.example.com/edited');
+						done();
+					})
+					.catch(done);
+			});
+		});
+
+		it('responds with an empty object', done => {
+			request.expect(response => {
+				assert.isObject(response.body);
+				assert.deepEqual(response.body, {});
+			}).end(done);
+		});
+
 	});
 
 	describe('when the POST data includes Pa11y config', () => {

@@ -14,42 +14,49 @@ describe('PATCH /api/v1/sites/:siteId', () => {
 		testEdits = {
 			name: 'Edited'
 		};
-		request = agent
-			.patch(`/api/v1/sites/${siteId}`)
-			.set('Content-Type', 'application/json')
-			.send(testEdits);
 		return loadSeedData(dashboard, 'base');
 	});
 
-	it('responds with a 200 status', done => {
-		request.expect(200).end(done);
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with JSON', done => {
-		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
-	});
-
-	it('responds with a location header pointing to the updated site', done => {
-		request.expect('Location', `/api/v1/sites/${siteId}`).end(done);
-	});
-
-	it('updates the site in the database', done => {
-		request.end(() => {
-			dashboard.database.select('*').from('sites').where({id: siteId})
-				.then(sites => {
-					assert.strictEqual(sites.length, 1);
-					assert.strictEqual(sites[0].name, 'Edited');
-					done();
-				})
-				.catch(done);
+		beforeEach(() => {
+			request = agent
+				.patch(`/api/v1/sites/${siteId}`)
+				.set('Content-Type', 'application/json')
+				.send(testEdits);
 		});
-	});
 
-	it('responds with an empty object', done => {
-		request.expect(response => {
-			assert.isObject(response.body);
-			assert.deepEqual(response.body, {});
-		}).end(done);
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+		it('responds with JSON', done => {
+			request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+		});
+
+		it('responds with a location header pointing to the updated site', done => {
+			request.expect('Location', `/api/v1/sites/${siteId}`).end(done);
+		});
+
+		it('updates the site in the database', done => {
+			request.end(() => {
+				dashboard.database.select('*').from('sites').where({id: siteId})
+					.then(sites => {
+						assert.strictEqual(sites.length, 1);
+						assert.strictEqual(sites[0].name, 'Edited');
+						done();
+					})
+					.catch(done);
+			});
+		});
+
+		it('responds with an empty object', done => {
+			request.expect(response => {
+				assert.isObject(response.body);
+				assert.deepEqual(response.body, {});
+			}).end(done);
+		});
+
 	});
 
 	describe('when the POST data includes Pa11y config', () => {

@@ -15,48 +15,55 @@ describe('POST /api/v1/sites/:siteId/urls', () => {
 			name: 'Test URL',
 			address: 'http://www.example.com/'
 		};
-		request = agent
-			.post(`/api/v1/sites/${siteId}/urls`)
-			.set('Content-Type', 'application/json')
-			.send(testUrl);
 		return loadSeedData(dashboard, 'base');
 	});
 
-	it('responds with a 201 status', done => {
-		request.expect(201).end(done);
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with JSON', done => {
-		request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
-	});
-
-	it('responds with a location header pointing to the new URL', done => {
-		request.expect('Location', /^\/api\/v1\/sites\/[a-zA-Z0-9_-]+\/urls\/[a-zA-Z0-9_-]+$/).end(done);
-	});
-
-	it('creates a URL in the database', done => {
-		let response;
-		request.expect(requestResponse => {
-			response = requestResponse;
-		}).end(() => {
-			const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
-			dashboard.database.select('*').from('urls').where({id: urlId})
-				.then(urls => {
-					assert.strictEqual(urls.length, 1);
-					assert.strictEqual(urls[0].site, siteId);
-					assert.strictEqual(urls[0].name, 'Test URL');
-					assert.strictEqual(urls[0].address, 'http://www.example.com/');
-					done();
-				})
-				.catch(done);
+		beforeEach(() => {
+			request = agent
+				.post(`/api/v1/sites/${siteId}/urls`)
+				.set('Content-Type', 'application/json')
+				.send(testUrl);
 		});
-	});
 
-	it('responds with an empty object', done => {
-		request.expect(response => {
-			assert.isObject(response.body);
-			assert.deepEqual(response.body, {});
-		}).end(done);
+		it('responds with a 201 status', done => {
+			request.expect(201).end(done);
+		});
+
+		it('responds with JSON', done => {
+			request.expect('Content-Type', 'application/json; charset=utf-8').end(done);
+		});
+
+		it('responds with a location header pointing to the new URL', done => {
+			request.expect('Location', /^\/api\/v1\/sites\/[a-zA-Z0-9_-]+\/urls\/[a-zA-Z0-9_-]+$/).end(done);
+		});
+
+		it('creates a URL in the database', done => {
+			let response;
+			request.expect(requestResponse => {
+				response = requestResponse;
+			}).end(() => {
+				const urlId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
+				dashboard.database.select('*').from('urls').where({id: urlId})
+					.then(urls => {
+						assert.strictEqual(urls.length, 1);
+						assert.strictEqual(urls[0].site, siteId);
+						assert.strictEqual(urls[0].name, 'Test URL');
+						assert.strictEqual(urls[0].address, 'http://www.example.com/');
+						done();
+					})
+					.catch(done);
+			});
+		});
+
+		it('responds with an empty object', done => {
+			request.expect(response => {
+				assert.isObject(response.body);
+				assert.deepEqual(response.body, {});
+			}).end(done);
+		});
+
 	});
 
 	describe('when the POST data includes Pa11y config', () => {

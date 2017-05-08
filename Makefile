@@ -4,6 +4,7 @@ include Makefile.node
 # --------------
 
 INTEGRATION_FLAGS=--recursive
+INTEGRATION_TIMEOUT=10000
 
 
 # Running tasks
