@@ -6,17 +6,21 @@ const loadSeedData = require('../../helper/load-seed-data');
 describe('GET /api/v1', () => {
 	let request;
 
-	beforeEach(() => {
-		request = agent.get('/api/v1');
-		return loadSeedData(dashboard, 'base');
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with a 200 status', done => {
-		request.expect(200).end(done);
-	});
+		beforeEach(() => {
+			request = agent.get('/api/v1');
+			return loadSeedData(dashboard, 'base');
+		});
 
-	it('responds with HTML', done => {
-		request.expect('Content-Type', 'text/html; charset=utf-8').end(done);
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+		it('responds with HTML', done => {
+			request.expect('Content-Type', 'text/html; charset=utf-8').end(done);
+		});
+
 	});
 
 	describe('with no User-Agent header', () => {

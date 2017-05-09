@@ -67,6 +67,22 @@ module.exports = dashboard => {
 			return bcrypt.compare(password, hash);
 		},
 
+		// Check whether a user has a permission
+		hasPermission(user, permission) {
+			switch (permission) {
+				case 'read':
+					return user.allowRead || false;
+				case 'write':
+					return user.allowWrite || false;
+				case 'delete':
+					return user.allowDelete || false;
+				case 'admin':
+					return user.allowAdmin || false;
+				default:
+					return false;
+			}
+		},
+
 		// Validate/sanitize user data input
 		cleanInput(data) {
 			try {

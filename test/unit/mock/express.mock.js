@@ -28,6 +28,7 @@ const mockApp = module.exports.mockApp = {
 const mockStaticMiddleware = module.exports.mockStaticMiddleware = sinon.stub();
 
 module.exports.mockRequest = {
+	app: mockApp,
 	headers: {},
 	session: {}
 };

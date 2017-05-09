@@ -2,24 +2,20 @@
 'use strict';
 
 const assert = require('proclaim');
+const authenticateWithUser = require('../helper/authenticate-with-user');
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('GET /logout', () => {
 	let request;
 
 	beforeEach(() => {
-		request = agent
-			.get('/logout')
-			.set('Cookie', 'sidekick.sid=mock-sid');
-		return loadSeedData(dashboard, 'base')
-			.then(() => {
-				return dashboard.database('sessions').insert({
-					sid: 'mock-sid',
-					sess: JSON.stringify({
-						userId: 'H1tA5TKkb'
-					}),
-					expired: new Date(Date.now() + 86400000)
-				});
+		return Promise.resolve()
+			.then(() => loadSeedData(dashboard, 'base'))
+			.then(() => authenticateWithUser('admin@example.com', 'password'))
+			.then(cookie => {
+				request = agent
+					.get('/logout')
+					.set('Cookie', cookie);
 			});
 	});
 

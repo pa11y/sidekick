@@ -320,4 +320,38 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 
 	});
 
+	describe('when the default permissions do not allow write access and a write API key is specified', () => {
+
+		beforeEach(() => {
+			request = agent
+				.patch(`/api/v1/sites/${siteId}/urls/${urlId}`)
+				.set('Content-Type', 'application/json')
+				.set('X-Api-Key', 'mock-readwrite-api-key')
+				.send(testEdits);
+			return loadSeedData(dashboard, 'permissions');
+		});
+
+		it('responds with a 200 status', done => {
+			request.expect(200).end(done);
+		});
+
+	});
+
+	describe('when the default permissions do not allow write access and no API key is specified', () => {
+
+		beforeEach(() => {
+			request = agent
+				.patch(`/api/v1/sites/${siteId}/urls/${urlId}`)
+				.set('Content-Type', 'application/json')
+				.set('X-Api-Key', 'mock-readonly-api-key')
+				.send(testEdits);
+			return loadSeedData(dashboard, 'permissions');
+		});
+
+		it('responds with a 403 status', done => {
+			request.expect(403).end(done);
+		});
+
+	});
+
 });
