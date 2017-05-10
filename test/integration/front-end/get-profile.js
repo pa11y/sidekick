@@ -1,6 +1,7 @@
 /* global agent, dashboard */
 'use strict';
 
+const assert = require('proclaim');
 const authenticateWithUser = require('../helper/authenticate-with-user');
 const jsdom = require('jsdom').jsdom;
 const loadSeedData = require('../helper/load-seed-data');

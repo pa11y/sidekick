@@ -3,7 +3,6 @@
 
 const assert = require('proclaim');
 const authenticateWithUser = require('../helper/authenticate-with-user');
-const jsdom = require('jsdom').jsdom;
 const loadSeedData = require('../helper/load-seed-data');
 
 describe('GET /profile/regenerate-api-key', () => {
