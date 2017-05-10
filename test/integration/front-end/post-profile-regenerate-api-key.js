@@ -30,7 +30,7 @@ describe('GET /profile/regenerate-api-key', () => {
 			request.expect('Location', '/profile').end(done);
 		});
 
-		it.only('updates the user API key in the database', done => {
+		it('updates the user API key in the database', done => {
 			request.end(() => {
 				dashboard.database.select('*').from('users').where({email: 'admin@example.com'})
 					.then(users => {

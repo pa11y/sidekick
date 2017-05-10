@@ -5,7 +5,7 @@ const authenticateWithUser = require('../helper/authenticate-with-user');
 const jsdom = require('jsdom').jsdom;
 const loadSeedData = require('../helper/load-seed-data');
 
-describe.only('GET /profile', () => {
+describe('GET /profile', () => {
 	let request;
 
 	describe('authenticated', () => {
