@@ -7,13 +7,27 @@
 {<content}
 
 <h1>{appName} API</h1>
+
 <p>
 	This is the documentation for the {appName} API version 1.
 </p>
 <ul>
+	<li><a href="#authentication">Authentication</a></li>
 	<li><a href="#endpoints">Endpoints</a></li>
 	<li><a href="#entities">Entities</a></li>
 </ul>
+
+
+<h2 id="endpoints">Authentication</h2>
+
+<p>
+	Some endpoints require that you use an API key to authenticate, otherwise they will respond with a <code>403</code> error.{~s}
+	To authenticate, send your user's API key in an <code>X-Api-Key</code> header.
+</p>
+
+<p>
+	You can find your API key on <a href="/profile">your profile page</a>.
+</p>
 
 
 <h2 id="endpoints">Endpoints</h2>
@@ -22,11 +36,14 @@
 <h3><code>POST /api/v1/sites</code></h3>
 
 <p>
-	Create a new <a href="#entities-site">site</a> by POSTing JSON.
+	Create a new <a href="#entities-site">site</a> by POSTing JSON.{~s}
 	This responds with a <code>Location</code> header that points to the new site in the API.
 </p>
 
 <p>
+	{?settings.defaultPermissions.allowWrite}{:else}
+		This endpoint requires <a href="#authentication">authentication</a>.{~s}
+	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
 </p>
 
@@ -40,6 +57,10 @@
 <p>
 	Get a list of all <a href="#entities-site">sites</a> as a JSON array.
 </p>
+
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
 
 <pre>{`{
 	sites: [
@@ -59,6 +80,10 @@
 	Get a single <a href="#entities-site">site</a> as a JSON object.
 </p>
 
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
+
 <pre>{`{
 	site: {
 		// site entity
@@ -69,11 +94,14 @@
 <h3><code>PATCH /api/v1/sites/<var>:siteId</var></code></h3>
 
 <p>
-	Edit a <a href="#entities-site">site</a> by POSTing JSON.
+	Edit a <a href="#entities-site">site</a> by POSTing JSON.{~s}
 	This responds with a <code>Location</code> header that points to the edited site in the API.
 </p>
 
 <p>
+	{?settings.defaultPermissions.allowWrite}{:else}
+		This endpoint requires <a href="#authentication">authentication</a>.{~s}
+	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
 </p>
 
@@ -85,10 +113,14 @@
 <h3><code>DELETE /api/v1/sites/<var>:siteId</var></code></h3>
 
 <p>
-	Delete a <a href="#entities-site">site</a> by ID.
-	This also deletes all associated <a href="#entities-url">URL</a> and <a href="#entities-result">result</a> objects,
-	returning JSON which outlines how many records were deleted:
+	Delete a <a href="#entities-site">site</a> by ID.{~s}
+	This also deletes all associated <a href="#entities-url">URL</a> and <a href="#entities-result">result</a> objects,{~s}
+	returning JSON which outlines how many records were deleted.
 </p>
+
+{?settings.defaultPermissions.allowDelete}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowDelete}
 
 <pre>{`{
 	deleted: {
@@ -105,6 +137,10 @@
 	Get a list of all site <a href="#entities-result">results</a> as a JSON array.
 </p>
 
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
+
 <pre>{`{
 	results: [
 		{
@@ -120,11 +156,14 @@
 <h3><code>POST /api/v1/sites/<var>:siteId</var>/urls</code></h3>
 
 <p>
-	Create a new <a href="#entities-url">URL</a> by POSTing JSON.
+	Create a new <a href="#entities-url">URL</a> by POSTing JSON.{~s}
 	This responds with a <code>Location</code> header that points to the new URL in the API.
 </p>
 
 <p>
+	{?settings.defaultPermissions.allowWrite}{:else}
+		This endpoint requires <a href="#authentication">authentication</a>.{~s}
+	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
 </p>
 
@@ -139,6 +178,10 @@
 <p>
 	Get a list of all site <a href="#entities-url">URLs</a> as a JSON array.
 </p>
+
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
 
 <pre>{`{
 	urls: [
@@ -158,6 +201,10 @@
 	Get a single <a href="#entities-url">URL</a> as a JSON object.
 </p>
 
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
+
 <pre>{`{
 	url: {
 		// url entity
@@ -168,11 +215,14 @@
 <h3><code>PATCH /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var></code></h3>
 
 <p>
-	Edit a <a href="#entities-url">URL</a> by POSTing JSON.
+	Edit a <a href="#entities-url">URL</a> by POSTing JSON.{~s}
 	This responds with a <code>Location</code> header that points to the edited URL in the API.
 </p>
 
 <p>
+	{?settings.defaultPermissions.allowWrite}{:else}
+		This endpoint requires <a href="#authentication">authentication</a>.{~s}
+	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
 </p>
 
@@ -182,11 +232,35 @@
 }`}</pre>
 
 
+<h3><code>DELETE /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var></code></h3>
+
+<p>
+	Delete a <a href="#entities-url">URL</a> by ID.{~s}
+	This also deletes all associated <a href="#entities-result">result</a> objects,{~s}
+	returning JSON which outlines how many records were deleted.
+</p>
+
+{?settings.defaultPermissions.allowDelete}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowDelete}
+
+<pre>{`{
+	deleted: {
+		urls: 1,
+		results: 40
+	}
+}`}</pre>
+
+
 <h3><code>GET /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var>/results</code></h3>
 
 <p>
 	Get a list of all URL <a href="#entities-result">results</a> as a JSON array.
 </p>
+
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
 
 <pre>{`{
 	results: [
@@ -206,9 +280,30 @@
 	Get a single <a href="#entities-result">result</a> as a JSON object.
 </p>
 
+{?settings.defaultPermissions.allowRead}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowRead}
+
 <pre>{`{
 	result: {
 		// result entity
+	}
+}`}</pre>
+
+
+<h3><code>DELETE /api/v1/sites/<var>:siteId</var>/urls/<var>:urlId</var>/results/<var>:resultId</var></code></h3>
+
+<p>
+	Delete a <a href="#entities-result">result</a> by ID, returning JSON which outlines how many records were deleted.
+</p>
+
+{?settings.defaultPermissions.allowDelete}{:else}
+	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
+{/settings.defaultPermissions.allowDelete}
+
+<pre>{`{
+	deleted: {
+		results: 1
 	}
 }`}</pre>
 

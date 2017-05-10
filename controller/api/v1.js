@@ -11,7 +11,7 @@ module.exports = dashboard => {
 
 	// API documentation
 	app.get('/api/v1', (request, response) => {
-		response.render('api-v1');
+		response.redirect('/docs/api/v1');
 	});
 
 	// Create a site

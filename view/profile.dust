@@ -16,7 +16,7 @@
 
 	<form action="/profile/regenerate-api-key" method="post">
 		<p>
-			You can access the <a href="/api/v1">API for {appName}</a> using the key below:<br/>
+			You can access the <a href="/docs/api/v1">API for {appName}</a> using the key below:<br/>
 			<b><code>{user.apiKey}</code></b>
 		</p>
 		<p>

@@ -3,9 +3,9 @@
 module.exports = dashboard => {
 	const app = dashboard.app;
 
-	// API page (redirect to latest version)
+	// API page (redirect to latest version documentation)
 	app.get('/api', (request, response) => {
-		response.redirect('/api/v1');
+		response.redirect('/docs/api/v1');
 	});
 
 };
