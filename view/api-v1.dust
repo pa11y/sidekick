@@ -41,7 +41,7 @@
 </p>
 
 <p>
-	{?settings.defaultPermissions.allowWrite}{:else}
+	{^settings.defaultPermissions.allowWrite}
 		This endpoint requires <a href="#authentication">authentication</a>.{~s}
 	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
@@ -58,7 +58,7 @@
 	Get a list of all <a href="#entities-site">sites</a> as a JSON array.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -80,7 +80,7 @@
 	Get a single <a href="#entities-site">site</a> as a JSON object.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -99,7 +99,7 @@
 </p>
 
 <p>
-	{?settings.defaultPermissions.allowWrite}{:else}
+	{^settings.defaultPermissions.allowWrite}
 		This endpoint requires <a href="#authentication">authentication</a>.{~s}
 	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
@@ -118,7 +118,7 @@
 	returning JSON which outlines how many records were deleted.
 </p>
 
-{?settings.defaultPermissions.allowDelete}{:else}
+{^settings.defaultPermissions.allowDelete}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowDelete}
 
@@ -137,7 +137,7 @@
 	Get a list of all site <a href="#entities-result">results</a> as a JSON array.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -161,7 +161,7 @@
 </p>
 
 <p>
-	{?settings.defaultPermissions.allowWrite}{:else}
+	{^settings.defaultPermissions.allowWrite}
 		This endpoint requires <a href="#authentication">authentication</a>.{~s}
 	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
@@ -179,7 +179,7 @@
 	Get a list of all site <a href="#entities-url">URLs</a> as a JSON array.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -201,7 +201,7 @@
 	Get a single <a href="#entities-url">URL</a> as a JSON object.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -220,7 +220,7 @@
 </p>
 
 <p>
-	{?settings.defaultPermissions.allowWrite}{:else}
+	{^settings.defaultPermissions.allowWrite}
 		This endpoint requires <a href="#authentication">authentication</a>.{~s}
 	{/settings.defaultPermissions.allowWrite}
 	Expects the following JSON POST body:
@@ -240,7 +240,7 @@
 	returning JSON which outlines how many records were deleted.
 </p>
 
-{?settings.defaultPermissions.allowDelete}{:else}
+{^settings.defaultPermissions.allowDelete}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowDelete}
 
@@ -258,7 +258,7 @@
 	Get a list of all URL <a href="#entities-result">results</a> as a JSON array.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -280,7 +280,7 @@
 	Get a single <a href="#entities-result">result</a> as a JSON object.
 </p>
 
-{?settings.defaultPermissions.allowRead}{:else}
+{^settings.defaultPermissions.allowRead}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowRead}
 
@@ -297,7 +297,7 @@
 	Delete a <a href="#entities-result">result</a> by ID, returning JSON which outlines how many records were deleted.
 </p>
 
-{?settings.defaultPermissions.allowDelete}{:else}
+{^settings.defaultPermissions.allowDelete}
 	<p>This endpoint requires <a href="#authentication">authentication</a>.</p>
 {/settings.defaultPermissions.allowDelete}
 
