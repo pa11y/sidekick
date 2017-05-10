@@ -19,23 +19,23 @@ module.exports = dashboard => {
 		},
 
 		// Get a single user by ID
-		getById(id) {
+		getById(id, options) {
 			return this._rawGetById(id).then(user => {
-				return (user ? this.prepareForOutput(user) : user);
+				return (user ? this.prepareForOutput(user, options) : user);
 			});
 		},
 
 		// Get a single user by email and password
-		getByEmailAndPassword(email, password) {
+		getByEmailAndPassword(email, password, options) {
 			return this._rawGetByEmailAndPassword(email, password).then(user => {
-				return (user ? this.prepareForOutput(user) : user);
+				return (user ? this.prepareForOutput(user, options) : user);
 			});
 		},
 
 		// Get a single user by API key
-		getByApiKey(apiKey) {
+		getByApiKey(apiKey, options) {
 			return this._rawGetByApiKey(apiKey).then(user => {
-				return (user ? this.prepareForOutput(user) : user);
+				return (user ? this.prepareForOutput(user, options) : user);
 			});
 		},
 
@@ -53,6 +53,18 @@ module.exports = dashboard => {
 					cleanData.apiKey = uuid();
 					cleanData.createdAt = cleanData.updatedAt = new Date();
 					return this._rawCreate(cleanData);
+				});
+		},
+
+		// Regenerate a user's API key by ID
+		regenerateApiKey(id) {
+			return database(table)
+				.where({id})
+				.update({
+					apiKey: uuid()
+				}, 'id')
+				.then(ids => {
+					return Boolean(ids.length);
 				});
 		},
 
@@ -135,9 +147,12 @@ module.exports = dashboard => {
 		},
 
 		// Prepare a user object for output
-		prepareForOutput(user) {
+		prepareForOutput(user, options) {
+			options = options || {};
 			delete user.password;
-			delete user.apiKey;
+			if (!options.safe) {
+				delete user.apiKey;
+			}
 			user.paths = {
 				api: `/api/v1/users/${user.id}`
 			};

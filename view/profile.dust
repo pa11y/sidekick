@@ -1,0 +1,29 @@
+{>"layout/default"/}
+
+{<title}
+	Profile - {appName}
+{/title}
+
+{<content}
+
+	<h1>Profile</h1>
+
+	<p>
+		This is your user profile. Here you can update your preferences and manage access.
+	</p>
+
+	<h2>API Access</h2>
+
+	<form action="/profile/regenerate-api-key" method="post">
+		<p>
+			You can access the <a href="/docs/api/v1">API for {appName}</a> using the key below:<br/>
+			<b><code>{user.apiKey}</code></b>
+		</p>
+		<p>
+			You can also regenerate this API key if it's accidentally leaked.{~s}
+			This will break any integrations that you have set up.{~s}
+			<input type="submit" value="Regenerate API Key"/>
+		</p>
+	</form>
+
+{/content}

@@ -15,6 +15,7 @@ describe('lib/sidekick', () => {
 	let cors;
 	let defaults;
 	let defaultViewData;
+	let disableCache;
 	let expectedMigrationConfig;
 	let expectedSeedConfig;
 	let express;
@@ -56,6 +57,9 @@ describe('lib/sidekick', () => {
 
 		defaults = sinon.spy(require('lodash/defaultsDeep'));
 		mockery.registerMock('lodash/defaultsDeep', defaults);
+
+		disableCache = require('../mock/disable-cache.mock');
+		mockery.registerMock('../middleware/disable-cache', disableCache);
 
 		express = require('../mock/express.mock');
 		mockery.registerMock('express', express);
@@ -320,6 +324,15 @@ describe('lib/sidekick', () => {
 				assert.calledWithExactly(express.mockApp.use, cors.mockMiddleware);
 			});
 
+			it('disables etag generation', () => {
+				assert.calledWithExactly(express.mockApp.disable, 'etag');
+			});
+
+			it('creates and mounts a disable-cache middleware', () => {
+				assert.calledOnce(disableCache);
+				assert.calledWithExactly(express.mockApp.use, disableCache.mockMiddleware);
+			});
+
 			it('creates and mounts a compression middleware', () => {
 				assert.calledOnce(compression);
 				assert.calledWithExactly(compression);
@@ -482,6 +495,7 @@ describe('lib/sidekick', () => {
 				assert.callOrder(
 					express.mockApp.use.withArgs(morgan.mockMiddleware).named('morgan'),
 					express.mockApp.use.withArgs(cors.mockMiddleware).named('cors'),
+					express.mockApp.use.withArgs(disableCache.mockMiddleware).named('disableCache'),
 					express.mockApp.use.withArgs(compression.mockMiddleware).named('compression'),
 					express.mockApp.use.withArgs(express.mockStaticMiddleware).named('static'),
 					express.mockApp.use.withArgs(resaveBrowserify.mockResaver).named('browserify'),

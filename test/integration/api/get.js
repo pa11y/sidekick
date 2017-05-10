@@ -15,8 +15,8 @@ describe('GET /api', () => {
 		request.expect(302).end(done);
 	});
 
-	it('responds with a Location header pointing to /api/v1', done => {
-		request.expect('Location', '/api/v1').end(done);
+	it('responds with a Location header pointing to /docs/api/v1', done => {
+		request.expect('Location', '/docs/api/v1').end(done);
 	});
 
 });
