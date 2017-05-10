@@ -12,7 +12,7 @@ function loadUserFromSession(dashboard) {
 				if (!request.session.userId) {
 					return null;
 				}
-				return model.user.getById(request.session.userId);
+				return model.user.getById(request.session.userId, true);
 			})
 			.then(user => {
 				if (user) {

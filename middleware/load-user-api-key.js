@@ -21,7 +21,7 @@ function loadUserFromApiKey(dashboard) {
 						allowAdmin: (defaultPermissions ? defaultPermissions.allowAdmin : false)
 					};
 				}
-				return model.user.getByApiKey(request.headers['x-api-key']);
+				return model.user.getByApiKey(request.headers['x-api-key'], true);
 			})
 			.then(user => {
 				if (!user) {

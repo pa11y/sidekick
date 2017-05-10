@@ -8,9 +8,13 @@
 		<nav>
 			<ul>
 
+				{! Key links !}
+				<li><a href="/">Dashboard</a></li>
+
 				{! User login/logout !}
 				{?user.isLoggedIn}
-					<li>Logged in as {user.email} (<a href="/logout">Logout</a>)</li>
+					<li><a href="/profile">Profile</a> ({user.email})</li>
+					<li><a href="/logout">Logout</a></li>
 				{:else}
 					<li><a href="/login">Login</a></li>
 				{/user.isLoggedIn}

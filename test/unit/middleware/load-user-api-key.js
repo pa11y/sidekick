@@ -51,7 +51,7 @@ describe('middleware/load-user-api-key', () => {
 
 			it('loads the user with the given API key from the database', () => {
 				assert.calledOnce(sidekick.mockDashboard.model.user.getByApiKey);
-				assert.calledWithExactly(sidekick.mockDashboard.model.user.getByApiKey, express.mockRequest.headers['x-api-key']);
+				assert.calledWithExactly(sidekick.mockDashboard.model.user.getByApiKey, express.mockRequest.headers['x-api-key'], true);
 			});
 
 			it('adds an `isLoggedIn` property to the user set to `true`', () => {
