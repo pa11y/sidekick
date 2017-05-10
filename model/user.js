@@ -19,23 +19,23 @@ module.exports = dashboard => {
 		},
 
 		// Get a single user by ID
-		getById(id, safe) {
+		getById(id, options) {
 			return this._rawGetById(id).then(user => {
-				return (user ? this.prepareForOutput(user, safe) : user);
+				return (user ? this.prepareForOutput(user, options) : user);
 			});
 		},
 
 		// Get a single user by email and password
-		getByEmailAndPassword(email, password, safe) {
+		getByEmailAndPassword(email, password, options) {
 			return this._rawGetByEmailAndPassword(email, password).then(user => {
-				return (user ? this.prepareForOutput(user, safe) : user);
+				return (user ? this.prepareForOutput(user, options) : user);
 			});
 		},
 
 		// Get a single user by API key
-		getByApiKey(apiKey, safe) {
+		getByApiKey(apiKey, options) {
 			return this._rawGetByApiKey(apiKey).then(user => {
-				return (user ? this.prepareForOutput(user, safe) : user);
+				return (user ? this.prepareForOutput(user, options) : user);
 			});
 		},
 
@@ -147,9 +147,10 @@ module.exports = dashboard => {
 		},
 
 		// Prepare a user object for output
-		prepareForOutput(user, safe) {
+		prepareForOutput(user, options) {
+			options = options || {};
 			delete user.password;
-			if (!safe) {
+			if (!options.safe) {
 				delete user.apiKey;
 			}
 			user.paths = {

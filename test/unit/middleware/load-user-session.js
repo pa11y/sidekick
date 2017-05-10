@@ -51,7 +51,9 @@ describe('middleware/load-user-session', () => {
 
 			it('loads the user with the given session ID from the database', () => {
 				assert.calledOnce(sidekick.mockDashboard.model.user.getById);
-				assert.calledWithExactly(sidekick.mockDashboard.model.user.getById, express.mockRequest.session.userId, true);
+				assert.calledWith(sidekick.mockDashboard.model.user.getById, express.mockRequest.session.userId, {
+					safe: true
+				});
 			});
 
 			it('adds an `isLoggedIn` property to the user set to `true`', () => {
