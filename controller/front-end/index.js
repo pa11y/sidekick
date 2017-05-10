@@ -24,7 +24,6 @@ module.exports = dashboard => {
 		}
 
 		// No read permissions, redirect to login
-		response.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		response.redirect('/login');
 	});
 

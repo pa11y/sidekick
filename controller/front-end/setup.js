@@ -63,7 +63,6 @@ module.exports = dashboard => {
 				return model.settings.edit(dashboard.settings);
 			})
 			.then(() => {
-				response.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 				response.redirect('/');
 			})
 			.catch(error => {

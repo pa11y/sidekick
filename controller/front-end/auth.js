@@ -24,7 +24,6 @@ module.exports = dashboard => {
 		model.user.getByEmailAndPassword(request.body.email, request.body.password)
 			.then(user => {
 				request.session.userId = user.id;
-				response.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 				response.redirect(request.body.referer || '/');
 			})
 			.catch(error => {
@@ -39,7 +38,6 @@ module.exports = dashboard => {
 	// Logout page
 	app.get('/logout', (request, response) => {
 		delete request.session;
-		response.set('Cache-Control', 'no-cache, no-store, must-revalidate');
 		response.redirect('/');
 	});
 
