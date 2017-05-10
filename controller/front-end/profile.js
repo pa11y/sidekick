@@ -21,7 +21,7 @@ module.exports = dashboard => {
 	// Regenerate the current user's API key
 	app.post('/profile/regenerate-api-key', (request, response, next) => {
 		if (!request.user.isLoggedIn) {
-			return httpError(401);
+			return next(httpError(401));
 		}
 		model.user.regenerateApiKey(request.user.id)
 			.then(() => {
