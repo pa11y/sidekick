@@ -113,7 +113,10 @@ describe('POST /api/v1/sites', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'Site should be an object',
+					message: 'Invalid site data',
+					validationMessages: [
+						'Site should be an object'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -138,7 +141,10 @@ describe('POST /api/v1/sites', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'Site name should be a string',
+					message: 'Invalid site data',
+					validationMessages: [
+						'Site name should be a string'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -163,7 +169,10 @@ describe('POST /api/v1/sites', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'Site name cannot be empty',
+					message: 'Invalid site data',
+					validationMessages: [
+						'Site name cannot be empty'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -188,7 +197,10 @@ describe('POST /api/v1/sites', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'Site ID cannot be set manually',
+					message: 'Invalid site data',
+					validationMessages: [
+						'Site ID cannot be set manually'
+					],
 					status: 400
 				}
 			}).end(done);

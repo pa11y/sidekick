@@ -2,6 +2,7 @@
 'use strict';
 
 const shortid = require('shortid');
+const ValidationError = require('../lib/validation-error');
 
 module.exports = dashboard => {
 	const database = dashboard.database;
@@ -56,27 +57,27 @@ module.exports = dashboard => {
 
 		// Validate/sanitize site data input
 		cleanInput(data) {
-			try {
-				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
-					throw new Error('URL should be an object');
-				}
+			const validationErrors = [];
+
+			// Validation
+			if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+				validationErrors.push('URL should be an object');
+			} else {
 				if (data.id) {
-					throw new Error('URL ID cannot be set manually');
+					validationErrors.push('URL ID cannot be set manually');
 				}
 				if (typeof data.site !== 'string') {
-					throw new Error('URL site should be a string');
+					validationErrors.push('URL site should be a string');
 				}
 				if (typeof data.name !== 'string') {
-					throw new Error('URL name should be a string');
-				}
-				if (!data.name.trim()) {
-					throw new Error('URL name cannot be empty');
+					validationErrors.push('URL name should be a string');
+				} else if (!data.name.trim()) {
+					validationErrors.push('URL name cannot be empty');
 				}
 				if (typeof data.address !== 'string') {
-					throw new Error('URL address should be a string');
-				}
-				if (!data.address.trim()) {
-					throw new Error('URL address cannot be empty');
+					validationErrors.push('URL address should be a string');
+				} else if (!data.address.trim()) {
+					validationErrors.push('URL address cannot be empty');
 				}
 				if (
 					data.pa11yConfig !== undefined &&
@@ -86,11 +87,12 @@ module.exports = dashboard => {
 						data.pa11yConfig === null
 					)
 				) {
-					throw new Error('URL Pa11y config should be an object');
+					validationErrors.push('URL Pa11y config should be an object');
 				}
-			} catch (error) {
-				error.isValidationError = true;
-				return Promise.reject(error);
+			}
+
+			if (validationErrors.length) {
+				return Promise.reject(new ValidationError('Invalid URL data', validationErrors));
 			}
 			const cleanData = {
 				site: data.site,

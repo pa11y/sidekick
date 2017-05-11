@@ -17,7 +17,16 @@
 
 		{?error}
 			<output name="error" class="form-error">
-				There was an error setting up {appName}: {error.message}
+				<p>There was an error setting up {appName}:</p>
+				{?error.validationMessages}
+					<ul>
+						{#error.validationMessages}
+							<li>{.}</li>
+						{/error.validationMessages}
+					</ul>
+				{:else}
+					<p>{error.message}</p>
+				{/error.validationMessages}
 			</output>
 		{/error}
 

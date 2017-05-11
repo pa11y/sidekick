@@ -2,6 +2,7 @@
 'use strict';
 
 const shortid = require('shortid');
+const ValidationError = require('../lib/validation-error');
 
 module.exports = dashboard => {
 	const database = dashboard.database;
@@ -47,18 +48,19 @@ module.exports = dashboard => {
 
 		// Validate/sanitize site data input
 		cleanInput(data) {
-			try {
-				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
-					throw new Error('Site should be an object');
-				}
+			const validationErrors = [];
+
+			// Validation
+			if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+				validationErrors.push('Site should be an object');
+			} else {
 				if (data.id) {
-					throw new Error('Site ID cannot be set manually');
+					validationErrors.push('Site ID cannot be set manually');
 				}
 				if (typeof data.name !== 'string') {
-					throw new Error('Site name should be a string');
-				}
-				if (!data.name.trim()) {
-					throw new Error('Site name cannot be empty');
+					validationErrors.push('Site name should be a string');
+				} else if (!data.name.trim()) {
+					validationErrors.push('Site name cannot be empty');
 				}
 				if (
 					data.pa11yConfig !== undefined &&
@@ -68,11 +70,12 @@ module.exports = dashboard => {
 						data.pa11yConfig === null
 					)
 				) {
-					throw new Error('Site Pa11y config should be an object');
+					validationErrors.push('Site Pa11y config should be an object');
 				}
-			} catch (error) {
-				error.isValidationError = true;
-				return Promise.reject(error);
+			}
+
+			if (validationErrors.length) {
+				return Promise.reject(new ValidationError('Invalid site data', validationErrors));
 			}
 			const cleanData = {
 				name: data.name.trim()
