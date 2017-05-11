@@ -60,6 +60,7 @@ function buildRenderContext(dashboard, error) {
 		error: {
 			status: statusCode,
 			message: error.message,
+			validationMessages: error.validationMessages,
 			stack: (dashboard.environment === 'development' ? error.stack : undefined)
 		}
 	};

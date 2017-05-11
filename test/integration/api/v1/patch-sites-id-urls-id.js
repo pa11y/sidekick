@@ -111,7 +111,10 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'URL should be an object',
+					message: 'Invalid URL data',
+					validationMessages: [
+						'URL should be an object'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -136,7 +139,10 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'URL name should be a string',
+					message: 'Invalid URL data',
+					validationMessages: [
+						'URL name should be a string'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -161,7 +167,10 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'URL name cannot be empty',
+					message: 'Invalid URL data',
+					validationMessages: [
+						'URL name cannot be empty'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -186,7 +195,10 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'URL address should be a string',
+					message: 'Invalid URL data',
+					validationMessages: [
+						'URL address should be a string'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -211,7 +223,10 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'URL address cannot be empty',
+					message: 'Invalid URL data',
+					validationMessages: [
+						'URL address cannot be empty'
+					],
 					status: 400
 				}
 			}).end(done);
@@ -236,7 +251,10 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 		it('responds with an error message', done => {
 			request.expect({
 				error: {
-					message: 'URL ID cannot be set manually',
+					message: 'Invalid URL data',
+					validationMessages: [
+						'URL ID cannot be set manually'
+					],
 					status: 400
 				}
 			}).end(done);

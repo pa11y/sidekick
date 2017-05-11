@@ -56,6 +56,7 @@ describe('middleware/handle-errors', () => {
 				assert.calledWith(express.mockResponse.render, 'error', {
 					error: {
 						message: error.message,
+						validationMessages: undefined,
 						status: error.status,
 						stack: undefined
 					}
@@ -111,6 +112,7 @@ describe('middleware/handle-errors', () => {
 					assert.calledWith(express.mockResponse.render, 'error', {
 						error: {
 							message: error.message,
+							validationMessages: undefined,
 							status: error.status,
 							stack: error.stack
 						}
@@ -145,6 +147,30 @@ describe('middleware/handle-errors', () => {
 				it('sets the response status to 500', () => {
 					assert.calledOnce(express.mockResponse.status);
 					assert.calledWithExactly(express.mockResponse.status, 500);
+				});
+
+			});
+
+			describe('when the error has a `validationMessages` property', () => {
+
+				beforeEach(() => {
+					error.validationMessages = [
+						'mock-validation-message'
+					];
+					express.mockResponse.render.reset();
+					middleware(error, express.mockRequest, express.mockResponse, next);
+				});
+
+				it('includes the validation messages when rendering the error template', () => {
+					assert.calledOnce(express.mockResponse.render);
+					assert.calledWith(express.mockResponse.render, 'error', {
+						error: {
+							message: error.message,
+							validationMessages: error.validationMessages,
+							status: error.status,
+							stack: undefined
+						}
+					});
 				});
 
 			});
@@ -225,6 +251,7 @@ describe('middleware/handle-errors', () => {
 				assert.calledWithExactly(express.mockResponse.send, {
 					error: {
 						message: error.message,
+						validationMessages: undefined,
 						status: error.status,
 						stack: undefined
 					}
@@ -270,6 +297,7 @@ describe('middleware/handle-errors', () => {
 					assert.calledWithExactly(express.mockResponse.send, {
 						error: {
 							message: error.message,
+							validationMessages: undefined,
 							status: error.status,
 							stack: error.stack
 						}
@@ -289,6 +317,30 @@ describe('middleware/handle-errors', () => {
 				it('sets the response status to 500', () => {
 					assert.calledOnce(express.mockResponse.status);
 					assert.calledWithExactly(express.mockResponse.status, 500);
+				});
+
+			});
+
+			describe('when the error has a `validationMessages` property', () => {
+
+				beforeEach(() => {
+					error.validationMessages = [
+						'mock-validation-message'
+					];
+					express.mockResponse.send.reset();
+					middleware(error, express.mockRequest, express.mockResponse, next);
+				});
+
+				it('includes the validation messages when rendering the error template', () => {
+					assert.calledOnce(express.mockResponse.send);
+					assert.calledWith(express.mockResponse.send, {
+						error: {
+							message: error.message,
+							validationMessages: error.validationMessages,
+							status: error.status,
+							stack: undefined
+						}
+					});
 				});
 
 			});

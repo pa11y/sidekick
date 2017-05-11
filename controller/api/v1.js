@@ -3,6 +3,7 @@
 const bodyParser = require('body-parser');
 const httpError = require('http-errors');
 const requirePermission = require('../../middleware/require-permission');
+const ValidationError = require('../../lib/validation-error');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
@@ -23,7 +24,7 @@ module.exports = dashboard => {
 				response.send(response.locals);
 			})
 			.catch(error => {
-				if (error.isValidationError) {
+				if (error instanceof ValidationError) {
 					error.status = 400;
 				}
 				next(error);
@@ -67,7 +68,7 @@ module.exports = dashboard => {
 				response.send(response.locals);
 			})
 			.catch(error => {
-				if (error.isValidationError) {
+				if (error instanceof ValidationError) {
 					error.status = 400;
 				}
 				next(error);
@@ -106,7 +107,7 @@ module.exports = dashboard => {
 				response.send(response.locals);
 			})
 			.catch(error => {
-				if (error.isValidationError) {
+				if (error instanceof ValidationError) {
 					error.status = 400;
 				}
 				next(error);
@@ -172,7 +173,7 @@ module.exports = dashboard => {
 				response.send(response.locals);
 			})
 			.catch(error => {
-				if (error.isValidationError) {
+				if (error instanceof ValidationError) {
 					error.status = 400;
 				}
 				next(error);

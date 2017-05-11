@@ -1,6 +1,7 @@
 'use strict';
 
 const bodyParser = require('body-parser');
+const ValidationError = require('../../lib/validation-error');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
@@ -66,7 +67,7 @@ module.exports = dashboard => {
 				response.redirect('/');
 			})
 			.catch(error => {
-				if (!error.isValidationError) {
+				if (!(error instanceof ValidationError)) {
 					return next(error);
 				}
 				response.status(400);

@@ -4,6 +4,7 @@
 const bcrypt = require('bcrypt');
 const shortid = require('shortid');
 const uuid = require('uuid/v4');
+const ValidationError = require('../lib/validation-error');
 
 module.exports = dashboard => {
 	const database = dashboard.database;
@@ -97,43 +98,46 @@ module.exports = dashboard => {
 
 		// Validate/sanitize user data input
 		cleanInput(data) {
-			try {
-				if (typeof data !== 'object' || Array.isArray(data) || data === null) {
-					throw new Error('User should be an object');
-				}
+			const validationErrors = [];
+
+			// Validation
+			if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+				validationErrors.push('User should be an object');
+			} else {
 				if (data.id) {
-					throw new Error('User ID cannot be set manually');
+					validationErrors.push('User ID cannot be set manually');
 				}
 				if (typeof data.email !== 'string' || !/^.+@.+$/.test(data.email)) {
-					throw new Error('User email should be a valid email address');
+					validationErrors.push('User email should be a valid email address');
 				}
 
 				// TODO ensure it's a good password
 				if (typeof data.password !== 'string') {
-					throw new Error('User password should be a string');
+					validationErrors.push('User password should be a string');
 				}
 				if (!data.password.trim()) {
-					throw new Error('User password cannot be empty');
+					validationErrors.push('User password cannot be empty');
 				}
 
 				if (data.apiKey) {
-					throw new Error('User API key cannot be set manually');
+					validationErrors.push('User API key cannot be set manually');
 				}
 				if (typeof data.allowRead !== 'boolean') {
-					throw new Error('User read permission should be a boolean');
+					validationErrors.push('User read permission should be a boolean');
 				}
 				if (typeof data.allowWrite !== 'boolean') {
-					throw new Error('User write permission should be a boolean');
+					validationErrors.push('User write permission should be a boolean');
 				}
 				if (typeof data.allowDelete !== 'boolean') {
-					throw new Error('User delete permission should be a boolean');
+					validationErrors.push('User delete permission should be a boolean');
 				}
 				if (typeof data.allowAdmin !== 'boolean') {
-					throw new Error('User admin permission should be a boolean');
+					validationErrors.push('User admin permission should be a boolean');
 				}
-			} catch (error) {
-				error.isValidationError = true;
-				return Promise.reject(error);
+			}
+
+			if (validationErrors.length) {
+				return Promise.reject(new ValidationError('Invalid user data', validationErrors));
 			}
 			const cleanData = {
 				email: data.email.trim(),
@@ -196,8 +200,9 @@ module.exports = dashboard => {
 		},
 
 		_rawGetByEmailAndPassword(email, password) {
-			const error = new Error('Incorrect email or password');
-			error.isValidationError = true;
+			const error = new ValidationError('Invalid login', [
+				'Incorrect email or password'
+			]);
 
 			return database
 				.select('*')
