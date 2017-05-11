@@ -137,7 +137,7 @@ module.exports = dashboard => {
 			}
 
 			if (validationErrors.length) {
-				return Promise.reject(new ValidationError('Invalid URL data', validationErrors));
+				return Promise.reject(new ValidationError('Invalid user data', validationErrors));
 			}
 			const cleanData = {
 				email: data.email.trim(),
