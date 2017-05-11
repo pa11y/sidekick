@@ -2,7 +2,6 @@
 'use strict';
 
 const assert = require('proclaim');
-const sinon = require('sinon');
 
 describe('lib/validation-error', () => {
 	let ValidationError;
