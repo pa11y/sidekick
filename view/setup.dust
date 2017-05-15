@@ -15,20 +15,7 @@
 
 	<form action="/" method="post">
 
-		{?error}
-			<output name="error" class="form-error">
-				<p>There was an error setting up {appName}:</p>
-				{?error.validationMessages}
-					<ul>
-						{#error.validationMessages}
-							<li>{.}</li>
-						{/error.validationMessages}
-					</ul>
-				{:else}
-					<p>{error.message}</p>
-				{/error.validationMessages}
-			</output>
-		{/error}
+		{>"partial/form-error" error=error overview="There was an error setting up {appName}:"/}
 
 		<fieldset>
 			<legend>Users</legend>
@@ -37,7 +24,7 @@
 				This will ensure that you always have admin access.
 			</p>
 			<div>
-				<label for="setup-admin-email">Email Address</label>
+				<label for="setup-admin-email">Email address</label>
 				<input id="setup-admin-email" type="email" name="adminEmail" value="{formValues.adminEmail}"/>
 			</div>
 			<div>

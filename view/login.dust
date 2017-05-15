@@ -11,23 +11,10 @@
 	<form action="/login" method="post">
 		<input type="hidden" name="referer" value="{formValues.referer}"/>
 
-		{?error}
-			<output name="error" class="form-error">
-				<p>There was an error logging in:</p>
-				{?error.validationMessages}
-					<ul>
-						{#error.validationMessages}
-							<li>{.}</li>
-						{/error.validationMessages}
-					</ul>
-				{:else}
-					<p>{error.message}</p>
-				{/error.validationMessages}
-			</output>
-		{/error}
+		{>"partial/form-error" error=error overview="There was an error logging in:"/}
 
 		<div>
-			<label for="login-email">Email Address</label>
+			<label for="login-email">Email address</label>
 			<input id="login-email" type="email" name="email" value="{formValues.email}"/>
 		</div>
 		<div>

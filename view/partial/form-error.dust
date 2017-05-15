@@ -1,0 +1,17 @@
+
+{?error}
+	<output name="error" class="form-error">
+		{?overview}
+			<p>{overview}</p>
+		{/overview}
+		{?error.validationMessages}
+			<ul>
+				{#error.validationMessages}
+					<li>{.}</li>
+				{/error.validationMessages}
+			</ul>
+		{:else}
+			<p>{error.message}</p>
+		{/error.validationMessages}
+	</output>
+{/error}

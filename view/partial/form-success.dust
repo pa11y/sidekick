@@ -1,0 +1,6 @@
+
+{?success}
+	<output name="success" class="form-success">
+		<p>{success}</p>
+	</output>
+{/success}

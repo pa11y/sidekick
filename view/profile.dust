@@ -12,6 +12,32 @@
 		This is your user profile. Here you can update your preferences and manage access.
 	</p>
 
+	<h2>Change your details</h2>
+
+	<form action="/profile" method="post">
+
+		<p>
+			You can change your email address and password here. To keep your current password,
+			leave the password field blank.
+		</p>
+
+		{>"partial/form-error" error=error overview="There was an error changing your details:"/}
+		{>"partial/form-success"/}
+
+		<div>
+			<label for="change-email">Email address</label>
+			<input id="change-email" type="email" name="email" value="{formValues.email}"/>
+		</div>
+
+		<div>
+			<label for="change-password">Password</label>
+			<input id="change-password" type="password" name="password"/>
+		</div>
+
+		<input type="submit" value="Change details"/>
+
+	</form>
+
 	<h2>API Access</h2>
 
 	<form action="/profile/regenerate-api-key" method="post">

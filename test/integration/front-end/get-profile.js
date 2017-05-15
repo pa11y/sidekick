@@ -38,10 +38,21 @@ describe('GET /profile', () => {
 					// Check page title
 					assert.match(document.querySelector('title').textContent, /profile/i);
 
-					// Check that API key and regenerate button are present
-					const form = document.querySelector('form[action="/profile/regenerate-api-key"]');
+					// Check that the edit details form is present
+					const form = document.querySelector('form[action="/profile"]');
 					assert.strictEqual(form.getAttribute('method'), 'post');
-					assert.match(form.textContent, /mock-admin-api-key/i);
+
+					// Check edit details fields
+					const emailField = form.querySelector('input[name="email"]');
+					assert.strictEqual(emailField.getAttribute('type'), 'email');
+					assert.strictEqual(emailField.getAttribute('value'), 'admin@example.com');
+					const passwordField = form.querySelector('input[name="password"]');
+					assert.strictEqual(passwordField.getAttribute('type'), 'password');
+
+					// Check that the API key and regenerate button are present
+					const regenerateForm = document.querySelector('form[action="/profile/regenerate-api-key"]');
+					assert.strictEqual(regenerateForm.getAttribute('method'), 'post');
+					assert.match(regenerateForm.textContent, /mock-admin-api-key/i);
 				});
 			}).end(done);
 		});

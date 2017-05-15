@@ -1,7 +1,6 @@
 'use strict';
 
 const bodyParser = require('body-parser');
-// const httpError = require('http-errors');
 
 module.exports = dashboard => {
 	const app = dashboard.app;

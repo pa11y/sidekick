@@ -48,6 +48,29 @@ describe('middleware/add-response-view-data', () => {
 				assert.calledWithExactly(next);
 			});
 
+			describe('when `request.session.success` is set', () => {
+
+				beforeEach(() => {
+					next.reset();
+					express.mockRequest.session.success = 'mock-success';
+					return middleware(express.mockRequest, express.mockResponse, next);
+				});
+
+				it('adds the success message to the response locals', () => {
+					assert.strictEqual(express.mockResponse.locals.success, 'mock-success');
+				});
+
+				it('removes the success message from the session', () => {
+					assert.isUndefined(express.mockRequest.session.success);
+				});
+
+				it('calls `next` with no error', () => {
+					assert.calledOnce(next);
+					assert.calledWithExactly(next);
+				});
+
+			});
+
 		});
 
 	});

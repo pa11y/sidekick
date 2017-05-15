@@ -57,6 +57,27 @@ module.exports = dashboard => {
 				});
 		},
 
+		// Edit a user (resolving with user ID)
+		edit(id, data) {
+			return this.cleanInput(data, {
+				ignorePassword: !data.password
+			})
+			.then(cleanData => {
+				if (!data.password) {
+					delete cleanData.password;
+					return cleanData;
+				}
+				return this.hashPassword(cleanData.password).then(hash => {
+					cleanData.password = hash;
+					return cleanData;
+				});
+			})
+			.then(cleanData => {
+				cleanData.updatedAt = new Date();
+				return this._rawEdit(id, cleanData);
+			});
+		},
+
 		// Regenerate a user's API key by ID
 		regenerateApiKey(id) {
 			return database(table)
@@ -97,7 +118,8 @@ module.exports = dashboard => {
 		},
 
 		// Validate/sanitize user data input
-		cleanInput(data) {
+		cleanInput(data, options) {
+			options = options || {};
 			const validationErrors = [];
 
 			// Validation
@@ -112,11 +134,13 @@ module.exports = dashboard => {
 				}
 
 				// TODO ensure it's a good password
-				if (typeof data.password !== 'string') {
-					validationErrors.push('User password should be a string');
-				}
-				if (!data.password.trim()) {
-					validationErrors.push('User password cannot be empty');
+				if (!options.ignorePassword) {
+					if (typeof data.password !== 'string') {
+						validationErrors.push('User password should be a string');
+					}
+					if (!data.password.trim()) {
+						validationErrors.push('User password cannot be empty');
+					}
 				}
 
 				if (data.apiKey) {
@@ -231,6 +255,15 @@ module.exports = dashboard => {
 			return database(table)
 				.returning('id')
 				.insert(data)
+				.then(ids => {
+					return ids[0];
+				});
+		},
+
+		_rawEdit(id, data) {
+			return database(table)
+				.where({id})
+				.update(data, 'id')
 				.then(ids => {
 					return ids[0];
 				});
