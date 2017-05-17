@@ -5,14 +5,17 @@ const assert = require('proclaim');
 const authenticateWithUser = require('../helper/authenticate-with-user');
 const loadSeedData = require('../helper/load-seed-data');
 
-describe('GET /profile/regenerate-api-key', () => {
+describe('POST /profile/regenerate-api-key', () => {
 	let request;
+
+	beforeEach(() => {
+		return loadSeedData(dashboard, 'base');
+	});
 
 	describe('authenticated', () => {
 
 		beforeEach(() => {
 			return Promise.resolve()
-				.then(() => loadSeedData(dashboard, 'base'))
 				.then(() => authenticateWithUser('admin@example.com', 'password'))
 				.then(cookie => {
 					request = agent
@@ -48,7 +51,6 @@ describe('GET /profile/regenerate-api-key', () => {
 
 		beforeEach(() => {
 			request = agent.post('/profile/regenerate-api-key');
-			return loadSeedData(dashboard, 'base');
 		});
 
 		it('responds with a 401 status', done => {
