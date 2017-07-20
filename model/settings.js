@@ -4,7 +4,7 @@
 const shortid = require('shortid');
 
 module.exports = dashboard => {
-	const database = dashboard.database;
+	const database = dashboard.database.knex;
 	const table = 'settings';
 
 	const model = {

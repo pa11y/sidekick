@@ -7,7 +7,7 @@ module.exports = loadSeedData;
 // This helper function cleans and sets up a
 // Sidekick database with specified seed data
 function loadSeedData(dashboard, seedDirectory) {
-	return deleteAllTables(dashboard.database)
+	return deleteAllTables(dashboard.database.knex)
 		.then(() => {
 			return dashboard.migrations.latest();
 		})

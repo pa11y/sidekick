@@ -43,7 +43,7 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 
 		it('updates the URL in the database', done => {
 			request.end(() => {
-				dashboard.database.select('*').from('urls').where({id: urlId})
+				dashboard.database.knex.select('*').from('urls').where({id: urlId})
 					.then(urls => {
 						assert.strictEqual(urls.length, 1);
 						assert.strictEqual(urls[0].name, 'Edited');
@@ -81,7 +81,7 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 
 		it('updates the URL in the database', done => {
 			request.end(() => {
-				dashboard.database.select('*').from('urls').where({id: urlId})
+				dashboard.database.knex.select('*').from('urls').where({id: urlId})
 					.then(urls => {
 						assert.strictEqual(urls.length, 1);
 						assert.deepEqual(urls[0].pa11yConfig, {
@@ -278,7 +278,7 @@ describe('PATCH /api/v1/sites/:siteId/urls/:urlId', () => {
 
 		it('does not update the site property in the database', done => {
 			request.end(() => {
-				dashboard.database.select('*').from('urls').where({id: urlId})
+				dashboard.database.knex.select('*').from('urls').where({id: urlId})
 					.then(urls => {
 						assert.strictEqual(urls.length, 1);
 						assert.notStrictEqual(urls[0].site, testEdits.site);

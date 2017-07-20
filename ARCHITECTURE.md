@@ -46,7 +46,7 @@ Pa11y Sidekick is a [Node.js] application. You'll need to have a few skills you'
     Either HTML/CSS knowledge and/or client-side JavaScript knowledge will be required. We use [Sass] for styling and [Browserify] to bundle our client-side JavaScript; for templating, we use [Dust.js]. An understanding of these is useful but not a prerequisite.
 
   - **[Databases](#databases)**:
-    We use [PostgreSQL] to persist data, and the [Knex.js] client library to communicate with it.
+    We use [PostgreSQL] to persist data, and the [Bookshelf.js]/[Knex.js] client libraries to communicate with it.
 
 Once you've read up on your preferred areas, you should also review the section on [testing](#testing).
 
@@ -300,11 +300,11 @@ Pa11y Sidekick uses [Resave Browserify][resave-browserify] to do this.
 
 ## Databases
 
-Hello! This section will teach you how to manage Pa11y Sidekick's database. We'll be covering models, migrations, and seeding. We use [PostgreSQL] to persist data with [Knex.js] as a client library. We use [shortid] to create url-friendly unique identifiers.
+Hello! This section will teach you how to manage Pa11y Sidekick's database. We'll be covering models, migrations, and seeding. We use [PostgreSQL] to persist data with [Bookshelf.js]/[Knex.js] as client libraries. We use [shortid] to create url-friendly unique identifiers.
 
 ### Models
 
-Models live in the `model` folder and are used to access the database with [Knex.js]. Each model file represents a single table in the database, and consistency between models is encouraged.
+Models live in the `model` folder and are used to access the database with [Bookshelf.js]. Each model file represents a single table in the database, and consistency between models is encouraged.
 
 Each model must export a function that accepts a single argument. That argument will be a `dashboard` object, which is created by [`lib/sidekick.js`](lib/sidekick.js). The model function must also return an object. When the application starts, each of these models is loaded and called.
 
@@ -314,7 +314,7 @@ A simple model:
 module.exports = dashboard => {
 
     // This is a reference to the Knex.js database instance
-    const database = dashboard.database;
+    const database = dashboard.database.knex;
 
     // It's a good idea to store the table name in a variable
     // to reduce repetition when the model has multiple methods
@@ -400,6 +400,7 @@ Dig into the [`test/integration`](test/integration) folder to get an idea of wha
 
 
 
+[bookshelf.js]: http://bookshelfjs.org/
 [browserify]: http://browserify.org/
 [dust-blocks]: http://www.dustjs.com/guides/blocks/
 [dust-helpers]: http://www.dustjs.com/docs/helper-api/

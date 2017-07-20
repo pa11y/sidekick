@@ -30,7 +30,7 @@ describe('GET /api/v1/sites/:siteId/results', () => {
 		});
 
 		it('responds with all of the results in the database for the given site as an array', done => {
-			dashboard.database.select('*').from('results').orderBy('createdAt', 'desc').where({
+			dashboard.database.knex.select('*').from('results').orderBy('createdAt', 'desc').where({
 				site: siteId
 			})
 			.then(results => {
@@ -52,7 +52,7 @@ describe('GET /api/v1/sites/:siteId/results', () => {
 
 		beforeEach(() => {
 			request = agent.get(`/api/v1/sites/${siteId}/results`);
-			return dashboard.database('results').where({site: siteId}).delete();
+			return dashboard.database.knex('results').where({site: siteId}).delete();
 		});
 
 		it('responds with a 200 status', done => {

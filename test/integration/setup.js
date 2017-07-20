@@ -19,5 +19,5 @@ before(() => {
 
 after(() => {
 	dashboard.server.close();
-	return dashboard.database.destroy();
+	return dashboard.database.knex.destroy();
 });

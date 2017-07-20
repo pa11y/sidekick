@@ -32,7 +32,7 @@ describe('GET /api/v1/sites/:siteId/urls/:urlId/results/:resultId', () => {
 		});
 
 		it('responds with the result as an object', done => {
-			dashboard.database.select('*').from('results').where({id: resultId})
+			dashboard.database.knex.select('*').from('results').where({id: resultId})
 				.then(results => {
 					const jsonifiedResult = dashboard.model.result
 						.prepareForOutput(JSON.parse(JSON.stringify(results[0])));

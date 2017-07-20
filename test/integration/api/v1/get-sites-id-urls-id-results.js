@@ -30,7 +30,7 @@ describe('GET /api/v1/sites/:siteId/urls/:urlId/results', () => {
 		});
 
 		it('responds with all of the results in the database for the given site/url as an array', done => {
-			dashboard.database.select('*').from('results').orderBy('createdAt', 'desc').where({
+			dashboard.database.knex.select('*').from('results').orderBy('createdAt', 'desc').where({
 				url: urlId,
 				site: siteId
 			})
@@ -53,7 +53,7 @@ describe('GET /api/v1/sites/:siteId/urls/:urlId/results', () => {
 
 		beforeEach(() => {
 			request = agent.get(`/api/v1/sites/${siteId}/urls/${urlId}/results`);
-			return dashboard.database('results').where({url: urlId}).delete();
+			return dashboard.database.knex('results').where({url: urlId}).delete();
 		});
 
 		it('responds with a 200 status', done => {

@@ -42,7 +42,7 @@ describe('POST /api/v1/sites', () => {
 				response = requestResponse;
 			}).end(() => {
 				const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
-				dashboard.database.select('*').from('sites').where({id: siteId})
+				dashboard.database.knex.select('*').from('sites').where({id: siteId})
 					.then(sites => {
 						assert.strictEqual(sites.length, 1);
 						assert.strictEqual(sites[0].name, 'Test Site');
@@ -83,7 +83,7 @@ describe('POST /api/v1/sites', () => {
 				response = requestResponse;
 			}).end(() => {
 				const siteId = response.headers.location.match(/\/([a-zA-Z0-9_-]+)$/)[1];
-				dashboard.database.select('*').from('sites').where({id: siteId})
+				dashboard.database.knex.select('*').from('sites').where({id: siteId})
 					.then(sites => {
 						assert.strictEqual(sites.length, 1);
 						assert.deepEqual(sites[0].pa11yConfig, {

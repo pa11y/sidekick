@@ -28,7 +28,7 @@ describe('DELETE /api/v1/sites/:siteId/urls/:urlId/results/:resultId', () => {
 
 	it('removes the URL and results from the database', done => {
 		request.end(() => {
-			dashboard.database.select('*').from('results').where({id: resultId})
+			dashboard.database.knex.select('*').from('results').where({id: resultId})
 				.then(results => {
 					assert.strictEqual(results.length, 0);
 					done();

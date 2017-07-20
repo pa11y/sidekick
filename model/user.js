@@ -7,7 +7,7 @@ const uuid = require('uuid/v4');
 const ValidationError = require('../lib/validation-error');
 
 module.exports = dashboard => {
-	const database = dashboard.database;
+	const database = dashboard.database.knex;
 	const table = 'users';
 
 	const model = {

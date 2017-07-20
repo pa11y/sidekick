@@ -5,7 +5,7 @@ const shortid = require('shortid');
 const ValidationError = require('../lib/validation-error');
 
 module.exports = dashboard => {
-	const database = dashboard.database;
+	const database = dashboard.database.knex;
 	const table = 'urls';
 
 	const model = {

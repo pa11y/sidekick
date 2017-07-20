@@ -41,10 +41,10 @@ describe('POST /login', () => {
 		it('creates a session in the database', done => {
 			request.end(() => {
 				let adminUser;
-				dashboard.database.select('*').from('users').where({email: testLoginData.email})
+				dashboard.database.knex.select('*').from('users').where({email: testLoginData.email})
 					.then(users => {
 						adminUser = users[0];
-						return dashboard.database.select('*').from('sessions');
+						return dashboard.database.knex.select('*').from('sessions');
 					})
 					.then(sessions => {
 						assert.strictEqual(sessions.length, 1);

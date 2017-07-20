@@ -23,7 +23,7 @@ describe('GET /api/v1/sites', () => {
 		});
 
 		it('responds with all of the sites in the database as an array', done => {
-			dashboard.database.select('sites.*')
+			dashboard.database.knex.select('sites.*')
 				.leftJoin('urls', 'sites.id', 'urls.site')
 				.count('urls.id as urlCount')
 				.groupBy('sites.id')

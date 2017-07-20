@@ -11,6 +11,7 @@ describe('lib/sidekick', () => {
 	let adaro;
 	let addResponseViewData;
 	let basePath;
+	let bookshelf;
 	let compression;
 	let cors;
 	let defaults;
@@ -48,6 +49,9 @@ describe('lib/sidekick', () => {
 
 		addResponseViewData = require('../mock/add-response-view-data.mock');
 		mockery.registerMock('../middleware/add-response-view-data', addResponseViewData);
+
+		bookshelf = require('../mock/bookshelf.mock');
+		mockery.registerMock('bookshelf', bookshelf);
 
 		compression = require('../mock/compression.mock');
 		mockery.registerMock('compression', compression);
@@ -281,6 +285,15 @@ describe('lib/sidekick', () => {
 				assert.isObject(knex.firstCall.args[0]);
 				assert.strictEqual(knex.firstCall.args[0].client, 'pg');
 				assert.strictEqual(knex.firstCall.args[0].connection, userOptions.database);
+			});
+
+			it('creates a Bookshelf instance with the created Knex client', () => {
+				assert.calledOnce(bookshelf);
+				assert.calledWithExactly(bookshelf, knex.mockDatabase);
+			});
+
+			it('mounts the `visibility` Bookshelf plugin', () => {
+				assert.calledWithExactly(bookshelf.mockDatabase.plugin, 'visibility');
 			});
 
 			it('loads all of the models', () => {
@@ -552,9 +565,9 @@ describe('lib/sidekick', () => {
 					assert.strictEqual(dashboard.log, dashboard.options.log);
 				});
 
-				it('has a `database` property set to the created Knex client', () => {
+				it('has a `database` property set to the created Bookshelf client', () => {
 					assert.isDefined(dashboard.database);
-					assert.strictEqual(dashboard.database, knex.mockDatabase);
+					assert.strictEqual(dashboard.database, bookshelf.mockDatabase);
 				});
 
 				it('has a `model` property set to a map of the loaded models', () => {
@@ -577,7 +590,7 @@ describe('lib/sidekick', () => {
 
 					beforeEach(() => {
 						migrationMakeValue = {};
-						dashboard.database.migrate.make.resolves(migrationMakeValue);
+						dashboard.database.knex.migrate.make.resolves(migrationMakeValue);
 						returnedPromise = dashboard.migrations.create('foo');
 					});
 
@@ -594,9 +607,9 @@ describe('lib/sidekick', () => {
 						}));
 
 						it('creates a migration with the expected options', () => {
-							assert.calledOnce(dashboard.database.migrate.make);
-							assert.calledWith(dashboard.database.migrate.make, 'foo');
-							assert.deepEqual(dashboard.database.migrate.make.firstCall.args[1], expectedMigrationConfig);
+							assert.calledOnce(dashboard.database.knex.migrate.make);
+							assert.calledWith(dashboard.database.knex.migrate.make, 'foo');
+							assert.deepEqual(dashboard.database.knex.migrate.make.firstCall.args[1], expectedMigrationConfig);
 						});
 
 						it('resolves with the result of the migration creation', () => {
@@ -617,7 +630,7 @@ describe('lib/sidekick', () => {
 
 					beforeEach(() => {
 						migrationLatestValue = {};
-						dashboard.database.migrate.latest.resolves(migrationLatestValue);
+						dashboard.database.knex.migrate.latest.resolves(migrationLatestValue);
 						returnedPromise = dashboard.migrations.latest();
 					});
 
@@ -634,8 +647,8 @@ describe('lib/sidekick', () => {
 						}));
 
 						it('migrates to the latest version with the expected options', () => {
-							assert.calledOnce(dashboard.database.migrate.latest);
-							assert.deepEqual(dashboard.database.migrate.latest.firstCall.args[0], expectedMigrationConfig);
+							assert.calledOnce(dashboard.database.knex.migrate.latest);
+							assert.deepEqual(dashboard.database.knex.migrate.latest.firstCall.args[0], expectedMigrationConfig);
 						});
 
 						it('resolves with the result of the migration', () => {
@@ -656,7 +669,7 @@ describe('lib/sidekick', () => {
 
 					beforeEach(() => {
 						migrationRollbackValue = {};
-						dashboard.database.migrate.rollback.resolves(migrationRollbackValue);
+						dashboard.database.knex.migrate.rollback.resolves(migrationRollbackValue);
 						returnedPromise = dashboard.migrations.rollback();
 					});
 
@@ -673,8 +686,8 @@ describe('lib/sidekick', () => {
 						}));
 
 						it('rolls back the last migration with the expected options', () => {
-							assert.calledOnce(dashboard.database.migrate.rollback);
-							assert.deepEqual(dashboard.database.migrate.rollback.firstCall.args[0], expectedMigrationConfig);
+							assert.calledOnce(dashboard.database.knex.migrate.rollback);
+							assert.deepEqual(dashboard.database.knex.migrate.rollback.firstCall.args[0], expectedMigrationConfig);
 						});
 
 						it('resolves with the result of the rollback', () => {
@@ -695,7 +708,7 @@ describe('lib/sidekick', () => {
 
 					beforeEach(() => {
 						seedRunValue = {};
-						dashboard.database.seed.run.resolves(seedRunValue);
+						dashboard.database.knex.seed.run.resolves(seedRunValue);
 						returnedPromise = dashboard.migrations.seed();
 					});
 
@@ -712,8 +725,8 @@ describe('lib/sidekick', () => {
 						}));
 
 						it('seeds the database with the expected options', () => {
-							assert.calledOnce(dashboard.database.seed.run);
-							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], expectedSeedConfig);
+							assert.calledOnce(dashboard.database.knex.seed.run);
+							assert.deepEqual(dashboard.database.knex.seed.run.firstCall.args[0], expectedSeedConfig);
 						});
 
 						it('resolves with the result of the seed', () => {
@@ -730,7 +743,7 @@ describe('lib/sidekick', () => {
 
 					beforeEach(() => {
 						seedRunValue = {};
-						dashboard.database.seed.run.resolves(seedRunValue);
+						dashboard.database.knex.seed.run.resolves(seedRunValue);
 						returnedPromise = dashboard.migrations.seed('mock-directory');
 					});
 
@@ -747,8 +760,8 @@ describe('lib/sidekick', () => {
 						}));
 
 						it('seeds the database with the expected options', () => {
-							assert.calledOnce(dashboard.database.seed.run);
-							assert.deepEqual(dashboard.database.seed.run.firstCall.args[0], {
+							assert.calledOnce(dashboard.database.knex.seed.run);
+							assert.deepEqual(dashboard.database.knex.seed.run.firstCall.args[0], {
 								directory: 'mock-directory'
 							});
 						});

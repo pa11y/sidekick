@@ -41,7 +41,7 @@ describe('POST / (setup step)', () => {
 
 		it('creates an admin user in the database', done => {
 			request.end(() => {
-				dashboard.database.select('*').from('users')
+				dashboard.database.knex.select('*').from('users')
 					.then(users => {
 						assert.strictEqual(users.length, 1);
 						assert.strictEqual(users[0].email, 'example@example.com');
@@ -60,10 +60,10 @@ describe('POST / (setup step)', () => {
 		it('creates a settings entry in the database', done => {
 			request.end(() => {
 				let adminUser;
-				dashboard.database.select('*').from('users')
+				dashboard.database.knex.select('*').from('users')
 					.then(users => {
 						adminUser = users[0];
-						return dashboard.database.select('*').from('settings');
+						return dashboard.database.knex.select('*').from('settings');
 					})
 					.then(settings => {
 						assert.strictEqual(settings.length, 1);

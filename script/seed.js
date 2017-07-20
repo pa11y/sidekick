@@ -31,7 +31,7 @@ function logSuccess() {
 }
 
 function destroyDatabaseConnection() {
-	return dashboard.database.destroy();
+	return dashboard.database.knex.destroy();
 }
 
 function handleError(error) {

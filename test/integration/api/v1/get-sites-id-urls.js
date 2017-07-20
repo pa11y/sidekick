@@ -28,7 +28,7 @@ describe('GET /api/v1/sites/:siteId/urls', () => {
 		});
 
 		it('responds with all of the urls in the database for the given site as an array', done => {
-			dashboard.database.select('*').from('urls').where({site: siteId}).orderBy('name')
+			dashboard.database.knex.select('*').from('urls').where({site: siteId}).orderBy('name')
 				.then(urls => {
 					const jsonifiedUrls = JSON.parse(JSON.stringify(urls))
 						.map(dashboard.model.url.prepareForOutput);
@@ -49,8 +49,8 @@ describe('GET /api/v1/sites/:siteId/urls', () => {
 		beforeEach(() => {
 			request = agent.get(`/api/v1/sites/${siteId}/urls`);
 			return Promise.resolve()
-				.then(() => dashboard.database('results').where({site: siteId}).delete())
-				.then(() => dashboard.database('urls').where({site: siteId}).delete());
+				.then(() => dashboard.database.knex('results').where({site: siteId}).delete())
+				.then(() => dashboard.database.knex('urls').where({site: siteId}).delete());
 		});
 
 		it('responds with a 200 status', done => {

@@ -40,7 +40,7 @@ function logMigrationCreation(migrationPath) {
 }
 
 function destroyDatabaseConnection() {
-	return dashboard.database.destroy();
+	return dashboard.database.knex.destroy();
 }
 
 function handleError(error) {

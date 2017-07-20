@@ -34,7 +34,7 @@ describe('POST /profile/regenerate-api-key', () => {
 
 		it('updates the user API key in the database', done => {
 			request.end(() => {
-				dashboard.database.select('*').from('users').where({email: 'admin@example.com'})
+				dashboard.database.knex.select('*').from('users').where({email: 'admin@example.com'})
 					.then(users => {
 						assert.isDefined(users[0]);
 						assert.notStrictEqual(users[0].apiKey, 'mock-admin-api-key');

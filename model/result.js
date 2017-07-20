@@ -2,7 +2,7 @@
 'use strict';
 
 module.exports = dashboard => {
-	const database = dashboard.database;
+	const database = dashboard.database.knex;
 	const table = 'results';
 
 	const model = {

@@ -28,7 +28,7 @@ describe('GET /api/v1/sites/:siteId', () => {
 		});
 
 		it('responds with the site as an object', done => {
-			dashboard.database.select('sites.*')
+			dashboard.database.knex.select('sites.*')
 				.leftJoin('urls', 'sites.id', 'urls.site')
 				.count('urls.id as urlCount')
 				.groupBy('sites.id')

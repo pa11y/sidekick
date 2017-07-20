@@ -45,7 +45,7 @@ describe('POST /profile', () => {
 
 			it('updates the user details in the database', done => {
 				request.end(() => {
-					dashboard.database.select('*').from('users').where({email: 'new@example.com'})
+					dashboard.database.knex.select('*').from('users').where({email: 'new@example.com'})
 						.then(users => {
 							assert.isDefined(users[0]);
 							assert.strictEqual(users[0].email, 'new@example.com');
@@ -84,7 +84,7 @@ describe('POST /profile', () => {
 
 			it('updates the user details in the database, but does not touch the password', done => {
 				request.end(() => {
-					dashboard.database.select('*').from('users').where({email: 'new@example.com'})
+					dashboard.database.knex.select('*').from('users').where({email: 'new@example.com'})
 						.then(users => {
 							assert.isDefined(users[0]);
 							assert.strictEqual(users[0].email, 'new@example.com');
