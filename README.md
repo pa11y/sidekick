@@ -15,6 +15,13 @@ This is a new project based around Pa11y, code-named "Sidekick". Pa11y Sidekick 
 [![Dependencies][shield-dependencies]][info-dependencies]
 [![LGPL-3.0 licensed][shield-license]][info-license]
 
+---
+
+## Latest news from Pa11y
+
+💭 We'd like to find out how you use Pa11y and what you think about it. Please [fill in our survey][survey] to let us know your thoughts!
+
+---
 
 ## The Architecture
 
@@ -146,6 +153,7 @@ Copyright &copy; 2016–2017, Team Pa11y
 [pa11y webservice]: https://github.com/pa11y/webservice
 [postgresql]: http://www.postgresql.org/
 [status-badge]: https://img.shields.io/badge/status-architecture-orange.svg
+[survey]: https://goo.gl/forms/AiMDJR2IuaqX4iD03
 [twitter]: https://twitter.com/pa11yorg
 
 [info-dependencies]: https://gemnasium.com/pa11y/sidekick
