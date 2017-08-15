@@ -5,31 +5,28 @@ module.exports = loadUserFromSession;
 // This middleware loads the current user and populates
 // request and view variables
 function loadUserFromSession(dashboard) {
-	const model = dashboard.model;
+	const User = dashboard.model.User;
+
 	return (request, response, next) => {
 		return Promise.resolve()
 			.then(() => {
 				if (!request.session.userId) {
 					return null;
 				}
-				return model.user.getById(request.session.userId, {
-					safe: true
-				});
+				return User.where({
+					id: request.session.userId
+				}).fetch();
 			})
 			.then(user => {
 				if (user) {
 					user.isLoggedIn = true;
 				} else {
-					const defaultPermissions = dashboard.settings.defaultPermissions;
-					user = {
-						isLoggedIn: false,
-						allowRead: (defaultPermissions ? defaultPermissions.allowRead : false),
-						allowWrite: (defaultPermissions ? defaultPermissions.allowWrite : false),
-						allowDelete: (defaultPermissions ? defaultPermissions.allowDelete : false),
-						allowAdmin: (defaultPermissions ? defaultPermissions.allowAdmin : false)
-					};
+					user = User.getDefault();
 				}
-				request.user = response.locals.user = user;
+				request.user = user;
+				response.locals.user = user.serialize();
+				response.locals.user.isLoggedIn = user.isLoggedIn;
+				response.locals.user.isDefaultUser = user.isDefaultUser;
 				next();
 			})
 			.catch(next);

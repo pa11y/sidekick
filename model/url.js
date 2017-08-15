@@ -4,11 +4,11 @@
 const shortid = require('shortid');
 const ValidationError = require('../lib/validation-error');
 
-module.exports = dashboard => {
+module.exports = (dashboard, models) => {
 	const database = dashboard.database.knex;
 	const table = 'urls';
 
-	const model = {
+	const model = models.url = {
 
 		// Get all URLs for a site
 		getAllBySite(siteId) {
@@ -197,6 +197,4 @@ module.exports = dashboard => {
 		}
 
 	};
-
-	return model;
 };

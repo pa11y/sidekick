@@ -1,11 +1,11 @@
 /* eslint no-underscore-dangle: 'off' */
 'use strict';
 
-module.exports = dashboard => {
+module.exports = (dashboard, models) => {
 	const database = dashboard.database.knex;
 	const table = 'results';
 
-	const model = {
+	const model = models.result = {
 
 		// Get all results for a URL
 		getAllByUrl(urlId) {
@@ -111,6 +111,4 @@ module.exports = dashboard => {
 		}
 
 	};
-
-	return model;
 };

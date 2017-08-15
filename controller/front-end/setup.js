@@ -1,7 +1,6 @@
 'use strict';
 
 const bodyParser = require('body-parser');
-const ValidationError = require('../../lib/validation-error');
 
 module.exports = dashboard => {
 	const app = dashboard.app;
@@ -9,6 +8,7 @@ module.exports = dashboard => {
 	const parseFormBody = bodyParser.urlencoded({
 		extended: false
 	});
+	const User = dashboard.model.User;
 
 	// Setup page
 	app.get('/', (request, response, next) => {
@@ -37,18 +37,18 @@ module.exports = dashboard => {
 		}
 
 		// Create the admin user
-		const adminUser = {
+		const adminUser = new User({
 			email: request.body.adminEmail,
 			password: request.body.adminPassword,
 			allowRead: true,
 			allowWrite: true,
 			allowDelete: true,
 			allowAdmin: true
-		};
-		model.user.create(adminUser)
-			.then(superAdminId => {
+		});
+		adminUser.save()
+			.then(() => {
 				// Update all of the settings
-				dashboard.settings.superAdminId = superAdminId;
+				dashboard.settings.superAdminId = adminUser.get('id');
 				dashboard.settings.defaultPermissions = {
 					allowRead: Boolean(request.body.defaultAccessRead),
 					allowWrite: Boolean(request.body.defaultAccessWrite),
@@ -67,7 +67,7 @@ module.exports = dashboard => {
 				response.redirect('/');
 			})
 			.catch(error => {
-				if (!(error instanceof ValidationError)) {
+				if (!error.isJoi) {
 					return next(error);
 				}
 				response.status(400);

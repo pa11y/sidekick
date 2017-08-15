@@ -14,7 +14,7 @@ module.exports = dashboard => {
 		}
 
 		// Render the home page if the user has permission
-		if (model.user.hasPermission(request.user, 'read')) {
+		if (request.user.hasPermission('read')) {
 			return model.site.getAll()
 				.then(sites => {
 					response.locals.sites = sites;

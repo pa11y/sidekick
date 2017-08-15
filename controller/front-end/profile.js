@@ -32,29 +32,27 @@ module.exports = dashboard => {
 		if (!request.user.isLoggedIn) {
 			return next(httpError(401));
 		}
-		return model.user.edit(request.user.id, {
-			email: request.body.email,
-			password: request.body.password,
-			// User cannot change their own permissions
-			allowRead: request.user.allowRead,
-			allowWrite: request.user.allowWrite,
-			allowDelete: request.user.allowDelete,
-			allowAdmin: request.user.allowAdmin
-		})
-		.then(() => {
-			request.session.success = 'Your details have been updated.';
-			response.redirect('/profile');
-		})
-		.catch(error => {
-			if (!(error instanceof ValidationError)) {
-				return next(error);
-			}
-			response.status(400);
-			response.render('profile', {
-				error: error,
-				formValues: request.body
+		const changes = {
+			email: request.body.email
+		};
+		if (request.body.password) {
+			changes.password = request.body.password;
+		}
+		return request.user.set(changes).save()
+			.then(() => {
+				request.session.success = 'Your details have been updated.';
+				response.redirect('/profile');
+			})
+			.catch(error => {
+				if (!error.isJoi) {
+					return next(error);
+				}
+				response.status(400);
+				response.render('profile', {
+					error: error,
+					formValues: request.body
+				});
 			});
-		});
 	});
 
 	// Regenerate the current user's API key
@@ -62,7 +60,7 @@ module.exports = dashboard => {
 		if (!request.user.isLoggedIn) {
 			return next(httpError(401));
 		}
-		model.user.regenerateApiKey(request.user.id)
+		request.user.regenerateApiKey().save()
 			.then(() => {
 				response.redirect('/profile');
 			})

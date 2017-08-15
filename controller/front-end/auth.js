@@ -8,6 +8,7 @@ module.exports = dashboard => {
 	const parseFormBody = bodyParser.urlencoded({
 		extended: false
 	});
+	const User = dashboard.model.User;
 
 	// Login page
 	app.get('/login', (request, response) => {
@@ -20,9 +21,22 @@ module.exports = dashboard => {
 
 	// Login page form post
 	app.post('/login', parseFormBody, (request, response) => {
-		model.user.getByEmailAndPassword(request.body.email, request.body.password)
+		User.where({
+			email: request.body.email
+		}).fetch()
 			.then(user => {
-				request.session.userId = user.id;
+				if (!user) {
+					throw new Error('Incorrect email or password');
+				}
+				return User.checkPassword(request.body.password, user.get('password')).then(isValid => {
+					if (!isValid) {
+						throw new Error('Incorrect email or password');
+					}
+					return user;
+				});
+			})
+			.then(user => {
+				request.session.userId = user.get('id');
 				response.redirect(request.body.referer || '/');
 			})
 			.catch(error => {

@@ -29,6 +29,7 @@
     "express": "^4.15.0",
     "express-session": "^1.15.2",
     "http-errors": "^1.6.1",
+    "joi": "^10.6.0",
     "knex": "^0.13.0",
     "lodash": "^4.17.4",
     "morgan": "^1.8.1",

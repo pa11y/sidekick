@@ -3,11 +3,11 @@
 
 const shortid = require('shortid');
 
-module.exports = dashboard => {
+module.exports = (dashboard, models) => {
 	const database = dashboard.database.knex;
 	const table = 'settings';
 
-	const model = {
+	const model = models.settings = {
 
 		// Get the settings
 		get() {
@@ -47,6 +47,4 @@ module.exports = dashboard => {
 		}
 
 	};
-
-	return model;
 };

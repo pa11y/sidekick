@@ -11,7 +11,7 @@ module.exports = requirePermission;
 function requirePermission(permission) {
 	return (request, response, next) => {
 		const dashboard = request.app.dashboard;
-		if (dashboard.model.user.hasPermission(request.user, permission)) {
+		if (request.user.hasPermission(permission)) {
 			return next();
 		}
 		next(httpError(403, 'You do not have permission to do this'));
