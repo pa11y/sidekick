@@ -9,7 +9,7 @@ module.exports = dashboard => {
 
 		// If the site hasn't been set up, switch
 		// to the next matching route – setup
-		if (!dashboard.settings.setupComplete) {
+		if (!dashboard.settings.get('data').setupComplete) {
 			return next();
 		}
 

@@ -3,48 +3,25 @@
 
 const shortid = require('shortid');
 
-module.exports = (dashboard, models) => {
-	const database = dashboard.database.knex;
-	const table = 'settings';
+module.exports = initModel;
 
-	const model = models.settings = {
+function initModel(dashboard, models) {
 
-		// Get the settings
-		get() {
-			return database
-				.select('data')
-				.from(table)
-				.limit(1)
-				.then(settings => {
-					return (settings[0] ? settings[0].data : {});
-				})
-				.catch(() => {
-					return {};
-				});
-		},
+	// Model prototypal methods
+	const Settings = models.Settings = dashboard.database.Model.extend({
+		tableName: 'settings',
 
-		// Edit the settings
-		edit(data) {
-			data = JSON.stringify(data);
-			return database
-				.select('id')
-				.from(table)
-				.limit(1)
-				.then(results => {
-					return (results[0] ? results[0].id : null);
-				})
-				.then(id => {
-					if (id) {
-						return database(table).where({id}).update({
-							data
-						});
-					}
-					return database(table).insert({
-						id: shortid.generate(),
-						data
-					});
-				});
+		// Model initialization
+		initialize() {
+
+			// When a model is created...
+			this.on('creating', () => {
+				// Fill out automatic fields
+				this.attributes.id = shortid.generate();
+			});
+
 		}
 
-	};
-};
+	});
+
+}

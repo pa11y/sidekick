@@ -13,7 +13,7 @@ function addResponseViewData(dashboard) {
 		}
 
 		// Expose dashboard settings
-		response.locals.settings = dashboard.settings;
+		response.locals.settings = dashboard.settings.get('data');
 
 		next();
 	};

@@ -109,7 +109,7 @@ function initModel(dashboard, models) {
 
 		// Get a mock user representing the system defaults
 		getDefault() {
-			const defaultPermissions = dashboard.settings.defaultPermissions;
+			const defaultPermissions = dashboard.settings.get('data').defaultPermissions;
 			const defaultUser = new User({
 				allowRead: (defaultPermissions ? defaultPermissions.allowRead : false),
 				allowWrite: (defaultPermissions ? defaultPermissions.allowWrite : false),

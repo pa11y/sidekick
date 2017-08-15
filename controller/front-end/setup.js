@@ -8,6 +8,7 @@ module.exports = dashboard => {
 	const parseFormBody = bodyParser.urlencoded({
 		extended: false
 	});
+	const Settings = dashboard.model.Settings;
 	const User = dashboard.model.User;
 
 	// Setup page
@@ -15,7 +16,7 @@ module.exports = dashboard => {
 
 		// If the site has been set up, switch
 		// to the next matching route – home
-		if (dashboard.settings.setupComplete) {
+		if (dashboard.settings.get('data').setupComplete) {
 			return next();
 		}
 
@@ -32,7 +33,7 @@ module.exports = dashboard => {
 
 		// If the site has been set up, switch
 		// to the next matching route – home
-		if (dashboard.settings.setupComplete) {
+		if (dashboard.settings.get('data').setupComplete) {
 			return next();
 		}
 
@@ -48,20 +49,19 @@ module.exports = dashboard => {
 		adminUser.save()
 			.then(() => {
 				// Update all of the settings
-				dashboard.settings.superAdminId = adminUser.get('id');
-				dashboard.settings.defaultPermissions = {
-					allowRead: Boolean(request.body.defaultAccessRead),
-					allowWrite: Boolean(request.body.defaultAccessWrite),
-					allowDelete: Boolean(request.body.defaultAccessDelete),
-					allowAdmin: Boolean(request.body.defaultAccessAdmin)
-				};
-
-				// Mark setup as complete
-				dashboard.settings.setupComplete = true;
-			})
-			.then(() => {
-				// Save the settings
-				return model.settings.edit(dashboard.settings);
+				dashboard.settings = new Settings({
+					data: {
+						setupComplete: true,
+						superAdminId: adminUser.get('id'),
+						defaultPermissions: {
+							allowRead: Boolean(request.body.defaultAccessRead),
+							allowWrite: Boolean(request.body.defaultAccessWrite),
+							allowDelete: Boolean(request.body.defaultAccessDelete),
+							allowAdmin: Boolean(request.body.defaultAccessAdmin)
+						}
+					}
+				});
+				return dashboard.settings.save();
 			})
 			.then(() => {
 				response.redirect('/');
