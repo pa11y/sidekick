@@ -17,12 +17,6 @@ This is a new project based around Pa11y, code-named "Sidekick". Pa11y Sidekick 
 
 ---
 
-## Latest news from Pa11y
-
-💭 We'd like to find out how you use Pa11y and what you think about it. Please [fill in our survey][survey] to let us know your thoughts!
-
----
-
 ## The Architecture
 
 We maintain an [Architecture Guide](ARCHITECTURE.md) which outlines how the application works, and how everything fits together. It's strongly recommended that you read through it if you want to contribute. We're currently in the architecture stage of development so this application has no features – it's purely a demo how _how_ we want to build things.
@@ -153,7 +147,6 @@ Copyright &copy; 2016–2017, Team Pa11y
 [pa11y webservice]: https://github.com/pa11y/webservice
 [postgresql]: http://www.postgresql.org/
 [status-badge]: https://img.shields.io/badge/status-architecture-orange.svg
-[survey]: https://goo.gl/forms/AiMDJR2IuaqX4iD03
 [twitter]: https://twitter.com/pa11yorg
 
 [info-dependencies]: https://gemnasium.com/pa11y/sidekick
