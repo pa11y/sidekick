@@ -1,0 +1,13 @@
+{>"layout/full"/}
+
+{<title}
+	Login - Sidekick
+{/title}
+
+{<content}
+
+	<h1>Login</h1>
+
+	{>"partial/form/login"/}
+
+{/content}

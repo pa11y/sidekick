@@ -1,0 +1,83 @@
+{>"layout/full"/}
+
+{<title}
+	Your API Key Settings - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/settings"/}
+{/secondary-nav}
+
+{<content}
+
+	<div class="heading-wrapper">
+		<h1>Your API Key Settings</h1>
+		<a href="/settings/keys/new" class="button">Generate a new API key</a>
+	</div>
+
+	<p>
+		Manage your Sidekick API keys. For information on how to use these keys,
+		See the <a href="/docs/api/v1">API documentation</a>.
+	</p>
+
+	{?form.key.created}
+		<div class="alert alert--success">
+			<p data-test="key-new">
+				<strong>Your new API key has been generated</strong><br/>
+				It's important to store the details below somewhere secure, as the
+				API secret will never be displayed again.
+			</p>
+			<table>
+				<tbody>
+					<tr>
+						<th scope="row">API Key</th>
+						<td><code>{form.key.created.id}</code></td>
+					</tr>
+					<tr>
+						<th scope="row">API Secret</th>
+						<td><code>{form.key.created.secret}</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	{/form.key.created}
+
+	{?form.key.deleted}
+		<div class="alert alert--success">
+			<p data-test="key-deleted">
+				<strong>Your API key "{form.key.deleted.description}" has been deleted</strong>
+			</p>
+		</div>
+	{/form.key.deleted}
+
+	{?keys}
+		<div class="table-wrapper">
+			<table data-test="keys-table" class="table table--striped">
+				<thead>
+					<tr>
+						<th>Description</th>
+						<th>Generated</th>
+						<th>API Key</th>
+						<th>Controls</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#keys}
+						<tr>
+							<td><a href="/settings/keys/{id}/edit">{description}</a></td>
+							<td>{meta.dateCreated}</td>
+							<td><code>{id}</code></td>
+							<td>
+								<a href="/settings/keys/{id}/edit">Edit</a>
+								<a href="/settings/keys/{id}/delete">Delete</a>
+							</td>
+						</tr>
+					{/keys}
+				</tbody>
+			</table>
+		</div>
+	{:else}
+		<p>You don't have any API keys yet; you can <a href="/settings/keys/new">generate one here</a>.</p>
+	{/keys}
+
+{/content}

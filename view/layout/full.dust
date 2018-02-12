@@ -1,0 +1,33 @@
+{>"layout/base"/}
+
+{! A layout with all of the trimmings !}
+
+{<body}
+
+	{?siteWideAlert}
+		<div class="alert alert--success alert--site-wide">
+			<p><strong>{siteWideAlert}</strong></p>
+		</div>
+	{/siteWideAlert}
+
+	<header role="banner">
+		{+primary-nav}
+			{>"partial/nav/main"/}
+		{/primary-nav}
+		{+secondary-nav/}
+	</header>
+
+	<div role="main" class="page">
+		<div class="page-inner">
+			{+content/}
+		</div>
+	</div>
+
+	<footer role="contentinfo">
+		{>"partial/nav/footer"/}
+		<div class="copyright">
+			<small>Copyright &copy; {@currentYear/}, Team Pa11y</small>
+		</div>
+	</footer>
+
+{/body}

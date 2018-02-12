@@ -1,0 +1,19 @@
+{>"layout/full"/}
+
+{<title}
+	Your Profile Settings - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/settings"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Your Profile Settings</h1>
+
+	<p>Manage your profile.</p>
+
+	{>"partial/form/user" action="/settings/profile" cta="Save changes"/}
+
+{/content}

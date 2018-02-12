@@ -1,0 +1,41 @@
+
+<nav class="navigation navigation--primary">
+	<ul>
+		<li>
+			<a href="/" class="navigation__item pa11y-logo">
+				Pa11y Sidekick
+			</a>
+		</li>
+		{?permissions.admin}
+			<li>
+				<a href="/admin" class="navigation__item {@currentUrl test="/admin/*"}navigation__item--current{/currentUrl}">
+					Admin
+				</a>
+			</li>
+		{/permissions.admin}
+		{?authUser}
+			<li class="navigation__shifter">
+				<span class="navigation__item navigation__item--informational">
+					Logged in as {authUser.email}
+					{?authUser.isOwner}(owner){/authUser.isOwner}
+				</span>
+			</li>
+			<li>
+				{>"partial/form/logout" inNavigation="true"/}
+			</li>
+			<li>
+				<a href="/settings/profile" class="navigation__item {@currentUrl test="/settings/*"}navigation__item--current{/currentUrl}">
+					Settings
+				</a>
+			</li>
+		{:else}
+			{@ne key=requestPath value="/login"}
+				<li class="navigation__shifter">
+					<a href="/login?referer={requestUrl}" class="navigation__item">
+						Login
+					</a>
+				</li>
+			{/ne}
+		{/authUser}
+	</ul>
+</nav>

@@ -1,0 +1,20 @@
+
+<nav class="navigation navigation--secondary">
+	<ul>
+		<li>
+			<span class="navigation__item navigation__item--title">
+				Admin
+			</span>
+		</li>
+		<li>
+			<a href="/admin/users" class="navigation__item {@currentUrl test="/admin/users*"}navigation__item--current{/currentUrl}">
+				User Management
+			</a>
+		</li>
+		<li>
+			<a href="/admin/settings" class="navigation__item {@currentUrl test="/admin/settings"}navigation__item--current{/currentUrl}">
+				Sidekick Settings
+			</a>
+		</li>
+	</ul>
+</nav>

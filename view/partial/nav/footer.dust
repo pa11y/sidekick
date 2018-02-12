@@ -1,0 +1,17 @@
+
+<nav class="navigation navigation--footer">
+	<ul>
+		{?permissions.read}
+			<li>
+				<a href="/api/v1" class="navigation__item {@currentUrl test="/docs/api/*"}navigation__item--current{/currentUrl}">
+					API Documentation
+				</a>
+			</li>
+		{/permissions.read}
+		<li>
+			<a href="https://github.com/pa11y/sidekick" class="navigation__item">
+				GitHub Repository
+			</a>
+		</li>
+	</ul>
+</nav>

@@ -1,0 +1,34 @@
+{>"layout/full"/}
+
+{<title}
+	Deleting User - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/admin"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Deleting User</h1>
+
+	<p>
+		This action is permanent and unrecoverable,
+		This user will no longer be able to log in
+		and all of their API keys will be deleted.
+	</p>
+
+	<p>
+		Are you sure you wish to delete the user
+		<em>{form.user.email}</em>?
+	</p>
+
+	<form data-test="delete-user-form" action="{requestPath}" method="post" enctype="application/x-www-form-urlencoded">
+
+		<div class="field">
+			<input type="submit" value="Delete user" class="button button--danger"/>
+		</div>
+
+	</form>
+
+{/content}

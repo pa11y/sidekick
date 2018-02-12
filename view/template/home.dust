@@ -1,0 +1,13 @@
+{>"layout/full"/}
+
+{<title}
+	Home - Sidekick
+{/title}
+
+{<content}
+
+	<h1>Sidekick</h1>
+
+	<p>Hello World!</p>
+
+{/content}

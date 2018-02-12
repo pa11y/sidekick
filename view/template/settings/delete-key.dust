@@ -1,0 +1,34 @@
+{>"layout/full"/}
+
+{<title}
+	Deleting API Key - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/settings"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Deleting API Key</h1>
+
+	<p>
+		This action is permanent and unrecoverable.
+		Any applications or scripts using this API key
+		will cease to work.
+	</p>
+
+	<p>
+		Are you sure you wish to delete the key
+		<em>{form.key.description}</em>?
+	</p>
+
+	<form data-test="delete-key-form" action="{requestPath}" method="post" enctype="application/x-www-form-urlencoded">
+
+		<div class="field">
+			<input type="submit" value="Delete API key" class="button button--danger"/>
+		</div>
+
+	</form>
+
+{/content}

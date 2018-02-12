@@ -1,0 +1,25 @@
+
+<nav class="navigation navigation--secondary">
+	<ul>
+		<li>
+			<span class="navigation__item navigation__item--title">
+				Settings
+			</span>
+		</li>
+		<li>
+			<a href="/settings/profile" class="navigation__item {@currentUrl test="/settings/profile"}navigation__item--current{/currentUrl}">
+				Profile
+			</a>
+		</li>
+		<li>
+			<a href="/settings/password" class="navigation__item {@currentUrl test="/settings/password"}navigation__item--current{/currentUrl}">
+				Password
+			</a>
+		</li>
+		<li>
+			<a href="/settings/keys" class="navigation__item {@currentUrl test="/settings/keys*"}navigation__item--current{/currentUrl}">
+				API Keys
+			</a>
+		</li>
+	</ul>
+</nav>

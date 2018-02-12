@@ -1,0 +1,57 @@
+
+# Container version
+# (important for modern PostgreSQL)
+dist: trusty
+sudo: false
+
+# Build matrix
+language: node_js
+matrix:
+  include:
+
+    # Run linter once
+    - node_js: '8'
+      env: LINT=true
+
+    # Run unit tests with varying Node.js
+    # and default PostgreSQL (9.2)
+
+    - node_js: '8'
+      env: NODE=8
+
+    # Run integration tests with varying
+    # PostgreSQL and default Node.js (8)
+
+    - node_js: '8'
+      env: POSTGRES=9.4
+      addons:
+        postgresql: '9.4'
+
+    - node_js: '8'
+      env: POSTGRES=9.5
+      addons:
+        postgresql: '9.5'
+
+    - node_js: '8'
+      env: POSTGRES=9.6
+      addons:
+        postgresql: '9.6'
+
+# Global environment variables
+env:
+  global:
+    - TEST_DATABASE=postgres://postgres:@localhost:5432/pa11y_sidekick_travis
+
+# Services setup
+services:
+  - postgresql
+addons:
+  postgresql: '9.4'
+
+# Build script
+before_script:
+  - psql -c "CREATE DATABASE pa11y_sidekick_travis" -U postgres
+script:
+  - 'if [ $LINT ]; then make verify; fi'
+  - 'if [ $NODE ]; then make test-unit-coverage; fi'
+  - 'if [ $POSTGRES ]; then make test-integration; fi'

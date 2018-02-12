@@ -1,0 +1,49 @@
+
+<form data-test="setup-form" action="{action}" method="post" enctype="application/x-www-form-urlencoded">
+
+	{>"partial/alert/error" errors=form.setup.errors/}
+
+	<div class="field field--text">
+		<label for="setup-admin-email">
+			Admin email address
+			<span class="field__sublabel">The email address for the Sidekick super-admin</span>
+		</label>
+		<input id="setup-admin-email" type="email" name="adminEmail" value="{form.setup.adminEmail}" required/>
+	</div>
+
+	<div class="field field--text">
+		<label for="setup-admin-password">
+			Admin password
+			<span class="field__sublabel">
+				Enter the super-admin password. This must be 6 or more characters in length
+			</span>
+		</label>
+		<input id="setup-admin-password" type="password" name="adminPassword" required/>
+	</div>
+
+	<div class="field field--text">
+		<label for="setup-admin-password-confirm">
+			Confirm admin password
+			<span class="field__sublabel">
+				Re-enter the super-admin password to confirm it
+			</span>
+		</label>
+		<input id="setup-admin-password-confirm" type="password" name="adminPasswordConfirm" required/>
+	</div>
+
+	<div class="field">
+		<label for="setup-public-read-access">
+			Public Access
+			<span class="field__sublabel">
+				<input id="setup-public-read-access" type="checkbox" name="publicReadAccess" {?form.setup.publicReadAccess}checked{/form.setup.publicReadAccess}/>
+				Check this box if you'd like your Accessibility data to be publicly viewable.
+				Go on, show it off to the world! You can change this setting later if you change your mind
+			</span>
+		</label>
+	</div>
+
+	<div class="field">
+		<input type="submit" value="{cta}" class="button button--submit"/>
+	</div>
+
+</form>

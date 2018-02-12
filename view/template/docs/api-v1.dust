@@ -1,0 +1,137 @@
+{>"layout/full"/}
+
+{<title}
+	API Documentation - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/api-docs"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>API Documentation</h1>
+
+	<p>
+		Sidekick comes with a REST API which can be used to automate certain tasks or push data
+		into the dashboard from external sources. The documentation here outlines which endpoints
+		are available.
+	</p>
+
+	<ol class="table-of-contents">
+		<li><a href="#version">Current version</a></li>
+		<li><a href="#authentication">Authentication</a></li>
+		<li><a href="#permissions">Permissions</a></li>
+		<li><a href="#content-types">Content-Types</a></li>
+		<li><a href="#cors">Cross Origin Resource Sharing</a></li>
+		<li><a href="#errors">Errors</a></li>
+	</ol>
+
+
+	<h2 id="version">Current version</h2>
+
+	<p>
+		The current version of the API is <code>v1</code>. All endpoints are prefixed with this
+		version identifier.
+	</p>
+
+
+	<h2 id="authentication">Authentication</h2>
+
+	<p>
+		Many endpoints in the API require authentication. Before you can authenticate, you'll need to
+		generate an API key and secret. <a href="/settings/keys">You can do that here</a>.
+	</p>
+
+	<p>
+		When you have an API key and secret you must set them as headers whenever you make a request
+		to the API:
+	</p>
+
+	{@codeBlock language="http"}
+		X-Api-Key: xxx-xxxx-xxx
+		X-Api-Secret: xxx-xxxx-xxx
+	{/codeBlock}
+
+
+	<h2 id="permissions">Permissions</h2>
+
+	<p>
+		Different endpoints require different user permissions to access. The documentation for each
+		endpoint will outline which is required.
+	</p>
+
+	<p>
+		The permission levels are as follows. Note that these don't stack: a user with <code>WRITE</code>
+		access does not automatically have <code>READ</code> access.
+	</p>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<thead>
+				<tr>
+					<th>Permission</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td><code>READ</code></th>
+					<td>Allowed to list and get most resources</td>
+				</tr>
+				<tr>
+					<td><code>WRITE</code></th>
+					<td>Allowed to create new resources and update existing resources</td>
+				</tr>
+				<tr>
+					<td><code>DELETE</code></th>
+					<td>Allowed to delete resources</td>
+				</tr>
+				<tr>
+					<td><code>ADMIN</code></th>
+					<td>Allowed to administer users and access</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<p>
+		If you don't know what permission level an API key and secret grant you, you can check by
+		<a href="#authentication">authenticating</a> and
+		<a href="/docs/api/v1/users#get-api-v1-me">requesting the authenticated user details</a>.
+	</p>
+
+
+	<h2 id="content-types">Content-Types</h2>
+
+	<p>
+		All endpoints respond with a <code>Content-Type</code> header of <code>application/json</code>
+		unless explicitly stated otherwise.
+	</p>
+
+
+	<h2 id="cors">Cross Origin Resource Sharing</h2>
+
+	<p>
+		All endpoints respond with appropriate and permissive
+		<a href="https://www.w3.org/TR/cors/">CORS</a> headers.
+	</p>
+
+
+	<h2 id="errors">Errors</h2>
+
+	<p>
+		The API returns error messages as JSON following the schema below:
+	</p>
+
+	{@codeBlock language="json"}
+		{
+			"status": 404,           // The HTTP status code of the response
+			"message": "Not Found",  // A short description of the error that occurred
+			"validation": [
+				"example"            // Additional validation messages (optional)
+			]
+		}
+	{/codeBlock}
+
+{/content}

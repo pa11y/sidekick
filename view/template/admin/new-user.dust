@@ -1,0 +1,17 @@
+{>"layout/full"/}
+
+{<title}
+	Creating User - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/admin"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Create a new User</h1>
+
+	{>"partial/form/user" action=requestPath cta="Create user" formAdmin="true"/}
+
+{/content}

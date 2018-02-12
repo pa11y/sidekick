@@ -1,0 +1,24 @@
+{
+  "name": "Pa11y Sidekick",
+  "description": "An accessibility dashboard",
+  "keywords": [],
+  "website": "https://github.com/pa11y/sidekick",
+  "repository": "https://github.com/pa11y/sidekick",
+  "logo": "http://pa11y.org/resources/brand/pa11y-logo-512x512.png",
+  "success_url": "/",
+  "env": {
+    "SESSION_SECRET": {
+      "description": "The secret to encrypt session IDs with",
+      "generator": "secret",
+      "required": true
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql",
+      "options": {
+        "version": "9.6"
+      }
+    }
+  ]
+}

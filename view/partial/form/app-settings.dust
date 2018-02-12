@@ -1,0 +1,22 @@
+
+<form data-test="settings-form" action="{action}" method="post" enctype="application/x-www-form-urlencoded">
+
+	{>"partial/alert/success" success=form.settings.success/}
+	{>"partial/alert/error" errors=form.settings.errors/}
+
+	<div class="field">
+		<label for="settings-public-access">
+			Public Access
+			<span class="field__sublabel">
+				<input id="settings-public-access" type="checkbox" name="publicReadAccess" {?form.settings.publicReadAccess}checked{/form.settings.publicReadAccess}/>
+				Check this box if you'd like your Accessibility data to be publicly viewable.
+				Go on, show it off to the world!
+			</span>
+		</label>
+	</div>
+
+	<div class="field">
+		<input type="submit" value="{cta}" class="button button--submit"/>
+	</div>
+
+</form>

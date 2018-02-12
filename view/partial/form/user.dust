@@ -1,0 +1,80 @@
+
+<form data-test="user-form" action="{action}" method="post" enctype="application/x-www-form-urlencoded">
+
+	{>"partial/alert/success" success=form.user.success/}
+	{>"partial/alert/error" errors=form.user.errors/}
+
+	<div class="field field--text">
+		<label for="user-email">Email address</label>
+		<input id="user-email" type="email" name="email" value="{form.user.email}" required/>
+	</div>
+
+	{?formAdmin}
+
+		<div class="field field--text">
+			<label for="user-password">
+				Password
+				<span class="field__sublabel">
+					Enter a password. This must be 6 or more characters in length
+				</span>
+			</label>
+			<input id="user-password" type="password" name="password"/>
+		</div>
+
+		<div class="field field--text">
+			<label for="user-password-confirm">
+				Confirm password
+				<span class="field__sublabel">
+					Re-enter the password to confirm
+				</span>
+			</label>
+			<input id="user-password-confirm" type="password" name="passwordConfirm"/>
+		</div>
+
+		<div class="field field--checkbox">
+			<label for="user-allow-read">
+				Read permission
+				<span class="field__sublabel">
+					<input id="user-allow-read" type="checkbox" name="allowRead" {?form.user.allowRead}checked{/form.user.allowRead}/>
+					User is permitted to view the dashboard
+				</span>
+			</label>
+		</div>
+
+		<div class="field field--checkbox">
+			<label for="user-allow-write">
+				Write permission
+				<span class="field__sublabel">
+					<input id="user-allow-write" type="checkbox" name="allowWrite" {?form.user.allowWrite}checked{/form.user.allowWrite}/>
+					User is permitted to create and edit dashboard content
+				</span>
+			</label>
+		</div>
+
+		<div class="field field--checkbox">
+			<label for="user-allow-delete">
+				Delete permission
+				<span class="field__sublabel">
+					<input id="user-allow-delete" type="checkbox" name="allowDelete" {?form.user.allowDelete}checked{/form.user.allowDelete}/>
+					User is permitted to delete dashboard content
+				</span>
+			</label>
+		</div>
+
+		<div class="field field--checkbox">
+			<label for="user-allow-admin">
+				Admin permission
+				<span class="field__sublabel">
+					<input id="user-allow-admin" type="checkbox" name="allowAdmin" {?form.user.allowAdmin}checked{/form.user.allowAdmin}/>
+					User is permitted to administer other users and change settings
+				</span>
+			</label>
+		</div>
+
+	{/formAdmin}
+
+	<div class="field">
+		<input type="submit" value="{cta}" class="button button--submit"/>
+	</div>
+
+</form>

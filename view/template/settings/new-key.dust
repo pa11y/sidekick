@@ -1,0 +1,17 @@
+{>"layout/full"/}
+
+{<title}
+	Generating API Key - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/settings"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Generate a new API Key</h1>
+
+	{>"partial/form/key" action=requestPath cta="Generate API key"/}
+
+{/content}

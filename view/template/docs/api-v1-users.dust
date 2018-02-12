@@ -1,0 +1,1623 @@
+{>"layout/full"/}
+
+{<title}
+	Users and API Keys - API Documentation - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/api-docs"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Users and API Keys</h1>
+
+	<p>
+		These endpoints are all used to create and manage users and their API keys. Many of these
+		require the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a>, and all of them require you to send
+		<a href="/docs/api/v1#authentication">authentication headers</a>.
+	</p>
+
+	<p>
+		If your intention is to make changes to the authenticated user, then it's always best to
+		use the dedicated endpoints for this.
+	</p>
+
+	<ol class="table-of-contents">
+		<li><a href="#resource-user">Resource type: User</a></li>
+		<li><a href="#resource-api-key">Resource type: API Key</a></li>
+		<li><a href="#resource-credentials">Resource type: Credentials</a></li>
+		<li><a href="#get-api-v1-users">Endpoint: List all users</a></li>
+		<li><a href="#post-api-v1-users">Endpoint: Create a new user</a></li>
+		<li><a href="#get-api-v1-users-(id)">Endpoint: Get a user</a></li>
+		<li><a href="#get-api-v1-me">Endpoint: Get the authenticated user</a></li>
+		<li><a href="#patch-api-v1-users-(id)">Endpoint: Edit a user</a></li>
+		<li><a href="#patch-api-v1-me">Endpoint: Edit the authenticated user</a></li>
+		<li><a href="#delete-api-v1-users-(id)">Endpoint: Delete a user</a></li>
+		<li><a href="#get-api-v1-users-(id)-keys">Endpoint: List API keys for a user</a></li>
+		<li><a href="#get-api-v1-me-keys">Endpoint: List API keys for the authenticated user</a></li>
+		<li><a href="#post-api-v1-users-(id)-keys">Endpoint: Create an API key</a></li>
+		<li><a href="#post-api-v1-me-keys">Endpoint: Create an API key for the authenticated user</a></li>
+		<li><a href="#get-api-v1-users-(id)-keys-(id)">Endpoint: Get an API key</a></li>
+		<li><a href="#get-api-v1-me-keys-(id)">Endpoint: Get an API key for the authenticated user</a></li>
+		<li><a href="#patch-api-v1-users-(id)-keys-(id)">Endpoint: Update an API key</a></li>
+		<li><a href="#patch-api-v1-me-keys-(id)">Endpoint: Update an API key for the authenticated user</a></li>
+		<li><a href="#delete-api-v1-users-(id)-keys-(id)">Endpoint: Delete an API key</a></li>
+		<li><a href="#delete-api-v1-me-keys-(id)">Endpoint: Delete an API key for the authenticated user</a></li>
+	</ol>
+
+
+	<h2 id="resource-user">User resources</h2>
+
+	<p>
+		Endpoints which deal with users mostly respond with User resources.
+		When represented as JSON, Users always follow this schema:
+	</p>
+
+	{@codeBlock language="json"}
+		{
+			// The user's unique ID
+			"id": "xxxxxx",
+
+			// The user's email address
+			"email": "user@example.com",
+
+			// The user's permission levels
+			"permissions": {
+				"read": true,
+				"write": true,
+				"delete": true,
+				"admin": true
+			},
+
+			// Meta information about the user
+			"meta": {
+				"dateCreated": "2018-01-01T00:00:00.000Z",
+				"dateUpdated": "2018-01-01T00:00:00.000Z"
+			}
+		}
+	{/codeBlock}
+
+
+	<h2 id="resource-api-key">API Key resources</h2>
+
+	<p>
+		Endpoints which deal with API keys mostly respond with API Key resources.
+		API Key resources never contain the secret key as this is only user-readable at the point of
+		creation when it is output as a <a href="#resource-credentials">Credential resource</a>.
+		When represented as JSON, API Keys always follow this schema:
+	</p>
+
+	{@codeBlock language="json"}
+		{
+			// The API key's unique ID
+			"id": "xxx-xxxx-xxx",
+
+			// The ID of the user who owns this API key
+			"id": "xxxxxx",
+
+			// A short description of what the API key is used for
+			"description": "Used to pull a11y data into external dashboards",
+
+			// Meta information about the API key
+			"meta": {
+				"dateCreated": "2018-01-01T00:00:00.000Z",
+				"dateUpdated": "2018-01-01T00:00:00.000Z"
+			}
+		}
+	{/codeBlock}
+
+
+	<h2 id="resource-credentials">Credentials resources</h2>
+
+	<p>
+		Endpoints which deal with API key generation respond with Credentials resources. Credentials
+		resources contain both an API key and secret which will never be retrievable after initial
+		display. When represented as JSON, API Keys always follow this schema:
+	</p>
+
+	{@codeBlock language="json"}
+		{
+			// The API key ID
+			"id": "xxx-xxxx-xxx",
+
+			// The API secret
+			"secret": "xxx-xxxx-xxx"
+		}
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-users">List all users</h2>
+
+	<p>
+		List all users who have access to the application.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						An array of <a href="#resource-user">User resources</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/users
+	{/codeBlock}
+
+
+	<h2 id="post-api-v1-users">Create a new user</h2>
+
+	<p>
+		Create a new user.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>POST</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// The user's email address (required)
+								"email": "user@example.com",
+
+								// The user's password (required)
+								"password": "xxxxxxxxxx",
+
+								// The user's permission levels (optional)
+								"read": true,
+								"write": false,
+								"delete": false,
+								"admin": false
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>201</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The newly created <a href="#resource-user">User resources</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X POST \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"email": "user@example.com", "password": "xxxxxxxxxx", "read": true}' \
+		     {appUrl}/api/v1/users
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-users-(id)">Get a user</h2>
+
+	<p>
+		Get a single user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested user does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						A <a href="#resource-user">User resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/users/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-me">Get the authenticated user</h2>
+
+	<p>
+		Get the authenticated user.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/me</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						A <a href="#resource-user">User resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/me
+	{/codeBlock}
+
+
+	<h2 id="patch-api-v1-users-(id)">Edit a user</h2>
+
+	<p>
+		Edit a single user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>PATCH</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// The user's email address (optional)
+								"email": "user@example.com",
+
+								// The user's password (optional)
+								"password": "xxxxxxxxxx",
+
+								// The user's permission levels (optional)
+								"read": true,
+								"write": false,
+								"delete": false,
+								"admin": false
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested user does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The updated <a href="#resource-user">User resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	{@codeBlock language="bash"}
+		curl -X PATCH \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"email": "user@example.com", "password": "xxxxxxxxxx", "read": true}' \
+		     {appUrl}/api/v1/users/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="patch-api-v1-me">Edit the authenticated user</h2>
+
+	<p>
+		Edit the authenticated user.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>PATCH</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/me</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// The user's email address (optional)
+								"email": "user@example.com",
+
+								// The user's password (optional)
+								"password": "xxxxxxxxxx",
+
+								// The user's permission levels (optional)
+								"read": true,
+								"write": false,
+								"delete": false,
+								"admin": false
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The updated <a href="#resource-user">User resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	{@codeBlock language="bash"}
+		curl -X PATCH \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"email": "user@example.com", "password": "xxxxxxxxxx", "read": true}' \
+		     {appUrl}/api/v1/me
+	{/codeBlock}
+
+
+	<h2 id="delete-api-v1-users-(id)">Delete a user</h2>
+
+	<p>
+		Delete a single user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>DELETE</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>204</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested user does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>An empty object</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X DELETE \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/users/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-users-(id)-keys">List API keys for a user</h2>
+
+	<p>
+		List all API keys for a user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var>/keys</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						An array of <a href="#resource-api-key">API Key resources</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/users/xxxxxx/keys
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-me-keys">List API keys for the authenticated user</h2>
+
+	<p>
+		List all API keys for the authenticated user.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/me/keys</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						An array of <a href="#resource-api-key">API Key resources</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/me/keys
+	{/codeBlock}
+
+
+	<h2 id="post-api-v1-users-(id)-keys">Create an API key</h2>
+
+	<p>
+		Create an API key for a user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>POST</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var>/keys</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// A short description of what the API key is used for
+								"description": "Used to pull a11y data into external dashboards"
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>201</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						A <a href="#resource-credentials">Credentials resource</a> containing the
+						API key ID and secret
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X POST \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"description": "Example key"}' \
+		     {appUrl}/api/v1/users/xxxxxx/keys
+	{/codeBlock}
+
+
+	<h2 id="post-api-v1-me-keys">Create an API key for the authenticated user</h2>
+
+	<p>
+		Create an API key for the authenticated user.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>POST</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/me/keys</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// A short description of what the API key is used for
+								"description": "Used to pull a11y data into external dashboards"
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>201</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						A <a href="#resource-credentials">Credentials resource</a> containing the
+						API key ID and secret
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X POST \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"description": "Example key"}' \
+		     {appUrl}/api/v1/me/keys
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-users-(id)-keys-(id)">Get an API key</h2>
+
+	<p>
+		Get a single API key by user ID and ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var>/keys/<var>:keyId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested user or API key does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						An <a href="#resource-api-key">API Key resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/users/xxxxxx/keys/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-me-keys-(id)">Get an API key for the authenticated user</h2>
+
+	<p>
+		Get a single API key for the authenticated user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td><code>/v1/me/keys/<var>:keyId</var></code></td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>404</code> if the requested API key does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						An <a href="#resource-api-key">API Key resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/me/keys/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="patch-api-v1-users-(id)-keys-(id)">Update an API key</h2>
+
+	<p>
+		Update a single API key by user ID and ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>PATCH</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var>/keys/<var>:keyId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// A short description of what the API key is used for
+								"description": "Used to pull a11y data into external dashboards"
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested user or API key does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The updated <a href="#resource-api-key">API Key resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	{@codeBlock language="bash"}
+		curl -X PATCH \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"description": "Example key"}' \
+		     {appUrl}/api/v1/users/xxxxxx/keys/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="patch-api-v1-me-keys-(id)">Update an API key for the authenticated user</h2>
+
+	<p>
+		Update a single API key for the authenticated user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>PATCH</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/me/keys/<var>:keyId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// A short description of what the API key is used for
+								"description": "Used to pull a11y data into external dashboards"
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>404</code> if the requested API key does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The updated <a href="#resource-api-key">API Key resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	{@codeBlock language="bash"}
+		curl -X PATCH \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"description": "Example key"}' \
+		     {appUrl}/api/v1/me/keys/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="delete-api-v1-users-(id)-keys-(id)">Delete an API key</h2>
+
+	<p>
+		Delete a single API key by user ID and ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>ADMIN</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>DELETE</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/users/<var>:userId</var>/keys/<var>:keyId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>204</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested user or API key does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>An empty object</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X DELETE \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/users/xxxxxx/keys/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="delete-api-v1-me-keys-(id)">Delete an API key for the authenticated user</h2>
+
+	<p>
+		Delete a single API key for the authenticated user by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>DELETE</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/me/keys/<var>:keyId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>204</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>404</code> if the requested API key does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>An empty object</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X DELETE \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/me/keys/xxxxxx
+	{/codeBlock}
+
+
+{/content}

@@ -1,0 +1,11 @@
+
+{?errors}
+	<div class="alert alert--error">
+		<p><strong>The following errors occurred:</strong></p>
+		<ul>
+			{#errors}
+				<li data-test="alert-error">{.}</li>
+			{/errors}
+		</ul>
+	</div>
+{/errors}

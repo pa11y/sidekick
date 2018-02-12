@@ -1,0 +1,17 @@
+{>"layout/full"/}
+
+{<title}
+	Editing API Key - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/settings"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Editing API Key</h1>
+
+	{>"partial/form/key" action=requestPath cta="Save changes"/}
+
+{/content}

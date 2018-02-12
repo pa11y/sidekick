@@ -1,0 +1,19 @@
+{>"layout/full"/}
+
+{<title}
+	Sidekick Settings - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/admin"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Sidekick Settings</h1>
+
+	<p>Manage the way that Sidekick behaves.</p>
+
+	{>"partial/form/app-settings" action=requestPath cta="Save changes"/}
+
+{/content}

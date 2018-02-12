@@ -1,0 +1,20 @@
+
+<nav class="navigation navigation--secondary">
+	<ul>
+		<li>
+			<span class="navigation__item navigation__item--title">
+				API Documentation
+			</span>
+		</li>
+		<li>
+			<a href="/docs/api/v1" class="navigation__item {@currentUrl test="/docs/api/v1"}navigation__item--current{/currentUrl}">
+				Overview
+			</a>
+		</li>
+		<li>
+			<a href="/docs/api/v1/users" class="navigation__item {@currentUrl test="/docs/api/v1/users"}navigation__item--current{/currentUrl}">
+				Users
+			</a>
+		</li>
+	</ul>
+</nav>

@@ -1,0 +1,34 @@
+{>"layout/full"/}
+
+{<title}
+	Error {error.status}: {error.message} - Sidekick
+{/title}
+
+{<content}
+
+	<h1>Error {error.status}: {error.message}</h1>
+
+	{@select key=error.status}
+
+		{@eq value=401}
+			<p>You must <a href="/login?referer={requestPath}">log in</a> before you'll be able to access this page</p>
+		{/eq}
+
+		{@eq value=404}
+			<p>The page you're looking for can't be found.</p>
+		{/eq}
+
+		{@eq value=500}
+			<p>Something went wrong internally.</p>
+		{/eq}
+
+	{/select}
+
+	{! We only send the stack if the app is running in development mode !}
+	{?error.stack}
+		<hr/>
+		<p>Note: you can see the full error because Sidekick is running in development mode:</p>
+		<pre>{error.stack}</pre>
+	{/error.stack}
+
+{/content}

@@ -1,0 +1,18 @@
+{>"layout/full"/}
+
+{<title}
+	Setup - Sidekick
+{/title}
+
+{<content}
+
+	<h1>Sidekick Setup</h1>
+
+	<p>
+		You're nearly there! We need a few more things from you before Sidekick is ready to display
+		your accessibility information.
+	</p>
+
+	{>"partial/form/setup" action=requestPath cta="Set up Sidekick"/}
+
+{/content}

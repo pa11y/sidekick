@@ -1,0 +1,21 @@
+
+<form data-test="key-form" action="{action}" method="post" enctype="application/x-www-form-urlencoded">
+
+	{>"partial/alert/success" success=form.key.success/}
+	{>"partial/alert/error" errors=form.key.errors/}
+
+	<div class="field field--text">
+		<label for="key-description">
+			Description
+			<span class="field__sublabel">
+				A brief description of the key, used to identify what this key is for later
+			</span>
+		</label>
+		<input id="key-description" type="text" name="description" value="{form.key.description}" required/>
+	</div>
+
+	<div class="field">
+		<input type="submit" value="{cta}" class="button button--submit"/>
+	</div>
+
+</form>

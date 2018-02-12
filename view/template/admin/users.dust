@@ -1,0 +1,81 @@
+{>"layout/full"/}
+
+{<title}
+	User Management - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/admin"/}
+{/secondary-nav}
+
+{<content}
+
+	<div class="heading-wrapper">
+		<h1>User Management</h1>
+		<a href="/admin/users/new" class="button">Create a new user</a>
+	</div>
+
+	<p>Manage the users who have access to Sidekick.</p>
+
+	{?form.user.created}
+		<div class="alert alert--success">
+			<p data-test="user-new">
+				The user "{form.user.created.email}" has been created.
+			</p>
+		</div>
+	{/form.user.created}
+
+	{?form.user.deleted}
+		<div class="alert alert--success">
+			<p data-test="user-deleted">
+				<strong>The user with email "{form.user.deleted.email}" has been deleted</strong>
+			</p>
+		</div>
+	{/form.user.deleted}
+
+	<div class="table-wrapper">
+		<table data-test="users-table" class="table table--striped">
+			<thead>
+				<tr>
+					<th rowspan="2">User</th>
+					<th rowspan="2">Created</th>
+					<th colspan="4">Permissions</th>
+					<th rowspan="2">Controls</th>
+				</tr>
+				<tr>
+					<th>Read</th>
+					<th>Write</th>
+					<th>Delete</th>
+					<th>Admin</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#users}
+					<tr>
+						<td>
+							{?isOwner}
+								{email} (owner)
+							{:else}
+								<a href="/admin/users/{id}/edit">{email}</a>
+							{/isOwner}
+						</td>
+						<td>{meta.dateCreated}</td>
+						<td>{?permissions.read}Yes{:else}No{/permissions.read}</td>
+						<td>{?permissions.write}Yes{:else}No{/permissions.write}</td>
+						<td>{?permissions.delete}Yes{:else}No{/permissions.delete}</td>
+						<td>{?permissions.admin}Yes{:else}No{/permissions.admin}</td>
+						<td>
+							{?isOwner}
+								Owners cannot be modified here
+							{:else}
+								<a href="/admin/users/{id}/edit">Edit</a>
+								<a href="/admin/users/{id}/delete">Delete</a>
+							{/isOwner}
+						</td>
+					</tr>
+				{/users}
+			</tbody>
+		</table>
+	</div>
+
+{/content}
