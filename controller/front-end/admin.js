@@ -16,7 +16,6 @@ function initAdminController(dashboard, router) {
 	const Setting = dashboard.model.Setting;
 
 	// TODO write integration tests for these routes
-	// TODO prevent users from editing themselves
 
 	// Redirect the base admin page to the admin users page
 	router.get('/admin', requirePermission('admin'), (request, response) => {
@@ -101,6 +100,9 @@ function initAdminController(dashboard, router) {
 			if (user.get('is_owner')) {
 				throw httpError(403, 'You are not authorized to modify an owner');
 			}
+			if (user.get('id') === request.authUser.id) {
+				throw httpError(403, 'You are not authorized to modify yourself');
+			}
 			response.render('template/admin/edit-user', {
 				form: {
 					user: {
@@ -127,6 +129,9 @@ function initAdminController(dashboard, router) {
 			}
 			if (user.get('is_owner')) {
 				throw httpError(403, 'You are not authorized to modify an owner');
+			}
+			if (user.get('id') === request.authUser.id) {
+				throw httpError(403, 'You are not authorized to modify yourself');
 			}
 
 			// Check that the password and confirmation match
@@ -177,6 +182,9 @@ function initAdminController(dashboard, router) {
 			if (user.get('is_owner')) {
 				throw httpError(403, 'You are not authorized to modify an owner');
 			}
+			if (user.get('id') === request.authUser.id) {
+				throw httpError(403, 'You are not authorized to modify yourself');
+			}
 			response.render('template/admin/delete-user', {
 				form: {
 					user: user.serialize()
@@ -196,6 +204,9 @@ function initAdminController(dashboard, router) {
 			}
 			if (user.get('is_owner')) {
 				throw httpError(403, 'You are not authorized to modify an owner');
+			}
+			if (user.get('id') === request.authUser.id) {
+				throw httpError(403, 'You are not authorized to modify yourself');
 			}
 
 			// Attempt to delete the user

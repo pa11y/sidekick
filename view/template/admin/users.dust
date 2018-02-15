@@ -56,7 +56,11 @@
 							{?isOwner}
 								{email} (owner)
 							{:else}
-								<a href="/admin/users/{id}/edit">{email}</a>
+								{@eq key=id value=authUser.id}
+									{email} (you)
+								{:else}
+									<a href="/admin/users/{id}/edit">{email}</a>
+								{/eq}
 							{/isOwner}
 						</td>
 						<td>{meta.dateCreated}</td>
@@ -68,8 +72,12 @@
 							{?isOwner}
 								Owners cannot be modified here
 							{:else}
-								<a href="/admin/users/{id}/edit">Edit</a>
-								<a href="/admin/users/{id}/delete">Delete</a>
+								{@eq key=id value=authUser.id}
+									You cannot modify yourself here
+								{:else}
+									<a href="/admin/users/{id}/edit">Edit</a>
+									<a href="/admin/users/{id}/delete">Delete</a>
+								{/eq}
 							{/isOwner}
 						</td>
 					</tr>
