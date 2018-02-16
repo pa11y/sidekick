@@ -2,44 +2,39 @@
 
 const assert = require('proclaim');
 const database = require('../../helpers/database');
-const {JSDOM} = require('jsdom');
+const querystring = require('querystring');
+let response;
 
 describe('GET / (when setup is not complete)', () => {
-	let request;
 
-	beforeEach(async () => {
+	before(async () => {
 		await database.clean(dashboard);
-		request = agent.get('/');
 	});
 
-	it('responds with a 200 status', () => {
-		return request.expect(200);
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with HTML', () => {
-		return request.expect('Content-Type', /text\/html/);
-	});
-
-	describe('HTML response', () => {
-		let dom;
-		let errors;
-		let form;
-
-		beforeEach(async () => {
-			dom = new JSDOM((await request.then()).text);
-			form = dom.window.document.querySelector('[data-test=setup-form]');
-			errors = form.querySelectorAll('[data-test=alert-error]');
+		before(async () => {
+			response = await request.get('/');
 		});
 
-		it('contains no error messages', () => {
+		it('responds with a 200 status', () => {
+			assert.strictEqual(response.statusCode, 200);
+		});
+
+		it('responds with HTML', () => {
+			assert.include(response.headers['content-type'], 'text/html');
+		});
+
+		it('responds with no error messages', () => {
+			const errors = response.body.document.querySelectorAll('[data-test=setup-form] [data-test=alert-error]');
 			assert.lengthEquals(errors, 0);
 		});
 
-		it('contains a setup form', () => {
+		it('responds with a setup form', () => {
+			const form = response.body.document.querySelector('[data-test=setup-form]');
 			assert.isNotNull(form);
 			assert.strictEqual(form.getAttribute('action'), '/');
 			assert.strictEqual(form.getAttribute('method'), 'post');
-			assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
 
 			const adminEmailField = form.querySelector('input[name="adminEmail"]');
 			assert.strictEqual(adminEmailField.getAttribute('type'), 'email');
@@ -63,25 +58,25 @@ describe('GET / (when setup is not complete)', () => {
 });
 
 describe('POST / (when setup is not complete)', () => {
-	let request;
 
 	describe('when everything is valid', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.clean(dashboard);
-			request = agent
-				.post('/')
-				.set('Content-Type', 'application/x-www-form-urlencoded')
-				.send({
+			response = await request.post('/', {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: querystring.stringify({
 					adminEmail: 'admin@example.com',
 					adminPassword: 'password',
 					adminPasswordConfirm: 'password',
 					publicReadAccess: true
-				});
+				})
+			});
 		});
 
 		it('adds an admin user to the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'admin@example.com'
 			});
@@ -97,7 +92,6 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('adds settings to the database', async () => {
-			await request.then();
 			const settings = await dashboard.database.knex.select('*').from('settings');
 
 			assert.lengthEquals(settings, 2, 'Two settings are present');
@@ -110,35 +104,36 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('responds with a 302 status', () => {
-			return request.expect(302);
+			assert.strictEqual(response.statusCode, 302);
 		});
 
 		it('responds with a Location header pointing to the home page', () => {
-			return request.expect('Location', '/');
+			assert.strictEqual(response.headers.location, '/');
 		});
 
 		it('responds with plain text', () => {
-			return request.expect('Content-Type', /text\/plain/);
+			assert.include(response.headers['content-type'], 'text/plain');
 		});
 
 	});
 
 	describe('when everything is valid but public read access is not enabled', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.clean(dashboard);
-			request = agent
-				.post('/')
-				.set('Content-Type', 'application/x-www-form-urlencoded')
-				.send({
+			response = await request.post('/', {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: querystring.stringify({
 					adminEmail: 'admin@example.com',
 					adminPassword: 'password',
 					adminPasswordConfirm: 'password'
-				});
+				})
+			});
 		});
 
 		it('adds an admin user to the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'admin@example.com'
 			});
@@ -154,7 +149,6 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('adds settings to the database', async () => {
-			await request.then();
 			const settings = await dashboard.database.knex.select('*').from('settings');
 
 			assert.lengthEquals(settings, 2, 'Two settings are present');
@@ -167,36 +161,37 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('responds with a 302 status', () => {
-			return request.expect(302);
+			assert.strictEqual(response.statusCode, 302);
 		});
 
 		it('responds with a Location header pointing to the login page', () => {
-			return request.expect('Location', '/login');
+			assert.strictEqual(response.headers.location, '/login');
 		});
 
 		it('responds with plain text', () => {
-			return request.expect('Content-Type', /text\/plain/);
+			assert.include(response.headers['content-type'], 'text/plain');
 		});
 
 	});
 
 	describe('when the admin email is invalid', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.clean(dashboard);
-			request = agent
-				.post('/')
-				.set('Content-Type', 'application/x-www-form-urlencoded')
-				.send({
+			response = await request.post('/', {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: querystring.stringify({
 					adminEmail: 'invalid-email',
 					adminPassword: 'password',
 					adminPasswordConfirm: 'password',
 					publicReadAccess: true
-				});
+				})
+			});
 		});
 
 		it('does not add an admin user to the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'invalid-email'
 			});
@@ -204,75 +199,67 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('does not add settings to the database', async () => {
-			await request.then();
 			const settings = await dashboard.database.knex.select('*').from('settings');
 			assert.lengthEquals(settings, 0);
 		});
 
 		it('responds with a 400 status', () => {
-			return request.expect(400);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('responds with HTML', () => {
-			return request.expect('Content-Type', /text\/html/);
+			assert.include(response.headers['content-type'], 'text/html');
 		});
 
-		describe('HTML response', () => {
-			let dom;
-			let errors;
-			let form;
+		it('responds with an error message', () => {
+			const errors = response.body.document.querySelectorAll('[data-test=setup-form] [data-test=alert-error]');
+			assert.lengthEquals(errors, 1);
+			assert.match(errors[0].textContent, /must be a valid email/i);
+		});
 
-			beforeEach(async () => {
-				dom = new JSDOM((await request.then()).text);
-				form = dom.window.document.querySelector('[data-test=setup-form]');
-				errors = form.querySelectorAll('[data-test=alert-error]');
-			});
+		it('responds with a setup form with some of the posted data pre-filled', () => {
+			const form = response.body.document.querySelector('[data-test=setup-form]');
+			assert.isNotNull(form);
+			assert.strictEqual(form.getAttribute('action'), '/');
+			assert.strictEqual(form.getAttribute('method'), 'post');
 
-			it('contains an error message', () => {
-				assert.lengthEquals(errors, 1);
-				assert.match(errors[0].textContent, /must be a valid email/i);
-			});
+			const adminEmailField = form.querySelector('input[name="adminEmail"]');
+			assert.strictEqual(adminEmailField.getAttribute('type'), 'email');
+			assert.strictEqual(adminEmailField.getAttribute('value'), 'invalid-email');
 
-			it('contains a setup form with some of the posted data pre-filled', () => {
-				assert.isNotNull(form);
-				assert.strictEqual(form.getAttribute('action'), '/');
-				assert.strictEqual(form.getAttribute('method'), 'post');
-				assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
+			const adminPasswordField = form.querySelector('input[name="adminPassword"]');
+			assert.strictEqual(adminPasswordField.getAttribute('type'), 'password');
+			assert.isNull(adminPasswordField.getAttribute('value'));
 
-				const adminEmailField = form.querySelector('input[name="adminEmail"]');
-				assert.strictEqual(adminEmailField.getAttribute('value'), 'invalid-email');
+			const adminPasswordConfirmField = form.querySelector('input[name="adminPasswordConfirm"]');
+			assert.strictEqual(adminPasswordConfirmField.getAttribute('type'), 'password');
+			assert.isNull(adminPasswordConfirmField.getAttribute('value'));
 
-				const adminPasswordField = form.querySelector('input[name="adminPassword"]');
-				assert.isNull(adminPasswordField.getAttribute('value'));
-
-				const adminPasswordConfirmField = form.querySelector('input[name="adminPasswordConfirm"]');
-				assert.isNull(adminPasswordConfirmField.getAttribute('value'));
-
-				const publicReadAccessField = form.querySelector('input[name="publicReadAccess"]');
-				assert.strictEqual(publicReadAccessField.getAttribute('checked'), '');
-			});
-
+			const publicReadAccessField = form.querySelector('input[name="publicReadAccess"]');
+			assert.strictEqual(publicReadAccessField.getAttribute('type'), 'checkbox');
+			assert.strictEqual(publicReadAccessField.getAttribute('checked'), '');
 		});
 
 	});
 
 	describe('when the admin password is invalid', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.clean(dashboard);
-			request = agent
-				.post('/')
-				.set('Content-Type', 'application/x-www-form-urlencoded')
-				.send({
+			response = await request.post('/', {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: querystring.stringify({
 					adminEmail: 'admin@example.com',
 					adminPassword: 'pass',
 					adminPasswordConfirm: 'pass',
 					publicReadAccess: true
-				});
+				})
+			});
 		});
 
 		it('does not add an admin user to the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'admin@example.com'
 			});
@@ -280,75 +267,67 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('does not add settings to the database', async () => {
-			await request.then();
 			const settings = await dashboard.database.knex.select('*').from('settings');
 			assert.lengthEquals(settings, 0);
 		});
 
 		it('responds with a 400 status', () => {
-			return request.expect(400);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('responds with HTML', () => {
-			return request.expect('Content-Type', /text\/html/);
+			assert.include(response.headers['content-type'], 'text/html');
 		});
 
-		describe('HTML response', () => {
-			let dom;
-			let errors;
-			let form;
+		it('responds with an error message', () => {
+			const errors = response.body.document.querySelectorAll('[data-test=setup-form] [data-test=alert-error]');
+			assert.lengthEquals(errors, 1);
+			assert.match(errors[0].textContent, /length must be at least 6/i);
+		});
 
-			beforeEach(async () => {
-				dom = new JSDOM((await request.then()).text);
-				form = dom.window.document.querySelector('[data-test=setup-form]');
-				errors = form.querySelectorAll('[data-test=alert-error]');
-			});
+		it('responds with a setup form with some of the posted data pre-filled', () => {
+			const form = response.body.document.querySelector('[data-test=setup-form]');
+			assert.isNotNull(form);
+			assert.strictEqual(form.getAttribute('action'), '/');
+			assert.strictEqual(form.getAttribute('method'), 'post');
 
-			it('contains an error message', () => {
-				assert.lengthEquals(errors, 1);
-				assert.match(errors[0].textContent, /length must be at least 6/i);
-			});
+			const adminEmailField = form.querySelector('input[name="adminEmail"]');
+			assert.strictEqual(adminEmailField.getAttribute('type'), 'email');
+			assert.strictEqual(adminEmailField.getAttribute('value'), 'admin@example.com');
 
-			it('contains a setup form with some of the posted data pre-filled', () => {
-				assert.isNotNull(form);
-				assert.strictEqual(form.getAttribute('action'), '/');
-				assert.strictEqual(form.getAttribute('method'), 'post');
-				assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
+			const adminPasswordField = form.querySelector('input[name="adminPassword"]');
+			assert.strictEqual(adminPasswordField.getAttribute('type'), 'password');
+			assert.isNull(adminPasswordField.getAttribute('value'));
 
-				const adminEmailField = form.querySelector('input[name="adminEmail"]');
-				assert.strictEqual(adminEmailField.getAttribute('value'), 'admin@example.com');
+			const adminPasswordConfirmField = form.querySelector('input[name="adminPasswordConfirm"]');
+			assert.strictEqual(adminPasswordConfirmField.getAttribute('type'), 'password');
+			assert.isNull(adminPasswordConfirmField.getAttribute('value'));
 
-				const adminPasswordField = form.querySelector('input[name="adminPassword"]');
-				assert.isNull(adminPasswordField.getAttribute('value'));
-
-				const adminPasswordConfirmField = form.querySelector('input[name="adminPasswordConfirm"]');
-				assert.isNull(adminPasswordConfirmField.getAttribute('value'));
-
-				const publicReadAccessField = form.querySelector('input[name="publicReadAccess"]');
-				assert.strictEqual(publicReadAccessField.getAttribute('checked'), '');
-			});
-
+			const publicReadAccessField = form.querySelector('input[name="publicReadAccess"]');
+			assert.strictEqual(publicReadAccessField.getAttribute('type'), 'checkbox');
+			assert.strictEqual(publicReadAccessField.getAttribute('checked'), '');
 		});
 
 	});
 
 	describe('when the confirmed password does not match the new password', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.clean(dashboard);
-			request = agent
-				.post('/')
-				.set('Content-Type', 'application/x-www-form-urlencoded')
-				.send({
+			response = await request.post('/', {
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded'
+				},
+				body: querystring.stringify({
 					adminEmail: 'admin@example.com',
 					adminPassword: 'password',
 					adminPasswordConfirm: 'pass word',
 					publicReadAccess: true
-				});
+				})
+			});
 		});
 
 		it('does not add an admin user to the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'admin@example.com'
 			});
@@ -356,54 +335,45 @@ describe('POST / (when setup is not complete)', () => {
 		});
 
 		it('does not add settings to the database', async () => {
-			await request.then();
 			const settings = await dashboard.database.knex.select('*').from('settings');
 			assert.lengthEquals(settings, 0);
 		});
 
 		it('responds with a 400 status', () => {
-			return request.expect(400);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('responds with HTML', () => {
-			return request.expect('Content-Type', /text\/html/);
+			assert.include(response.headers['content-type'], 'text/html');
 		});
 
-		describe('HTML response', () => {
-			let dom;
-			let errors;
-			let form;
+		it('responds with an error message', () => {
+			const errors = response.body.document.querySelectorAll('[data-test=setup-form] [data-test=alert-error]');
+			assert.lengthEquals(errors, 1);
+			assert.match(errors[0].textContent, /password and confirmed password do not match/i);
+		});
 
-			beforeEach(async () => {
-				dom = new JSDOM((await request.then()).text);
-				form = dom.window.document.querySelector('[data-test=setup-form]');
-				errors = form.querySelectorAll('[data-test=alert-error]');
-			});
+		it('responds with a setup form with some of the posted data pre-filled', () => {
+			const form = response.body.document.querySelector('[data-test=setup-form]');
+			assert.isNotNull(form);
+			assert.strictEqual(form.getAttribute('action'), '/');
+			assert.strictEqual(form.getAttribute('method'), 'post');
 
-			it('contains an error message', () => {
-				assert.lengthEquals(errors, 1);
-				assert.match(errors[0].textContent, /password and confirmed password do not match/i);
-			});
+			const adminEmailField = form.querySelector('input[name="adminEmail"]');
+			assert.strictEqual(adminEmailField.getAttribute('type'), 'email');
+			assert.strictEqual(adminEmailField.getAttribute('value'), 'admin@example.com');
 
-			it('contains a setup form with some of the posted data pre-filled', () => {
-				assert.isNotNull(form);
-				assert.strictEqual(form.getAttribute('action'), '/');
-				assert.strictEqual(form.getAttribute('method'), 'post');
-				assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
+			const adminPasswordField = form.querySelector('input[name="adminPassword"]');
+			assert.strictEqual(adminPasswordField.getAttribute('type'), 'password');
+			assert.isNull(adminPasswordField.getAttribute('value'));
 
-				const adminEmailField = form.querySelector('input[name="adminEmail"]');
-				assert.strictEqual(adminEmailField.getAttribute('value'), 'admin@example.com');
+			const adminPasswordConfirmField = form.querySelector('input[name="adminPasswordConfirm"]');
+			assert.strictEqual(adminPasswordConfirmField.getAttribute('type'), 'password');
+			assert.isNull(adminPasswordConfirmField.getAttribute('value'));
 
-				const adminPasswordField = form.querySelector('input[name="adminPassword"]');
-				assert.isNull(adminPasswordField.getAttribute('value'));
-
-				const adminPasswordConfirmField = form.querySelector('input[name="adminPasswordConfirm"]');
-				assert.isNull(adminPasswordConfirmField.getAttribute('value'));
-
-				const publicReadAccessField = form.querySelector('input[name="publicReadAccess"]');
-				assert.strictEqual(publicReadAccessField.getAttribute('checked'), '');
-			});
-
+			const publicReadAccessField = form.querySelector('input[name="publicReadAccess"]');
+			assert.strictEqual(publicReadAccessField.getAttribute('type'), 'checkbox');
+			assert.strictEqual(publicReadAccessField.getAttribute('checked'), '');
 		});
 
 	});

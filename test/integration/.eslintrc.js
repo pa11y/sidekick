@@ -2,7 +2,7 @@
 
 module.exports = {
 	globals: {
-		agent: true,
-		dashboard: true
+		dashboard: true,
+		request: true
 	}
 };
