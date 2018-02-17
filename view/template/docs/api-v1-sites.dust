@@ -1,0 +1,545 @@
+{>"layout/full"/}
+
+{<title}
+	Sites and URLs - API Documentation - Sidekick
+{/title}
+
+{<secondary-nav}
+	{>"partial/nav/api-docs"/}
+{/secondary-nav}
+
+{<content}
+
+	<h1>Sites and URLs</h1>
+
+	<p>
+		These endpoints are all used to create and manage sites and their URLs. Many of these
+		require the <a href="/docs/api/v1#permissions"><code>READ</code>, <code>WRITE</code>, or <code>DELETE</code> permissions</a>,
+		and some of them require you to send <a href="/docs/api/v1#authentication">authentication headers</a>.
+	</p>
+
+	<ol class="table-of-contents">
+		<li><a href="#resource-site">Resource type: Site</a></li>
+		<li><a href="#get-api-v1-sites">Endpoint: List all sites</a></li>
+		<li><a href="#post-api-v1-sites">Endpoint: Create a new site</a></li>
+		<li><a href="#get-api-v1-sites-(id)">Endpoint: Get a site</a></li>
+		<li><a href="#patch-api-v1-sites-(id)">Endpoint: Edit a site</a></li>
+		<li><a href="#delete-api-v1-sites-(id)">Endpoint: Delete a site</a></li>
+	</ol>
+
+
+	<h2 id="resource-site">Site resources</h2>
+
+	<p>
+		Endpoints which deal with sites mostly respond with Site resources.
+		When represented as JSON, Sites always follow this schema:
+	</p>
+
+	{@codeBlock language="json"}
+		{
+			// The site's unique ID
+			"id": "xxxxxx",
+
+			// The site name
+			"name": "Example Site",
+
+			// The site's base URL (prepended to every other URL)
+			"baseUrl": "https://example.com/",
+
+			// Whether tests can be run for this site through the Sidekick interface
+			"isRunnable": true,
+
+			// Whether tests for this site run at a scheduled interval
+			"isScheduled": true,
+
+			// The schedule that the tests run on for this site
+			"schedule": "...",
+
+			// The defauly Pa11y configuration for URLs under this site
+			"pa11yConfig": {
+				// ...
+			{~rb},
+
+			// Meta information about the site
+			"meta": {
+				"dateCreated": "2018-01-01T00:00:00.000Z",
+				"dateUpdated": "2018-01-01T00:00:00.000Z"
+			}
+		}
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-sites">List all sites</h2>
+
+	<p>
+		List all sites in the application.
+	</p>
+
+	<ul>
+		{?publicReadAccess}
+			<li>This endpoint can be accessed withput authentication</li>
+		{:else}
+			<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		{/publicReadAccess}
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>READ</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/sites</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						An array of <a href="#resource-site">Site resources</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/sites
+	{/codeBlock}
+
+
+	<h2 id="post-api-v1-sites">Create a new site</h2>
+
+	<p>
+		Create a new site.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>WRITE</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>POST</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/sites</code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// The site's name (required)
+								"name": "Example Site",
+
+								// The site's base URL (required)
+								"baseUrl": "https://example.com/",
+
+								// Whether the site is runnable (optional)
+								isRunnable: true,
+
+								// Whether the site is run on a schedule (optional)
+								isScheduled: false,
+
+								// The site's running schedule (optional)
+								schedule: null,
+
+								// The site's Pa11y configuration (optional)
+								pa11yConfig: {}
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>201</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The newly created <a href="#resource-site">Site resources</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X POST \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"name": "Example Site", "baseUrl": "https://example.com/"}' \
+		     {appUrl}/api/v1/sites
+	{/codeBlock}
+
+
+	<h2 id="get-api-v1-sites-(id)">Get a site</h2>
+
+	<p>
+		Get a single site by ID.
+	</p>
+
+	<ul>
+		{?publicReadAccess}
+			<li>This endpoint can be accessed withput authentication</li>
+		{:else}
+			<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		{/publicReadAccess}
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>READ</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>GET</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/sites/<var>:siteId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested site does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						A <a href="#resource-site">Site resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X GET \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/sites/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="patch-api-v1-sites-(id)">Edit a site</h2>
+
+	<p>
+		Edit a single site by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>WRITE</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>PATCH</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/sites/<var>:siteId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						{@codeBlock}
+							{
+								// The site's name (optional)
+								"name": "Example Site",
+
+								// The site's base URL (optional)
+								"baseUrl": "https://example.com/",
+
+								// Whether the site is runnable (optional)
+								isRunnable: true,
+
+								// Whether the site is run on a schedule (optional)
+								isScheduled: false,
+
+								// The site's running schedule (optional)
+								schedule: null,
+
+								// The site's Pa11y configuration (optional)
+								pa11yConfig: {}
+							}
+						{/codeBlock}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>200</code> on success,<br/>
+						<code>400</code> if a validation error occurred,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested site does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>
+						The updated <a href="#resource-site">Site resource</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	{@codeBlock language="bash"}
+		curl -X PATCH \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     -d '{"name": "Example Site", "baseUrl": "https://example.com/"}' \
+		     {appUrl}/api/v1/sites/xxxxxx
+	{/codeBlock}
+
+
+	<h2 id="delete-api-v1-sites-(id)">Delete a site</h2>
+
+	<p>
+		Delete a single site by ID.
+	</p>
+
+	<ul>
+		<li>This endpoint <a href="/docs/api/v1#authentication">requires authentication</a></li>
+		<li>This endpoint requires the authenticated user to have the <a href="/docs/api/v1#permissions"><code>DELETE</code> permission</a></li>
+	</ul>
+
+	<h3>Request</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Method</th>
+					<td><code>DELETE</code></td>
+				</tr>
+				<tr>
+					<th scope="row">Path</th>
+					<td>
+						<code>/api/v1/sites/<var>:siteId</var></code>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Response</h3>
+
+	<div class="table-wrapper">
+		<table class="table table--striped">
+			<tbody>
+				<tr>
+					<th scope="row">Status</th>
+					<td>
+						<code>204</code> on success,<br/>
+						<code>401</code> if authentication failed,<br/>
+						<code>403</code> if permission requirements are not met,<br/>
+						<code>404</code> if the requested site does not exist
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Headers</th>
+					<td>
+						<dl>
+							<dt>Content-Type</dt>
+							<dd><code>application/json</code></dd>
+						</dl>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Body</th>
+					<td>An empty object</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h3>Example</h3>
+
+	{@codeBlock language="bash"}
+		curl -X DELETE \
+		     -H 'Content-Type: application/json' \
+		     -H 'X-Api-Key: xxx-xxxx-xxx' \
+		     -H 'X-Api-Secret: xxx-xxxx-xxx' \
+		     {appUrl}/api/v1/sites/xxxxxx
+	{/codeBlock}
+
+
+{/content}
