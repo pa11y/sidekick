@@ -31,7 +31,7 @@ describe('GET /settings/profile', () => {
 			});
 
 			it('responds with no error messages', () => {
-				const errors = response.body.document.querySelectorAll('[data-test=password-form] [data-test=alert-error]');
+				const errors = response.body.document.querySelectorAll('[data-test=user-form] [data-test=alert-error]');
 				assert.lengthEquals(errors, 0);
 			});
 

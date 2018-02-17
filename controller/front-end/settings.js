@@ -100,8 +100,6 @@ function initSettingsController(dashboard, router) {
 		}
 	});
 
-	// TODO write integration tests for the /settings/keys routes
-
 	// Display the profile API keys page
 	router.get('/settings/keys', requireAuth(), async (request, response) => {
 		response.render('template/settings/keys', {
