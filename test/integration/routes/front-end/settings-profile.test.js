@@ -3,47 +3,43 @@
 const assert = require('proclaim');
 const auth = require('../../helpers/auth');
 const database = require('../../helpers/database');
-const {JSDOM} = require('jsdom');
+const querystring = require('querystring');
+let response;
 
 describe('GET /settings/profile', () => {
-	let request;
+
+	before(async () => {
+		await database.seed(dashboard, 'basic');
+	});
 
 	describe('when a user is logged in', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			await auth.login('read@example.com', 'password');
-			request = agent.get('/settings/profile');
-		});
+		describe('when everything is valid', () => {
 
-		it('responds with a 200 status', () => {
-			return request.expect(200);
-		});
-
-		it('responds with HTML', () => {
-			return request.expect('Content-Type', /text\/html/);
-		});
-
-		describe('HTML response', () => {
-			let dom;
-			let errors;
-			let form;
-
-			beforeEach(async () => {
-				dom = new JSDOM((await request.then()).text);
-				form = dom.window.document.querySelector('[data-test=user-form]');
-				errors = form.querySelectorAll('[data-test=alert-error]');
+			before(async () => {
+				response = await request.get('/settings/profile', {
+					jar: await auth.getCookieJar('read@example.com', 'password')
+				});
 			});
 
-			it('contains no error messages', () => {
+			it('responds with a 200 status', () => {
+				assert.strictEqual(response.statusCode, 200);
+			});
+
+			it('responds with HTML', () => {
+				assert.include(response.headers['content-type'], 'text/html');
+			});
+
+			it('responds with no error messages', () => {
+				const errors = response.body.document.querySelectorAll('[data-test=password-form] [data-test=alert-error]');
 				assert.lengthEquals(errors, 0);
 			});
 
-			it('contains a pre-filled user form', () => {
+			it('responds with a password form', () => {
+				const form = response.body.document.querySelector('[data-test=user-form]');
 				assert.isNotNull(form);
 				assert.strictEqual(form.getAttribute('action'), '/settings/profile');
 				assert.strictEqual(form.getAttribute('method'), 'post');
-				assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
 
 				const emailField = form.querySelector('input[name="email"]');
 				assert.strictEqual(emailField.getAttribute('type'), 'email');
@@ -56,20 +52,17 @@ describe('GET /settings/profile', () => {
 
 	describe('when no user is logged in', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			request = agent.get('/settings/profile');
+		before(async () => {
+			response = await request.get('/settings/profile');
 		});
 
 		it('responds with a 401 status', () => {
-			return request.expect(401);
+			assert.strictEqual(response.statusCode, 401);
 		});
 
-		describe('HTML response', () => {
-			it('contains a 401 error message', async () => {
-				const html = (await request.then()).text;
-				assert.match(html, /must authenticate/i);
-			});
+		it('it responds with an error page', () => {
+			const body = response.body.document.querySelector('body');
+			assert.match(body.innerHTML, /must authenticate/i);
 		});
 
 	});
@@ -77,28 +70,25 @@ describe('GET /settings/profile', () => {
 });
 
 describe('POST /settings/profile', () => {
-	let request;
 
 	describe('when a user is logged in', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			await auth.login('read@example.com', 'password');
-			request = agent
-				.post('/settings/profile')
-				.set('Content-Type', 'application/x-www-form-urlencoded');
-		});
-
 		describe('when everything is valid', () => {
 
-			beforeEach(() => {
-				request.send({
-					email: 'read-updated@example.com'
+			before(async () => {
+				await database.seed(dashboard, 'basic');
+				response = await request.post('/settings/profile', {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: querystring.stringify({
+						email: 'read-updated@example.com'
+					}),
+					jar: await auth.getCookieJar('read@example.com', 'password')
 				});
 			});
 
 			it('updates the expected user details in the database', async () => {
-				await request.then();
 				const users = await dashboard.database.knex.select('*').from('users').where({
 					email: 'read-updated@example.com'
 				});
@@ -109,29 +99,35 @@ describe('POST /settings/profile', () => {
 			});
 
 			it('responds with a 302 status', () => {
-				return request.expect(302);
+				assert.strictEqual(response.statusCode, 302);
 			});
 
 			it('responds with a Location header pointing to the profile settings page', () => {
-				return request.expect('Location', '/settings/profile');
+				assert.strictEqual(response.headers.location, '/settings/profile');
 			});
 
 			it('responds with plain text', () => {
-				return request.expect('Content-Type', /text\/plain/);
+				assert.include(response.headers['content-type'], 'text/plain');
 			});
 
 		});
 
 		describe('when the request includes an invalid email', () => {
 
-			beforeEach(() => {
-				request.send({
-					email: 'invalid-email'
+			before(async () => {
+				await database.seed(dashboard, 'basic');
+				response = await request.post('/settings/profile', {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: querystring.stringify({
+						email: 'invalid-email'
+					}),
+					jar: await auth.getCookieJar('read@example.com', 'password')
 				});
 			});
 
 			it('does not update the user in the database', async () => {
-				await request.then();
 				const users = await dashboard.database.knex.select('*').from('users').where({
 					email: 'invalid-email'
 				});
@@ -140,54 +136,48 @@ describe('POST /settings/profile', () => {
 			});
 
 			it('responds with a 400 status', () => {
-				return request.expect(400);
+				assert.strictEqual(response.statusCode, 400);
 			});
 
 			it('responds with HTML', () => {
-				return request.expect('Content-Type', /text\/html/);
+				assert.include(response.headers['content-type'], 'text/html');
 			});
 
-			describe('HTML response', () => {
-				let dom;
-				let errors;
-				let form;
+			it('responds with an error message', () => {
+				const errors = response.body.document.querySelectorAll('[data-test=user-form] [data-test=alert-error]');
+				assert.lengthEquals(errors, 1);
+				assert.match(errors[0].textContent, /must be a valid email/i);
+			});
 
-				beforeEach(async () => {
-					dom = new JSDOM((await request.then()).text);
-					form = dom.window.document.querySelector('[data-test=user-form]');
-					errors = form.querySelectorAll('[data-test=alert-error]');
-				});
+			it('responds with a user form with the posted data pre-filled', () => {
+				const form = response.body.document.querySelector('[data-test=user-form]');
+				assert.isNotNull(form);
+				assert.strictEqual(form.getAttribute('action'), '/settings/profile');
+				assert.strictEqual(form.getAttribute('method'), 'post');
 
-				it('contains an error message', () => {
-					assert.lengthEquals(errors, 1);
-					assert.match(errors[0].textContent, /must be a valid email/i);
-				});
-
-				it('contains a user form with the posted data pre-filled', () => {
-					assert.isNotNull(form);
-					assert.strictEqual(form.getAttribute('action'), '/settings/profile');
-					assert.strictEqual(form.getAttribute('method'), 'post');
-					assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
-
-					const emailField = form.querySelector('input[name="email"]');
-					assert.strictEqual(emailField.getAttribute('type'), 'email');
-					assert.strictEqual(emailField.getAttribute('value'), 'invalid-email');
-				});
-
+				const emailField = form.querySelector('input[name="email"]');
+				assert.strictEqual(emailField.getAttribute('type'), 'email');
+				assert.strictEqual(emailField.getAttribute('value'), 'invalid-email');
 			});
 
 		});
 
 		describe('when the request includes an email that\'s already in use', () => {
 
-			beforeEach(() => {
-				request.send({
-					email: 'admin@example.com'
+			before(async () => {
+				await database.seed(dashboard, 'basic');
+				response = await request.post('/settings/profile', {
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					body: querystring.stringify({
+						email: 'admin@example.com'
+					}),
+					jar: await auth.getCookieJar('read@example.com', 'password')
 				});
 			});
 
 			it('does not update the user in the database', async () => {
-				await request.then();
 				const users = await dashboard.database.knex.select('*').from('users').where({
 					email: 'admin@example.com'
 				});
@@ -195,40 +185,28 @@ describe('POST /settings/profile', () => {
 			});
 
 			it('responds with a 400 status', () => {
-				return request.expect(400);
+				assert.strictEqual(response.statusCode, 400);
 			});
 
 			it('responds with HTML', () => {
-				return request.expect('Content-Type', /text\/html/);
+				assert.include(response.headers['content-type'], 'text/html');
 			});
 
-			describe('HTML response', () => {
-				let dom;
-				let errors;
-				let form;
+			it('responds with an error message', () => {
+				const errors = response.body.document.querySelectorAll('[data-test=user-form] [data-test=alert-error]');
+				assert.lengthEquals(errors, 1);
+				assert.match(errors[0].textContent, /must be unique/i);
+			});
 
-				beforeEach(async () => {
-					dom = new JSDOM((await request.then()).text);
-					form = dom.window.document.querySelector('[data-test=user-form]');
-					errors = form.querySelectorAll('[data-test=alert-error]');
-				});
+			it('responds with a user form with the posted data pre-filled', () => {
+				const form = response.body.document.querySelector('[data-test=user-form]');
+				assert.isNotNull(form);
+				assert.strictEqual(form.getAttribute('action'), '/settings/profile');
+				assert.strictEqual(form.getAttribute('method'), 'post');
 
-				it('contains an error message', () => {
-					assert.lengthEquals(errors, 1);
-					assert.match(errors[0].textContent, /must be unique/i);
-				});
-
-				it('contains a user form with the posted data pre-filled', () => {
-					assert.isNotNull(form);
-					assert.strictEqual(form.getAttribute('action'), '/settings/profile');
-					assert.strictEqual(form.getAttribute('method'), 'post');
-					assert.strictEqual(form.getAttribute('enctype'), 'application/x-www-form-urlencoded');
-
-					const emailField = form.querySelector('input[name="email"]');
-					assert.strictEqual(emailField.getAttribute('type'), 'email');
-					assert.strictEqual(emailField.getAttribute('value'), 'admin@example.com');
-				});
-
+				const emailField = form.querySelector('input[name="email"]');
+				assert.strictEqual(emailField.getAttribute('type'), 'email');
+				assert.strictEqual(emailField.getAttribute('value'), 'admin@example.com');
 			});
 
 		});
@@ -237,20 +215,17 @@ describe('POST /settings/profile', () => {
 
 	describe('when no user is logged in', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			request = agent.get('/settings/profile');
+		before(async () => {
+			response = await request.get('/settings/profile');
 		});
 
 		it('responds with a 401 status', () => {
-			return request.expect(401);
+			assert.strictEqual(response.statusCode, 401);
 		});
 
-		describe('HTML response', () => {
-			it('contains a 401 error message', async () => {
-				const html = (await request.then()).text;
-				assert.match(html, /must authenticate/i);
-			});
+		it('it responds with an error page', () => {
+			const body = response.body.document.querySelector('body');
+			assert.match(body.innerHTML, /must authenticate/i);
 		});
 
 	});

@@ -1,41 +1,43 @@
 'use strict';
 
+const assert = require('proclaim');
 const bcrypt = require('bcrypt');
 const database = require('../../helpers/database');
-const assert = require('proclaim');
+let response;
 
 describe('GET /api/v1/users/:userId', () => {
-	let request;
+
+	before(async () => {
+		await database.seed(dashboard, 'basic');
+	});
 
 	describe('when everything is valid', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			request = agent
-				.get('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret');
+		before(async () => {
+			response = await request.get('/api/v1/users/mock-read-id', {
+				headers: {
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				}
+			});
 		});
 
 		it('responds with a 200 status', () => {
-			return request.expect(200);
+			assert.strictEqual(response.statusCode, 200);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains the user details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.strictEqual(json.id, 'mock-read-id');
-				assert.deepEqual(json.permissions, {
-					admin: false,
-					delete: false,
-					write: false,
-					read: true
-				});
+		it('responds with the user details', () => {
+			assert.isObject(response.body);
+			assert.strictEqual(response.body.id, 'mock-read-id');
+			assert.deepEqual(response.body.permissions, {
+				admin: false,
+				delete: false,
+				write: false,
+				read: true
 			});
 		});
 
@@ -43,84 +45,76 @@ describe('GET /api/v1/users/:userId', () => {
 
 	describe('when :userId is not a valid user ID', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			request = agent
-				.get('/api/v1/users/not-an-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret');
+		before(async () => {
+			response = await request.get('/api/v1/users/not-an-id', {
+				headers: {
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				}
+			});
 		});
 
 		it('responds with a 404 status', () => {
-			return request.expect(404);
+			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 404);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 404);
 		});
 
 	});
 
 	describe('when no API credentials are provided', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			request = agent.get('/api/v1/users/mock-read-id');
+		before(async () => {
+			response = await request.get('/api/v1/users/mock-read-id');
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
 
 	describe('when the provided API key does not have the required permissions', () => {
 
-		beforeEach(async () => {
-			await database.seed(dashboard, 'basic');
-			request = agent
-				.get('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-delete-key')
-				.set('X-Api-Secret', 'mock-delete-secret');
+		before(async () => {
+			response = await request.get('/api/v1/users/mock-read-id', {
+				headers: {
+					'X-Api-Key': 'mock-delete-key',
+					'X-Api-Secret': 'mock-delete-secret'
+				}
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
@@ -128,17 +122,18 @@ describe('GET /api/v1/users/:userId', () => {
 });
 
 describe('PATCH /api/v1/users/:userId', () => {
-	let request;
 
 	describe('when everything is valid', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret')
-				.send({
+			response = await request.patch('/api/v1/users/mock-read-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				},
+				body: JSON.stringify({
 					id: 'extra-property-id',
 					email: 'test-new-user@new-example.com',
 					password: 'new-password',
@@ -146,11 +141,11 @@ describe('PATCH /api/v1/users/:userId', () => {
 					write: true,
 					delete: true,
 					admin: true
-				});
+				})
+			});
 		});
 
 		it('updates the user in the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'test-new-user@new-example.com'
 			});
@@ -169,25 +164,22 @@ describe('PATCH /api/v1/users/:userId', () => {
 		});
 
 		it('responds with a 200 status', () => {
-			return request.expect(200);
+			assert.strictEqual(response.statusCode, 200);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains the updated user details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.strictEqual(json.id, 'mock-read-id');
-				assert.strictEqual(json.email, 'test-new-user@new-example.com');
-				assert.deepEqual(json.permissions, {
-					admin: true,
-					delete: true,
-					write: true,
-					read: false
-				});
+		it('responds with the updated user details', () => {
+			assert.isObject(response.body);
+			assert.strictEqual(response.body.id, 'mock-read-id');
+			assert.strictEqual(response.body.email, 'test-new-user@new-example.com');
+			assert.deepEqual(response.body.permissions, {
+				admin: true,
+				delete: true,
+				write: true,
+				read: false
 			});
 		});
 
@@ -195,19 +187,21 @@ describe('PATCH /api/v1/users/:userId', () => {
 
 	describe('when everything is valid but a password is not set', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret')
-				.send({
+			response = await request.patch('/api/v1/users/mock-read-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				},
+				body: JSON.stringify({
 					email: 'test-new-user@new-example.com'
-				});
+				})
+			});
 		});
 
 		it('updates the user in the database but does not change the password', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				email: 'test-new-user@new-example.com'
 			});
@@ -219,186 +213,189 @@ describe('PATCH /api/v1/users/:userId', () => {
 		});
 
 		it('responds with a 200 status', () => {
-			return request.expect(200);
+			assert.strictEqual(response.statusCode, 200);
 		});
 
 	});
 
 	describe('when the request has no data set', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret')
-				.send({});
+			response = await request.patch('/api/v1/users/mock-read-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				},
+				body: JSON.stringify({})
+			});
 		});
 
 		it('responds with a 200 status', () => {
-			return request.expect(200);
+			assert.strictEqual(response.statusCode, 200);
 		});
 
 	});
 
 	describe('when the request includes an invalid email property', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret')
-				.send({
+			response = await request.patch('/api/v1/users/mock-read-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				},
+				body: JSON.stringify({
 					email: []
-				});
+				})
+			});
 		});
 
 		it('responds with a 400 status', () => {
-			return request.expect(400);
+			assert.strictEqual(response.statusCode, 400);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message, 'Validation failed');
-				assert.isArray(json.validation);
-				assert.deepEqual(json.validation, [
-					'"email" must be a string'
-				]);
-				assert.strictEqual(json.status, 400);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message, 'Validation failed');
+			assert.isArray(response.body.validation);
+			assert.deepEqual(response.body.validation, [
+				'"email" must be a string'
+			]);
+			assert.strictEqual(response.body.status, 400);
 		});
 
 	});
 
 	describe('when :userId is the ID of an owner', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-owner-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret')
-				.send({
+			response = await request.patch('/api/v1/users/mock-owner-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				},
+				body: JSON.stringify({
 					email: 'test-new-user@new-example.com'
-				});
+				})
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
 
 	describe('when :userId is not a valid user ID', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/not-an-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret')
-				.send({
+			response = await request.patch('/api/v1/users/not-an-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				},
+				body: JSON.stringify({
 					email: 'test-new-user@new-example.com'
-				});
+				})
+			});
 		});
 
 		it('responds with a 404 status', () => {
-			return request.expect(404);
+			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 404);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 404);
 		});
 
 	});
 
 	describe('when no API credentials are provided', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-read-id')
-				.send({
+			response = await request.patch('/api/v1/users/mock-read-id', {
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
 					email: 'test-new-user@new-example.com'
-				});
+				})
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
 
 	describe('when the provided API key does not have the required permissions', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.patch('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-delete-key')
-				.set('X-Api-Secret', 'mock-delete-secret')
-				.send({
+			response = await request.patch('/api/v1/users/mock-read-id', {
+				headers: {
+					'Content-Type': 'application/json',
+					'X-Api-Key': 'mock-delete-key',
+					'X-Api-Secret': 'mock-delete-secret'
+				},
+				body: JSON.stringify({
 					email: 'test-new-user@new-example.com'
-				});
+				})
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
@@ -406,20 +403,20 @@ describe('PATCH /api/v1/users/:userId', () => {
 });
 
 describe('DELETE /api/v1/users/:userId', () => {
-	let request;
 
 	describe('when everything is valid', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.delete('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret');
+			response = await request.delete('/api/v1/users/mock-read-id', {
+				headers: {
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				}
+			});
 		});
 
 		it('removes the expected user from the database', async () => {
-			await request.then();
 			const users = await dashboard.database.knex.select('*').from('users').where({
 				id: 'mock-read-id'
 			});
@@ -427,152 +424,143 @@ describe('DELETE /api/v1/users/:userId', () => {
 		});
 
 		it('responds with a 204 status', () => {
-			return request.expect(204);
+			assert.strictEqual(response.statusCode, 204);
 		});
 
-		it('responds with nothing', async () => {
-			const response = await request.then();
+		it('responds with nothing', () => {
 			assert.isUndefined(response.headers['content-type']);
-			assert.strictEqual(response.text, '');
+			assert.strictEqual(response.body, '');
 		});
 
 	});
 
 	describe('when :userId is the ID of the authenticated user', () => {
-		let request;
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.delete('/api/v1/users/mock-admin-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret');
+			response = await request.delete('/api/v1/users/mock-admin-id', {
+				headers: {
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				}
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
 
 	describe('when :userId is the ID of an owner', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.delete('/api/v1/users/mock-owner-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret');
+			response = await request.delete('/api/v1/users/mock-owner-id', {
+				headers: {
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				}
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
 
 	describe('when :userId is not a valid user ID', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.delete('/api/v1/users/not-an-id')
-				.set('X-Api-Key', 'mock-admin-key')
-				.set('X-Api-Secret', 'mock-admin-secret');
+			response = await request.delete('/api/v1/users/not-an-id', {
+				headers: {
+					'X-Api-Key': 'mock-admin-key',
+					'X-Api-Secret': 'mock-admin-secret'
+				}
+			});
 		});
 
 		it('responds with a 404 status', () => {
-			return request.expect(404);
+			assert.strictEqual(response.statusCode, 404);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 404);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 404);
 		});
 
 	});
 
 	describe('when no API credentials are provided', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent.delete('/api/v1/users/mock-read-id');
+			response = await request.delete('/api/v1/users/mock-read-id');
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});
 
 	describe('when the provided API key does not have the required permissions', () => {
 
-		beforeEach(async () => {
+		before(async () => {
 			await database.seed(dashboard, 'basic');
-			request = agent
-				.delete('/api/v1/users/mock-read-id')
-				.set('X-Api-Key', 'mock-write-key')
-				.set('X-Api-Secret', 'mock-write-secret');
+			response = await request.delete('/api/v1/users/mock-read-id', {
+				headers: {
+					'X-Api-Key': 'mock-write-key',
+					'X-Api-Secret': 'mock-write-secret'
+				}
+			});
 		});
 
 		it('responds with a 403 status', () => {
-			return request.expect(403);
+			assert.strictEqual(response.statusCode, 403);
 		});
 
 		it('responds with JSON', () => {
-			return request.expect('Content-Type', /application\/json/);
+			assert.include(response.headers['content-type'], 'application/json');
 		});
 
-		describe('JSON response', () => {
-			it('contains error details', async () => {
-				const json = (await request.then()).body;
-				assert.isObject(json);
-				assert.isString(json.message);
-				assert.strictEqual(json.status, 403);
-			});
+		it('responds with error details', () => {
+			assert.isObject(response.body);
+			assert.isString(response.body.message);
+			assert.strictEqual(response.body.status, 403);
 		});
 
 	});

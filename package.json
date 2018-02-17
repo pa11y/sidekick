@@ -50,8 +50,9 @@
     "nodemon": "^1.12.1",
     "nyc": "^11.3.0",
     "proclaim": "^3.5.0",
-    "sinon": "^4.1.2",
-    "supertest": "^3.0.0"
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5",
+    "sinon": "^4.1.2"
   },
   "optionalDependencies": {
     "fsevents": "^1.1.3"

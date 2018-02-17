@@ -2,28 +2,33 @@
 
 const assert = require('proclaim');
 const database = require('../../helpers/database');
+let response;
 
 describe('GET /404', () => {
-	let request;
 
-	beforeEach(async () => {
+	before(async () => {
 		await database.seed(dashboard, 'basic');
-		request = agent.get('/404');
 	});
 
-	it('responds with a 404 status', () => {
-		return request.expect(404);
-	});
+	describe('when everything is valid', () => {
 
-	it('responds with HTML', () => {
-		return request.expect('Content-Type', /text\/html/);
-	});
-
-	describe('HTML response', () => {
-		it('contains a 404 error message', async () => {
-			const html = (await request.then()).text;
-			assert.match(html, /not found/i);
+		before(async () => {
+			response = await request.get('/404');
 		});
+
+		it('responds with a 404 status', () => {
+			assert.strictEqual(response.statusCode, 404);
+		});
+
+		it('responds with HTML', () => {
+			assert.include(response.headers['content-type'], 'text/html');
+		});
+
+		it('it responds with an error page', () => {
+			const body = response.body.document.querySelector('body');
+			assert.match(body.innerHTML, /not found/i);
+		});
+
 	});
 
 });
