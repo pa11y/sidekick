@@ -302,7 +302,7 @@ describe('PATCH /api/v1/sites/:siteId', () => {
 
 });
 
-describe.only('DELETE /api/v1/sites/:siteId', () => {
+describe('DELETE /api/v1/sites/:siteId', () => {
 
 	describe('when everything is valid', () => {
 
