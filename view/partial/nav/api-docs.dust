@@ -12,6 +12,11 @@
 			</a>
 		</li>
 		<li>
+			<a href="/docs/api/v1/sites" class="navigation__item {@currentUrl test="/docs/api/v1/sites"}navigation__item--current{/currentUrl}">
+				Sites
+			</a>
+		</li>
+		<li>
 			<a href="/docs/api/v1/users" class="navigation__item {@currentUrl test="/docs/api/v1/users"}navigation__item--current{/currentUrl}">
 				Users
 			</a>

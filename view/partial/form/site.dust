@@ -1,0 +1,62 @@
+
+<form data-test="site-form" action="{action}" method="post" enctype="application/x-www-form-urlencoded">
+
+	{>"partial/alert/success" success=form.site.success/}
+	{>"partial/alert/error" errors=form.site.errors/}
+
+	<div class="field field--text">
+		<label for="site-name">
+			Name
+			<span class="field__sublabel">
+				A human-readable name for the site, this appears across the interface
+			</span>
+		</label>
+		<input id="site-name" type="text" name="name" value="{form.site.name}" required/>
+	</div>
+
+	<div class="field field--text">
+		<label for="site-base-url">
+			Base URL
+			<span class="field__sublabel">
+				The base URL for the site, which is prepended to each URL
+			</span>
+		</label>
+		<input id="site-base-url" type="url" name="baseUrl" value="{form.site.baseUrl}" required/>
+	</div>
+
+	<div class="field field--checkbox">
+		<label for="site-is-runnable">
+			Runnable
+			<span class="field__sublabel">
+				<input id="site-is-runnable" type="checkbox" name="isRunnable" {?form.site.isRunnable}checked{/form.site.isRunnable}/>
+				Whether tests can be run for this site through the Sidekick interface.
+				Do not enable this if you only wish to push data into Sidekick via an API
+			</span>
+		</label>
+	</div>
+
+	<div class="field field--checkbox">
+		<label for="site-is-scheduled">
+			Schedule
+			<span class="field__sublabel">
+				<input id="site-is-scheduled" type="checkbox" name="isScheduled" {?form.site.isScheduled}checked{/form.site.isScheduled}/>
+				Whether tests should be run on a schedule
+			</span>
+		</label>
+	</div>
+
+	<div class="field field--text">
+		<label for="site-schedule">
+			Schedule frequency
+			<span class="field__sublabel">
+				TODO we haven't decided what format this data takes yet, possibly a crontab
+			</span>
+		</label>
+		<input id="site-schedule" type="text" name="schedule" value="{form.site.schedule}"/>
+	</div>
+
+	<div class="field">
+		<input type="submit" value="{cta}" class="button button--submit"/>
+	</div>
+
+</form>

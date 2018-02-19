@@ -18,6 +18,7 @@ describe('lib/dashboard', () => {
 	let initFrontEndController;
 	let initKeyModel;
 	let initSettingModel;
+	let initSiteModel;
 	let initUserModel;
 	let knex;
 	let log;
@@ -59,6 +60,9 @@ describe('lib/dashboard', () => {
 
 		initSettingModel = sinon.stub().returns(require('../mock/model/setting.mock'));
 		mockery.registerMock('../model/setting', initSettingModel);
+
+		initSiteModel = sinon.stub().returns(require('../mock/model/site.mock'));
+		mockery.registerMock('../model/site', initSiteModel);
 
 		initUserModel = sinon.stub().returns(require('../mock/model/user.mock'));
 		mockery.registerMock('../model/user', initUserModel);
@@ -135,6 +139,8 @@ describe('lib/dashboard', () => {
 			assert.calledWithExactly(initKeyModel, dashboard);
 			assert.calledOnce(initSettingModel);
 			assert.calledWithExactly(initSettingModel, dashboard);
+			assert.calledOnce(initSiteModel);
+			assert.calledWithExactly(initSiteModel, dashboard);
 			assert.calledOnce(initUserModel);
 			assert.calledWithExactly(initUserModel, dashboard);
 		});
@@ -143,6 +149,7 @@ describe('lib/dashboard', () => {
 			assert.isObject(dashboard.model);
 			assert.strictEqual(dashboard.model.Key, initKeyModel.firstCall.returnValue);
 			assert.strictEqual(dashboard.model.Setting, initSettingModel.firstCall.returnValue);
+			assert.strictEqual(dashboard.model.Site, initSiteModel.firstCall.returnValue);
 			assert.strictEqual(dashboard.model.User, initUserModel.firstCall.returnValue);
 		});
 

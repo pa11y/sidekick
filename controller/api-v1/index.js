@@ -4,6 +4,7 @@ const authWithKey = require('../../lib/middleware/auth-with-key');
 const express = require('express');
 const initDocsController = require('./docs');
 const initMeController = require('./me');
+const initSitesController = require('./sites');
 const initUsersController = require('./users');
 const notFound = require('../../lib/middleware/not-found');
 
@@ -35,6 +36,7 @@ function initApiV1Contoller(dashboard) {
 
 	// Mount routes
 	initDocsController(dashboard, router);
+	initSitesController(dashboard, router);
 	initUsersController(dashboard, router);
 	initMeController(dashboard, router);
 

@@ -1,0 +1,32 @@
+{>"layout/full"/}
+
+{<title}
+	Sites - Sidekick
+{/title}
+
+{<content}
+
+	<div class="heading-wrapper">
+		<h1>Sites</h1>
+		{?permissions.write}
+			<a href="/sites/new" class="button">Create a new site</a>
+		{/permissions.write}
+	</div>
+
+	{?sites}
+		<ul class="sites">
+			{#sites}
+				<li>
+					<h3><a href="/sites/{id}">{name}</a></h3>
+				</li>
+			{/sites}
+		</ul>
+	{:else}
+		<p>
+			You don't have any sites yet.
+			{?permissions.write}
+				You can <a href="/sites/new">create one here</a>.</p>
+			{/permissions.write}
+	{/sites}
+
+{/content}

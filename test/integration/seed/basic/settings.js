@@ -7,7 +7,7 @@ exports.seed = async database => {
 	await database('settings').insert([
 		{
 			id: 'publicReadAccess',
-			value: JSON.stringify(true)
+			value: JSON.stringify(false)
 		},
 		{
 			id: 'setupComplete',

@@ -1,0 +1,30 @@
+{>"layout/full"/}
+
+{<title}
+	{site.name} - Sites - Sidekick
+{/title}
+
+{<content}
+
+	{?form.site.created}
+		<div class="alert alert--success">
+			<p data-test="site-new">
+				The site "{form.site.created.name}" has been created.
+			</p>
+		</div>
+	{/form.site.created}
+
+	<div class="heading-wrapper">
+		<h1>{site.name}</h1>
+	</div>
+
+	<dl>
+		<dt>Base URL</dt>
+		<dd><a href="{site.baseUrl}">{site.baseUrl}</a></dd>
+		<dt>Runnable</dt>
+		<dd>{?site.isRunnable}Yes{:else}No{/site.isRunnable}</a></dd>
+		<dt>Scheduled</dt>
+		<dd>{?site.isScheduled}Yes{:else}No{/site.isScheduled}</a></dd>
+	</dl>
+
+{/content}

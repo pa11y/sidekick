@@ -1,0 +1,13 @@
+{>"layout/full"/}
+
+{<title}
+	Creating Site - Sidekick
+{/title}
+
+{<content}
+
+	<h1>Create a new site</h1>
+
+	{>"partial/form/site" action=requestPath cta="Create site"/}
+
+{/content}

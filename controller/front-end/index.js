@@ -9,6 +9,7 @@ const initDocsController = require('./docs');
 const initHomeController = require('./home');
 const initSettingsController = require('./settings');
 const initSetupController = require('./setup');
+const initSitesController = require('./sites');
 const notFound = require('../../lib/middleware/not-found');
 const session = require('express-session');
 const SessionStore = require('connect-session-knex')(session);
@@ -20,6 +21,7 @@ const uuid = require('uuid/v4');
  * @returns {Object} An Express router.
  */
 function initFrontEndController(dashboard) {
+	const Setting = dashboard.model.Setting;
 
 	// Create an Express router for the front end
 	const router = new express.Router({
@@ -60,6 +62,7 @@ function initFrontEndController(dashboard) {
 		response.locals.permissions = request.permissions;
 		response.locals.requestPath = request.path;
 		response.locals.requestUrl = request.url;
+		response.locals.publicReadAccess = Setting.get('publicReadAccess');
 		next();
 	});
 
@@ -69,6 +72,7 @@ function initFrontEndController(dashboard) {
 	initHomeController(dashboard, router);
 	initAuthController(dashboard, router);
 	initDocsController(dashboard, router);
+	initSitesController(dashboard, router);
 	initSettingsController(dashboard, router);
 	initAdminController(dashboard, router);
 

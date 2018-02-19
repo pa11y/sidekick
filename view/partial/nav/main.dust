@@ -6,9 +6,16 @@
 				Pa11y Sidekick
 			</a>
 		</li>
+		{?permissions.read}
+			<li>
+				<a href="/sites" class="navigation__item {@currentUrl test="/sites*"}navigation__item--current{/currentUrl}">
+					Sites
+				</a>
+			</li>
+		{/permissions.read}
 		{?permissions.admin}
 			<li>
-				<a href="/admin" class="navigation__item {@currentUrl test="/admin/*"}navigation__item--current{/currentUrl}">
+				<a href="/admin" class="navigation__item {@currentUrl test="/admin*"}navigation__item--current{/currentUrl}">
 					Admin
 				</a>
 			</li>

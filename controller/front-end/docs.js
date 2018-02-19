@@ -14,6 +14,9 @@ function initDocsController(dashboard, router) {
 	router.get('/docs/api/v1', requirePermission('read'), (request, response) => {
 		response.render('template/docs/api-v1');
 	});
+	router.get('/docs/api/v1/sites', requirePermission('read'), (request, response) => {
+		response.render('template/docs/api-v1-sites');
+	});
 	router.get('/docs/api/v1/users', requirePermission('read'), (request, response) => {
 		response.render('template/docs/api-v1-users');
 	});
