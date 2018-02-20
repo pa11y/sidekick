@@ -14,15 +14,40 @@ function initMeController(dashboard, router) {
 	const Key = dashboard.model.Key;
 	const User = dashboard.model.User;
 
-	// Listing and viewing user/keys
+	// Require authentication for all of these routes
+	router.use('/me', requireAuth());
+
+	// Add param callback for current user API key IDs
+	router.param('myKeyId', async (request, response, next, myKeyId) => {
+		try {
+			request.keyFromParam = await Key.fetchOneByIdAndUserId(myKeyId, request.authUser.id);
+			next(request.keyFromParam ? undefined : httpError(404));
+		} catch (error) {
+			return next(error);
+		}
+	});
 
 	// Get the currently authenticated user
-	router.get('/me', requireAuth(), (request, response) => {
+	router.get('/me', (request, response) => {
 		response.send(request.authUser);
 	});
 
-	// Get the currently authenticated user's keys
-	router.get('/me/keys', requireAuth(), async (request, response, next) => {
+	// Update the currently authenticated user
+	router.patch('/me', express.json(), async (request, response, next) => {
+		try {
+			const user = await User.fetchOneById(request.authUser.id);
+			await user.update({
+				email: request.body.email,
+				password: request.body.password
+			});
+			response.status(200).send(user);
+		} catch (error) {
+			return next(error);
+		}
+	});
+
+	// List the currently authenticated user's keys
+	router.get('/me/keys', async (request, response, next) => {
 		try {
 			response.send(await Key.fetchByUserId(request.authUser.id));
 		} catch (error) {
@@ -30,24 +55,8 @@ function initMeController(dashboard, router) {
 		}
 	});
 
-	// Get a single currently authenticated user key by ID
-	router.get('/me/keys/:keyId', requireAuth(), async (request, response, next) => {
-		try {
-			const key = await Key.fetchOneByIdAndUserId(request.params.keyId, request.authUser.id);
-			if (!key) {
-				return next();
-			}
-			response.send(key);
-		} catch (error) {
-			return next(error);
-		}
-	});
-
-
-	// Creating keys
-
 	// Create a new key for the currently authenticated user
-	router.post('/me/keys', requireAuth(), express.json(), async (request, response, next) => {
+	router.post('/me/keys', express.json(), async (request, response, next) => {
 		try {
 			const secret = Key.generateSecret();
 			const key = await Key.create({
@@ -64,30 +73,20 @@ function initMeController(dashboard, router) {
 		}
 	});
 
-
-	// Updating users/keys
-
-	// Update the currently authenticated user
-	router.patch('/me', requireAuth(), express.json(), async (request, response, next) => {
+	// Get a single currently authenticated user key by ID
+	router.get('/me/keys/:myKeyId', async (request, response, next) => {
 		try {
-			const user = await User.fetchOneById(request.authUser.id);
-			await user.update({
-				email: request.body.email,
-				password: request.body.password
-			});
-			response.status(200).send(user);
+			const key = request.keyFromParam;
+			response.send(key);
 		} catch (error) {
 			return next(error);
 		}
 	});
 
 	// Update a single currently authenticated user key
-	router.patch('/me/keys/:keyId', requireAuth(), express.json(), async (request, response, next) => {
+	router.patch('/me/keys/:myKeyId', express.json(), async (request, response, next) => {
 		try {
-			const key = await Key.fetchOneByIdAndUserId(request.params.keyId, request.authUser.id);
-			if (!key) {
-				return next();
-			}
+			const key = request.keyFromParam;
 			await key.update({
 				description: request.body.description
 			});
@@ -98,14 +97,11 @@ function initMeController(dashboard, router) {
 	});
 
 	// Delete a single currently authenticated user key
-	router.delete('/me/keys/:keyId', requireAuth(), async (request, response, next) => {
+	router.delete('/me/keys/:myKeyId', async (request, response, next) => {
 		try {
-			if (request.authKey && request.params.keyId === request.authKey.id) {
+			const key = request.keyFromParam;
+			if (request.authKey && key.get('id') === request.authKey.id) {
 				return next(httpError(403, 'You are not authorized to delete the key currently being used to authenticate'));
-			}
-			const key = await Key.fetchOneByIdAndUserId(request.params.keyId, request.authUser.id);
-			if (!key) {
-				return next();
 			}
 			await key.destroy();
 			response.status(204).send({});

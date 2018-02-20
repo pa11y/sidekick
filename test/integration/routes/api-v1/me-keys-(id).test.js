@@ -353,7 +353,7 @@ describe('DELETE /api/v1/me/keys/:keyId', () => {
 
 		before(async () => {
 			await database.seed(dashboard, 'basic');
-			response = await request.delete('/api/v1/users/mock-admin-id/keys/mock-read-key', {
+			response = await request.delete('/api/v1/users/mock-read-id/keys/mock-read-key', {
 				headers: {
 					'X-Api-Key': 'mock-read-key',
 					'X-Api-Secret': 'mock-read-secret'
