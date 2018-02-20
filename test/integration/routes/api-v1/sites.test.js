@@ -143,7 +143,7 @@ describe('POST /api/v1/sites', () => {
 			assert.lengthEquals(sites, 1, 'One site is present');
 			assert.isString(site.id, 'Site has an ID');
 			assert.notStrictEqual(site.id, 'extra-property-id', 'Site ID cannot be set in request');
-			assert.strictEqual(site.name, 'edited site', 'Site has the correct name');
+			assert.strictEqual(site.name, 'new site', 'Site has the correct name');
 			assert.strictEqual(site.base_url, 'https://new-site/', 'Site has the correct base URL');
 			assert.isTrue(site.is_runnable, 'Site is runnable');
 			assert.isFalse(site.is_scheduled, 'Site is not scheduled');
