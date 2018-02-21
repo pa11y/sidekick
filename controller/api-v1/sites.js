@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-// const httpError = require('http-errors');
+const httpError = require('http-errors');
 const requirePermission = require('../../lib/middleware/require-permission');
 
 /**
@@ -13,7 +13,17 @@ const requirePermission = require('../../lib/middleware/require-permission');
 function initSitesController(dashboard, router) {
 	const Site = dashboard.model.Site;
 
-	// Get a list of all sites
+	// Add a param callback for site IDs
+	router.param('siteId', async (request, response, next, siteId) => {
+		try {
+			request.siteFromParam = await Site.fetchOneById(siteId);
+			return next(request.siteFromParam ? undefined : httpError(404));
+		} catch (error) {
+			return next(error);
+		}
+	});
+
+	// List all sites
 	router.get('/sites', requirePermission('read'), async (request, response, next) => {
 		try {
 			response.send(await Site.fetchAll());
@@ -40,12 +50,9 @@ function initSitesController(dashboard, router) {
 	});
 
 	// Get a single site by ID
-	router.get('/sites/:siteId', requirePermission('read'), async (request, response, next) => {
+	router.get('/sites/:siteId', requirePermission('read'), (request, response, next) => {
 		try {
-			const site = await Site.fetchOneById(request.params.siteId);
-			if (!site) {
-				return next();
-			}
+			const site = request.siteFromParam;
 			response.send(site);
 		} catch (error) {
 			return next(error);
@@ -55,10 +62,7 @@ function initSitesController(dashboard, router) {
 	// Update a site by ID
 	router.patch('/sites/:siteId', requirePermission('write'), express.json(), async (request, response, next) => {
 		try {
-			const site = await Site.fetchOneById(request.params.siteId);
-			if (!site) {
-				return next();
-			}
+			const site = request.siteFromParam;
 			await site.update({
 				name: request.body.name,
 				base_url: request.body.baseUrl,
@@ -76,10 +80,7 @@ function initSitesController(dashboard, router) {
 	// Delete a site by ID
 	router.delete('/sites/:siteId', requirePermission('delete'), async (request, response, next) => {
 		try {
-			const site = await Site.fetchOneById(request.params.siteId);
-			if (!site) {
-				return next();
-			}
+			const site = request.siteFromParam;
 			await site.destroy();
 			response.status(204).send({});
 		} catch (error) {

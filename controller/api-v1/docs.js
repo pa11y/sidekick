@@ -8,6 +8,7 @@
  */
 function initDocsController(dashboard, router) {
 
+	// The base path of the API redirects to the documentation
 	router.get('/', (request, response) => {
 		response.redirect('/docs/api/v1');
 	});
