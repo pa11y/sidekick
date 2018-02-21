@@ -18,7 +18,7 @@ function initUsersController(dashboard, router) {
 	router.param('userId', async (request, response, next, userId) => {
 		try {
 			request.userFromParam = await User.fetchOneById(userId);
-			next(request.userFromParam ? undefined : httpError(404));
+			return next(request.userFromParam ? undefined : httpError(404));
 		} catch (error) {
 			return next(error);
 		}
@@ -28,7 +28,7 @@ function initUsersController(dashboard, router) {
 	router.param('keyId', async (request, response, next, keyId) => {
 		try {
 			request.keyFromParam = await Key.fetchOneByIdAndUserId(keyId, request.params.userId);
-			next(request.keyFromParam ? undefined : httpError(404));
+			return next(request.keyFromParam ? undefined : httpError(404));
 		} catch (error) {
 			return next(error);
 		}

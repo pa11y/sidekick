@@ -21,7 +21,7 @@ function initMeController(dashboard, router) {
 	router.param('myKeyId', async (request, response, next, myKeyId) => {
 		try {
 			request.keyFromParam = await Key.fetchOneByIdAndUserId(myKeyId, request.authUser.id);
-			next(request.keyFromParam ? undefined : httpError(404));
+			return next(request.keyFromParam ? undefined : httpError(404));
 		} catch (error) {
 			return next(error);
 		}
@@ -74,7 +74,7 @@ function initMeController(dashboard, router) {
 	});
 
 	// Get a single currently authenticated user key by ID
-	router.get('/me/keys/:myKeyId', async (request, response, next) => {
+	router.get('/me/keys/:myKeyId', (request, response, next) => {
 		try {
 			const key = request.keyFromParam;
 			response.send(key);

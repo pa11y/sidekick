@@ -17,7 +17,7 @@ function initSitesController(dashboard, router) {
 	router.param('siteId', async (request, response, next, siteId) => {
 		try {
 			request.siteFromParam = await Site.fetchOneById(siteId);
-			next(request.siteFromParam ? undefined : httpError(404));
+			return next(request.siteFromParam ? undefined : httpError(404));
 		} catch (error) {
 			return next(error);
 		}
@@ -50,7 +50,7 @@ function initSitesController(dashboard, router) {
 	});
 
 	// Get a single site by ID
-	router.get('/sites/:siteId', requirePermission('read'), async (request, response, next) => {
+	router.get('/sites/:siteId', requirePermission('read'), (request, response, next) => {
 		try {
 			const site = request.siteFromParam;
 			response.send(site);
