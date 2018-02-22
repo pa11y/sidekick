@@ -152,7 +152,9 @@ function initKeyModel(dashboard) {
 			return Key.collection().query(qb => {
 				qb.where('user_id', userId);
 				qb.orderBy('description', 'asc');
-			}).fetch();
+			}).fetch({
+				withRelated: ['user']
+			});
 		}
 
 	});

@@ -3,8 +3,10 @@
 const authWithKey = require('../../lib/middleware/auth-with-key');
 const express = require('express');
 const initDocsController = require('./docs');
+const initKeysController = require('./keys');
 const initMeController = require('./me');
 const initSitesController = require('./sites');
+const initUrlsController = require('./urls');
 const initUsersController = require('./users');
 const notFound = require('../../lib/middleware/not-found');
 
@@ -34,10 +36,12 @@ function initApiV1Contoller(dashboard) {
 	// Allow authentication through an API key/secret pair
 	router.use(authWithKey());
 
-	// Mount routes
+	// Mount routes. Order here is important
 	initDocsController(dashboard, router);
 	initSitesController(dashboard, router);
+	initUrlsController(dashboard, router);
 	initUsersController(dashboard, router);
+	initKeysController(dashboard, router);
 	initMeController(dashboard, router);
 
 	// Middleware to handle errors

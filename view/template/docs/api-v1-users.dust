@@ -40,8 +40,8 @@
 		<li><a href="#post-api-v1-me-keys">Endpoint: Create an API key for the authenticated user</a></li>
 		<li><a href="#get-api-v1-users-(id)-keys-(id)">Endpoint: Get an API key</a></li>
 		<li><a href="#get-api-v1-me-keys-(id)">Endpoint: Get an API key for the authenticated user</a></li>
-		<li><a href="#patch-api-v1-users-(id)-keys-(id)">Endpoint: Update an API key</a></li>
-		<li><a href="#patch-api-v1-me-keys-(id)">Endpoint: Update an API key for the authenticated user</a></li>
+		<li><a href="#patch-api-v1-users-(id)-keys-(id)">Endpoint: Edit an API key</a></li>
+		<li><a href="#patch-api-v1-me-keys-(id)">Endpoint: Edit an API key for the authenticated user</a></li>
 		<li><a href="#delete-api-v1-users-(id)-keys-(id)">Endpoint: Delete an API key</a></li>
 		<li><a href="#delete-api-v1-me-keys-(id)">Endpoint: Delete an API key for the authenticated user</a></li>
 	</ol>
@@ -1274,7 +1274,7 @@
 	{/codeBlock}
 
 
-	<h2 id="patch-api-v1-users-(id)-keys-(id)">Update an API key</h2>
+	<h2 id="patch-api-v1-users-(id)-keys-(id)">Edit an API key</h2>
 
 	<p>
 		Update a single API key by user ID and ID.
@@ -1368,7 +1368,7 @@
 	{/codeBlock}
 
 
-	<h2 id="patch-api-v1-me-keys-(id)">Update an API key for the authenticated user</h2>
+	<h2 id="patch-api-v1-me-keys-(id)">Edit an API key for the authenticated user</h2>
 
 	<p>
 		Update a single API key for the authenticated user by ID.

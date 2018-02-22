@@ -1,33 +1,27 @@
 'use strict';
 
+const defaults = require('lodash/defaults');
 const joi = require('joi');
 const shortid = require('shortid');
 
 /**
- * Initialise the Site model.
+ * Initialise the Url model.
  * @param {Dashboard} dashboard - A dashboard instance.
  * @returns {Model} A Bookshelf model.
  */
-function initSiteModel(dashboard) {
+function initUrlModel(dashboard) {
 
 	// Model validation schema
 	const schema = joi.object().keys({
+		site_id: joi.string().required(),
 		name: joi.string().min(1).required(),
-		base_url: joi.string().uri({
-			scheme: [
-				'http',
-				'https'
-			]
-		}).required(),
-		is_runnable: joi.boolean().required(),
-		is_scheduled: joi.boolean().required(),
-		schedule: [joi.string().min(1), null],
+		address: joi.string().min(1).required(),
 		pa11y_config: joi.object()
 	});
 
 	// Model prototypal methods
-	const Site = dashboard.database.Model.extend({
-		tableName: 'sites',
+	const Url = dashboard.database.Model.extend({
+		tableName: 'urls',
 
 		// Model initialization
 		initialize() {
@@ -75,22 +69,13 @@ function initSiteModel(dashboard) {
 			});
 		},
 
-		// Update the site with user-provided data
+		// Update the URL with user-provided data
 		async update(data) {
 			if (data.name !== undefined) {
 				this.set('name', data.name);
 			}
-			if (data.base_url !== undefined) {
-				this.set('base_url', data.base_url);
-			}
-			if (data.is_runnable !== undefined) {
-				this.set('is_runnable', Boolean(data.is_runnable));
-			}
-			if (data.is_scheduled !== undefined) {
-				this.set('is_scheduled', Boolean(data.is_scheduled));
-			}
-			if (data.schedule !== undefined) {
-				this.set('schedule', data.schedule);
+			if (data.address !== undefined) {
+				this.set('address', data.address);
 			}
 			if (data.pa11y_config !== undefined) {
 				this.set('pa11y_config', data.pa11y_config);
@@ -103,12 +88,11 @@ function initSiteModel(dashboard) {
 		serialize() {
 			return {
 				id: this.get('id'),
+				site: this.get('site_id'),
 				name: this.get('name'),
-				baseUrl: this.get('base_url'),
-				isRunnable: this.get('is_runnable'),
-				isScheduled: this.get('is_scheduled'),
-				schedule: this.get('schedule'),
-				pa11yConfig: this.get('pa11y_config'),
+				address: this.get('address'),
+				fullAddress: this.fullAddress(),
+				pa11yConfig: this.pa11yConfig(),
 				meta: {
 					dateCreated: this.get('created_at'),
 					dateUpdated: this.get('updated_at')
@@ -116,54 +100,88 @@ function initSiteModel(dashboard) {
 			};
 		},
 
-		// URL relationship
-		urls() {
-			return this.hasMany(dashboard.model.Url);
+		// Site relationship
+		site() {
+			return this.belongsTo(dashboard.model.Site);
+		},
+
+		// Get the full address of the URL (including base URL of site)
+		fullAddress() {
+			let baseUrl = this.related('site').get('base_url');
+			let address = this.get('address');
+			if (baseUrl === undefined || /^https?:\/\//i.test(address)) {
+				return address;
+			}
+			if (baseUrl.endsWith('/')) {
+				baseUrl = baseUrl.substr(0, baseUrl.length - 1);
+			}
+			if (!address.startsWith('/')) {
+				address = `/${address}`;
+			}
+			return `${baseUrl}${address}`;
+		},
+
+		// Get the full Pa11y config, merging with the parent site
+		pa11yConfig() {
+			return defaults({}, this.get('pa11y_config'), this.related('site').get('pa11y_config'));
 		}
 
 	// Model static methods
 	}, {
 
-		// Create a site with user-provided data
+		// Create a URL with user-provided data
 		async create(data) {
-			const site = new Site({
+			const site = new Url({
+				site_id: data.site_id,
 				name: data.name,
-				base_url: data.base_url,
-				is_runnable: Boolean(data.is_runnable),
-				is_scheduled: Boolean(data.is_scheduled),
-				schedule: data.schedule || null,
+				address: data.address,
 				pa11y_config: data.pa11y_config
 			});
 			await site.save();
 			return site;
 		},
 
-		// Fetch all sites
+		// Fetch all URLs
 		fetchAll() {
-			return Site.collection().query(qb => {
+			return Url.collection().query(qb => {
 				qb.orderBy('name', 'asc');
+				qb.orderBy('address', 'asc');
 				qb.orderBy('created_at', 'asc');
 			}).fetch();
 		},
 
-		// Fetch a site by id
+		// Fetch a URL by id
 		fetchOneById(siteId) {
-			return Site.collection().query(qb => {
+			return Url.collection().query(qb => {
 				qb.where('id', siteId);
 			}).fetchOne();
 		},
 
-		// Check whether a site with a given ID exists
-		async existsById(siteId) {
-			const count = await Site.collection().query(qb => {
-				qb.where('id', siteId);
-			}).count();
-			return (count > 0);
+		// Fetch a URL by ID and site ID
+		fetchOneByIdAndSiteId(urlId, siteId) {
+			return Url.collection().query(qb => {
+				qb.where('id', urlId);
+				qb.where('site_id', siteId);
+			}).fetchOne({
+				withRelated: ['site']
+			});
+		},
+
+		// Fetch URLs by site ID
+		fetchBySiteId(siteId) {
+			return Url.collection().query(qb => {
+				qb.where('site_id', siteId);
+				qb.orderBy('name', 'asc');
+				qb.orderBy('address', 'asc');
+				qb.orderBy('created_at', 'asc');
+			}).fetch({
+				withRelated: ['site']
+			});
 		}
 
 	});
 
-	return Site;
+	return Url;
 }
 
-module.exports = initSiteModel;
+module.exports = initUrlModel;

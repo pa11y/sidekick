@@ -19,6 +19,7 @@ describe('lib/dashboard', () => {
 	let initKeyModel;
 	let initSettingModel;
 	let initSiteModel;
+	let initUrlModel;
 	let initUserModel;
 	let knex;
 	let log;
@@ -63,6 +64,9 @@ describe('lib/dashboard', () => {
 
 		initSiteModel = sinon.stub().returns(require('../mock/model/site.mock'));
 		mockery.registerMock('../model/site', initSiteModel);
+
+		initUrlModel = sinon.stub().returns(require('../mock/model/url.mock'));
+		mockery.registerMock('../model/url', initUrlModel);
 
 		initUserModel = sinon.stub().returns(require('../mock/model/user.mock'));
 		mockery.registerMock('../model/user', initUserModel);
@@ -141,6 +145,8 @@ describe('lib/dashboard', () => {
 			assert.calledWithExactly(initSettingModel, dashboard);
 			assert.calledOnce(initSiteModel);
 			assert.calledWithExactly(initSiteModel, dashboard);
+			assert.calledOnce(initUrlModel);
+			assert.calledWithExactly(initUrlModel, dashboard);
 			assert.calledOnce(initUserModel);
 			assert.calledWithExactly(initUserModel, dashboard);
 		});
@@ -150,6 +156,7 @@ describe('lib/dashboard', () => {
 			assert.strictEqual(dashboard.model.Key, initKeyModel.firstCall.returnValue);
 			assert.strictEqual(dashboard.model.Setting, initSettingModel.firstCall.returnValue);
 			assert.strictEqual(dashboard.model.Site, initSiteModel.firstCall.returnValue);
+			assert.strictEqual(dashboard.model.Url, initUrlModel.firstCall.returnValue);
 			assert.strictEqual(dashboard.model.User, initUserModel.firstCall.returnValue);
 		});
 
