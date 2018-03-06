@@ -323,6 +323,13 @@ describe('DELETE /api/v1/sites/:siteId', () => {
 			assert.lengthEquals(sites, 0);
 		});
 
+		it('removes the expected site\'s URLs from the database', async () => {
+			const urls = await dashboard.database.knex.select('*').from('urls').where({
+				site_id: 'mock-site-id-1'
+			});
+			assert.lengthEquals(urls, 0);
+		});
+
 		it('responds with a 204 status', () => {
 			assert.strictEqual(response.statusCode, 204);
 		});

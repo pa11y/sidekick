@@ -24,5 +24,30 @@ exports.seed = async database => {
 			pa11y_config: JSON.stringify({})
 		}
 	]);
+	await database('urls').insert([
+		{
+			id: 'mock-url-id-1',
+			site_id: 'mock-site-id-1',
+			name: 'Mock URL 1',
+			address: '/',
+			pa11y_config: JSON.stringify({
+				timeout: 500
+			})
+		},
+		{
+			id: 'mock-url-id-2',
+			site_id: 'mock-site-id-1',
+			name: 'Mock URL 2',
+			address: '/example',
+			pa11y_config: JSON.stringify({})
+		},
+		{
+			id: 'mock-url-id-3',
+			site_id: 'mock-site-id-1',
+			name: 'Mock URL 3',
+			address: 'http://mock-url-3/example',
+			pa11y_config: JSON.stringify({})
+		}
+	]);
 
 };
