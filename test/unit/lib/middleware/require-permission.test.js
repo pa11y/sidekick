@@ -62,7 +62,7 @@ describe('lib/middleware/require-permission', () => {
 
 				beforeEach(() => {
 					request.permissions['mock-level'] = false;
-					next.reset();
+					next.resetHistory();
 					return middleware(request, {}, next);
 				});
 
