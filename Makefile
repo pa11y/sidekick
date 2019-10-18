@@ -13,12 +13,12 @@
 
 # Start the application in production mode
 start:
-	@NODE_ENV=production node index.js
+	@cross-env NODE_ENV=production node index.js
 
 # Start the application in development mode and auto-restart
 # whenever code changes
 start-dev:
-	@NODE_ENV=development nodemon -e dust,js,json index.js
+	@cross-env NODE_ENV=development nodemon -e dust,js,json index.js
 
 
 # Configuration tasks
@@ -49,15 +49,15 @@ db-create-test:
 
 # Migrate to the latest version of the database schema
 db-migrate-up:
-	@./script/migrate-up.js
+	@node ./script/migrate-up.js
 	@$(TASK_DONE)
 
 # Roll back the most recent migration
 db-migrate-down:
-	@./script/migrate-down.js
+	@node ./script/migrate-down.js
 	@$(TASK_DONE)
 
 # Seed the database with some demo data
 db-seed:
-	@./script/seed.js
+	@node ./script/seed.js
 	@$(TASK_DONE)
