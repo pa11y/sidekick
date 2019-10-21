@@ -86,8 +86,10 @@ function initSettingModel(dashboard) {
 					value
 				});
 				await setting.save(null, {
-					method: 'insert'
-				});
+					method: 'insert',
+					updated_at: new Date()
+				}
+				);
 			}
 
 			// Clear the in-memory cache

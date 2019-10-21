@@ -1,7 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 const shortid = require('shortid');
 const validationError = require('../lib/util/validation-error');
 

@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 /**
  * Initialise the Key model.

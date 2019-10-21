@@ -1,7 +1,7 @@
 'use strict';
 
 const defaults = require('lodash/defaults');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 const shortid = require('shortid');
 
 /**

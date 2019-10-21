@@ -14,5 +14,5 @@ async function getCookieJar(email, password) {
 }
 
 module.exports = {
-	getCookieJar: getCookieJar
+	getCookieJar
 };

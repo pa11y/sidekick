@@ -49,15 +49,15 @@ db-create-test:
 
 # Migrate to the latest version of the database schema
 db-migrate-up:
-	@node ./script/migrate-up.js
+	@./script/migrate-up.js
 	@$(TASK_DONE)
 
 # Roll back the most recent migration
 db-migrate-down:
-	@node ./script/migrate-down.js
+	@./script/migrate-down.js
 	@$(TASK_DONE)
 
 # Seed the database with some demo data
 db-seed:
-	@node ./script/seed.js
+	@./script/seed.js
 	@$(TASK_DONE)
