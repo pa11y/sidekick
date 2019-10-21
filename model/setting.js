@@ -86,8 +86,7 @@ function initSettingModel(dashboard) {
 					value
 				});
 				await setting.save(null, {
-					method: 'insert',
-					updated_at: new Date()
+					method: 'insert'
 				}
 				);
 			}
