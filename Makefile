@@ -13,12 +13,12 @@
 
 # Start the application in production mode
 start:
-	@cross-env NODE_ENV=production node index.js
+	@NODE_ENV=production node index.js
 
 # Start the application in development mode and auto-restart
 # whenever code changes
 start-dev:
-	@cross-env NODE_ENV=development nodemon -e dust,js,json index.js
+	@NODE_ENV=development nodemon -e dust,js,json index.js
 
 
 # Configuration tasks
