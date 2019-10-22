@@ -46,17 +46,11 @@ matrix:
     - node_js: '8'
       env: POSTGRES=10
       addons:
-        postgresql: '10.10'
-
-    - node_js: '8'
-      env: POSTGRES=11
-      addons:
-        postgresql: '11.5'
-
-    - node_js: '8'
-      env: POSTGRES=12
-      addons:
-        postgresql: '12.0'
+        postgresql: '10'
+        apt:
+          packages:
+            - postgresql-10
+            - postgresql-client-10
 
 # Global environment variables
 env:
