@@ -45,6 +45,8 @@ matrix:
 
     - node_js: '8'
       env: POSTGRES=10
+      global:
+        - PGPORT=5433
       addons:
         postgresql: '10'
         apt:
