@@ -55,7 +55,7 @@ describe('lib/middleware/get-app-url', () => {
 			describe('when `configuredHostname` is not defined', () => {
 
 				beforeEach(() => {
-					next.reset();
+					next.resetHistory();
 					delete request.appUrl;
 					request.headers = {
 						'X-Forwarded-Host': 'mock-request-forwarded-host',
@@ -79,7 +79,7 @@ describe('lib/middleware/get-app-url', () => {
 			describe('when `configuredHostname` is not defined and X-Forwarded headers are not available', () => {
 
 				beforeEach(() => {
-					next.reset();
+					next.resetHistory();
 					delete request.appUrl;
 					request.headers = {};
 					getAppUrl()(request, {}, next);
@@ -99,7 +99,7 @@ describe('lib/middleware/get-app-url', () => {
 			describe('when `configuredHostname` is not defined and no request details are available', () => {
 
 				beforeEach(() => {
-					next.reset();
+					next.resetHistory();
 					delete request.appUrl;
 					delete request.hostname;
 					delete request.protocol;
@@ -121,7 +121,7 @@ describe('lib/middleware/get-app-url', () => {
 			describe('when `configuredHostname` is not defined, no request details are available, and the request host is local', () => {
 
 				beforeEach(() => {
-					next.reset();
+					next.resetHistory();
 					delete request.appUrl;
 					delete request.hostname;
 					delete request.protocol;
@@ -144,7 +144,7 @@ describe('lib/middleware/get-app-url', () => {
 			describe('when `configuredHostname` is missing a protocol', () => {
 
 				beforeEach(() => {
-					next.reset();
+					next.resetHistory();
 					delete request.appUrl;
 					delete request.hostname;
 					delete request.protocol;

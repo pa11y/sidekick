@@ -14,18 +14,13 @@ matrix:
       env: LINT=true
 
     # Run unit tests with varying Node.js
-    # and default PostgreSQL (9.2)
+    # and default PostgreSQL (9.5)
 
     - node_js: '8'
       env: NODE=8
 
     # Run integration tests with varying
     # PostgreSQL and default Node.js (8)
-
-    - node_js: '8'
-      env: POSTGRES=9.4
-      addons:
-        postgresql: '9.4'
 
     - node_js: '8'
       env: POSTGRES=9.5
@@ -46,7 +41,7 @@ env:
 services:
   - postgresql
 addons:
-  postgresql: '9.4'
+  postgresql: '9.5'
 
 # Build script
 before_script:

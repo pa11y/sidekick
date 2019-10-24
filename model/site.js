@@ -1,6 +1,6 @@
 'use strict';
 
-const joi = require('joi');
+const joi = require('@hapi/joi');
 const shortid = require('shortid');
 
 /**
@@ -63,7 +63,7 @@ function initSiteModel(dashboard) {
 		validateSave() {
 			return new Promise((resolve, reject) => {
 				// Validate against the schema
-				joi.validate(this.attributes, schema, {
+				schema.validate(this.attributes, {
 					abortEarly: false,
 					allowUnknown: true
 				}, error => {
