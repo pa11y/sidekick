@@ -1,7 +1,7 @@
 'use strict';
 
 const bcrypt = require('bcrypt');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 const shortid = require('shortid');
 const validationError = require('../lib/util/validation-error');
 
@@ -61,7 +61,7 @@ function initUserModel(dashboard) {
 		validateSave() {
 			return new Promise((resolve, reject) => {
 				// Validate against the schema
-				joi.validate(this.attributes, schema, {
+				schema.validate(this.attributes, {
 					abortEarly: false,
 					allowUnknown: true
 				}, async error => {

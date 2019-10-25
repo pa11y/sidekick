@@ -195,7 +195,6 @@ describe('PATCH /api/v1/users/:userId/keys/:keyId', () => {
 				description: 'new-description'
 			});
 			const key = keys[0];
-
 			assert.lengthEquals(keys, 1, 'One key is present');
 			assert.notStrictEqual(key.id, 'extra-property-id', 'Key ID cannot be set in request');
 			assert.notStrictEqual(key.secret, 'extra-property-secret', 'Key secret cannot be set in request');

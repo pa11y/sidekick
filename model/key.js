@@ -2,7 +2,7 @@
 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 /**
  * Initialise the Key model.
@@ -61,7 +61,7 @@ function initKeyModel(dashboard) {
 		validateSave() {
 			// Validate against the schema
 			return new Promise((resolve, reject) => {
-				joi.validate(this.attributes, schema, {
+				schema.validate(this.attributes, {
 					abortEarly: false,
 					allowUnknown: true
 				}, error => {
