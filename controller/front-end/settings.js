@@ -135,7 +135,7 @@ function initSettingsController(dashboard, router) {
 			// Redirect back to the main key management page
 			request.flash.set('form.key.created', {
 				id: key.get('id'),
-				secret: secret
+				secret
 			});
 			response.redirect('/settings/keys');
 

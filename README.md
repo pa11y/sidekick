@@ -28,7 +28,7 @@ This is a new project based around Pa11y, code-named "Sidekick". Pa11y Sidekick 
 
 ## Requirements
 
-This application requires [Node.js] 4+ and [PostgreSQL] 9.4+.
+This application requires [Node.js] 8+ and [PostgreSQL] 9.5+.
 
 
 ## Deployment

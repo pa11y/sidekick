@@ -1,0 +1,13 @@
+{>"layout/full"/}
+
+{<title}
+	Results - Sidekick
+{/title}
+
+{<content}
+
+	<div class="heading-wrapper">
+		<h1>Results</h1>
+	</div>
+
+{/content}

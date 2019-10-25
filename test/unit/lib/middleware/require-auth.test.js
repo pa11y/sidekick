@@ -52,7 +52,7 @@ describe('lib/middleware/require-auth', () => {
 
 				beforeEach(() => {
 					delete request.authUser;
-					next.reset();
+					next.resetHistory();
 					middleware(request, {}, next);
 				});
 

@@ -13,6 +13,13 @@
 				</a>
 			</li>
 		{/permissions.read}
+		{?permissions.read}
+			<li>
+				<a href="/results" class="navigation__item {@currentUrl test="/results*"}navigation__item--current{/currentUrl}">
+					Results
+				</a>
+			</li>
+		{/permissions.read}
 		{?permissions.admin}
 			<li>
 				<a href="/admin" class="navigation__item {@currentUrl test="/admin*"}navigation__item--current{/currentUrl}">
