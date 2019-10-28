@@ -7,7 +7,6 @@ const initAdminController = require('./admin');
 const initAuthController = require('./auth');
 const initDocsController = require('./docs');
 const initHomeController = require('./home');
-const initResultsController = require('./results');
 const initSettingsController = require('./settings');
 const initSetupController = require('./setup');
 const initSitesController = require('./sites');
@@ -74,7 +73,6 @@ function initFrontEndController(dashboard) {
 	initAuthController(dashboard, router);
 	initDocsController(dashboard, router);
 	initSitesController(dashboard, router);
-	initResultsController(dashboard, router);
 	initSettingsController(dashboard, router);
 	initAdminController(dashboard, router);
 
