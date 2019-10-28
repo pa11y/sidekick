@@ -11,6 +11,7 @@ const requirePermission = require('../../lib/middleware/require-permission');
  */
 function initSitesController(dashboard, router) {
 	const Site = dashboard.model.Site;
+	const Url = dashboard.model.Url;
 
 	// TODO write integration tests for these routes
 
@@ -30,6 +31,7 @@ function initSitesController(dashboard, router) {
 			}
 			response.render('template/sites/site', {
 				site: site.serialize(),
+				urls: (await Url.fetchBySiteId(site.id)).serialize(),
 				form: {
 					site: {
 						created: request.flash.get('form.site.created')
@@ -90,6 +92,172 @@ function initSitesController(dashboard, router) {
 			return next(error);
 		}
 	});
+	// List of all URLs associated with site
+	router.get('/sites/:siteId/urls', requirePermission('read'), async (request, response) => {
+		response.render('template/sites/urls', {
+			site: await Site.fetchOneById(request.params.siteId)
+		});
+	});
+
+	// Display the new URLs page
+	router.get('/sites/:siteId/urls/new', requirePermission('write'), async (request, response) => {
+		try {
+			const site = await Site.fetchOneById(request.params.siteId);
+			response.render('template/sites/new-url', {
+				site: site.serialize(),
+				urls: (await Url.fetchBySiteId(site.id)).serialize(),
+				form: {
+					url: {
+						created: request.flash.get('form.url.created')
+					}
+				}
+			});
+		} catch (error) {
+			return error;
+		}
+	});
+
+	// Add a new URL for site
+	router.post('/sites/:siteId/urls/new', requirePermission('write'), express.urlencoded({extended: false}), async (request, response, next) => {
+		try {
+
+			// TODO check Pa11y config for JSON errors
+			// and pass into the create method
+
+			const site = await Site.fetchOneById(request.params.siteId);
+			// Attempt to create a URL
+			await Url.create({
+				site_id: request.params.siteId,
+				name: request.body.name,
+				address: request.body.address,
+				pa11y_config: {}
+			});
+
+			// Redirect to the site page
+			request.flash.set('form.url.created', {});
+			response.redirect(`/sites/${site.get('id')}`);
+
+		} catch (error) {
+			if (error.name === 'ValidationError') {
+				return response.status(400).render('template/sites/new-url', {
+					form: {
+						url: {
+							site_id: request.body.site_id,
+							name: request.body.name,
+							address: request.body.address,
+							pa11y_config: request.body.pa11yConfig,
+							errors: error.details.map(detail => detail.message)
+						}
+					}
+				});
+			}
+			return next(error);
+		}
+	});
+
+	// Display the URL edit page
+	router.get('/sites/:siteId/urls/:urlId/edit', requirePermission('write'), async (request, response, next) => {
+		try {
+			const url = await Url.fetchOneById(request.params.urlId);
+			if (!url) {
+				return next();
+			}
+			response.render('template/sites/edit-url', {
+				form: {
+					url: {
+						site_id: url.get('site_id'),
+						name: url.get('name'),
+						address: url.get('address'),
+						pa11y_config: url.get('pa11yConfig'),
+						success: request.flash.get('form.user.success')
+					}
+				}
+			});
+		} catch (error) {
+			return next(error);
+		}
+	});
+
+	// Edit a URL
+	router.post('/sites/:siteId/urls/:urlId/edit', requirePermission('write'), express.urlencoded({extended: false}), async (request, response, next) => {
+		try {
+			const site = await Site.fetchOneById(request.params.siteId);
+			const url = await Url.fetchOneById(request.params.urlId);
+			if (!url) {
+				return next();
+			}
+
+			// Attempt to update the URL
+			await url.update({
+				site_id: request.body.site_id,
+				name: request.body.name,
+				address: request.body.address,
+				pa11y_config: request.body.pa11yConfig
+			});
+
+			// Redirect back to the non-POST version of the page
+			request.flash.set('form.url.success', 'Your changes have been saved');
+			response.redirect(`/sites/${site.get('id')}`);
+
+		} catch (error) {
+			if (error.name === 'ValidationError') {
+				return response.status(400).render('template/sites/edit-url', {
+					form: {
+						url: {
+							site_id: request.body.site_id,
+							name: request.body.name,
+							address: request.body.address,
+							pa11y_config: request.body.pa11yConfig,
+							errors: error.details.map(detail => detail.message)
+						}
+					}
+				});
+			}
+			return next(error);
+		}
+	});
+
+	// Display the URL delete page
+	router.get('/sites/:siteId/urls/:urlId/delete', requirePermission('write'), async (request, response, next) => {
+		try {
+			const url = await Url.fetchOneById(request.params.urlId);
+			if (!url) {
+				return next();
+			}
+			response.render('template/sites/delete-url', {
+				form: {
+					url: url.serialize()
+				}
+			});
+		} catch (error) {
+			return next(error);
+		}
+	});
+
+	// Delete a user
+	router.post('/sites/:siteId/urls/:urlId/delete', requirePermission('write'), express.urlencoded({extended: false}), async (request, response, next) => {
+		try {
+			const site = await Site.fetchOneById(request.params.siteId);
+			const url = await Url.fetchOneById(request.params.urlId);
+			if (!url) {
+				return next();
+			}
+
+			// Attempt to delete the URL
+			const urlName = url.get('name');
+			await url.destroy();
+
+			// Redirect back to the main user management page
+			request.flash.set('form.url.deleted', {
+				name: urlName
+			});
+			response.redirect(`/sites/${site.get('id')}`);
+
+		} catch (error) {
+			return next(error);
+		}
+	});
+
 
 }
 
