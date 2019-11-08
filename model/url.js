@@ -151,9 +151,9 @@ function initUrlModel(dashboard) {
 		},
 
 		// Fetch a URL by id
-		fetchOneById(siteId) {
+		fetchOneById(urlId) {
 			return Url.collection().query(qb => {
-				qb.where('id', siteId);
+				qb.where('id', urlId);
 			}).fetchOne();
 		},
 
@@ -175,6 +175,18 @@ function initUrlModel(dashboard) {
 				qb.orderBy('address', 'asc');
 				qb.orderBy('created_at', 'asc');
 			}).fetch({
+				withRelated: ['site']
+			});
+		},
+
+		// Fetch one URL by site ID
+		fetchOneBySiteId(siteId) {
+			return Url.collection().query(qb => {
+				qb.where('site_id', siteId);
+				qb.orderBy('name', 'asc');
+				qb.orderBy('address', 'asc');
+				qb.orderBy('created_at', 'asc');
+			}).fetchOne({
 				withRelated: ['site']
 			});
 		}

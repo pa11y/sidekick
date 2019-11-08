@@ -16,6 +16,9 @@
 
 	<div class="heading-wrapper">
 		<h1>{site.name}</h1>
+		{?permissions.read}
+			<a href="/sites/{site.id}/run" class="button">Run pa11y against base URL and first appended URL</a>
+    	{/permissions.read}
 	</div>
 
 	<dl>

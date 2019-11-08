@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+const pa11y = require('pa11y');
 const requirePermission = require('../../lib/middleware/require-permission');
 
 /**
@@ -10,7 +11,9 @@ const requirePermission = require('../../lib/middleware/require-permission');
  * @returns {undefined} Nothing
  */
 function initSitesController(dashboard, router) {
+	const Issue = dashboard.model.Issue;
 	const Site = dashboard.model.Site;
+	const Result = dashboard.model.Result;
 	const Url = dashboard.model.Url;
 
 	// TODO write integration tests for these routes
@@ -258,6 +261,55 @@ function initSitesController(dashboard, router) {
 		}
 	});
 
+
+	// Run pa11y against a site
+	router.get('/sites/:siteId/run', requirePermission('read'), async (request, response, next) => {
+		try {
+			const site = await Site.fetchOneById(request.params.siteId);
+			const url = await Url.fetchOneBySiteId(site.get('id'));
+			if (!site) {
+				return next();
+			}
+			// TODO check Pa11y config for JSON errors
+			// and pass into the create method
+
+			// Attempt to create a site
+			const pa11yResults = await pa11y(
+				site.get('base_url'),
+				{runners: ['htmlcs', 'axe']});
+
+			const pa11yIssues = pa11yResults.issues;
+			const result = await Result.create({
+				url_id: url.get('id')
+			});
+
+			const issues = [];
+			pa11yIssues.forEach(issue => issues.push(issue));
+			for (const issue of issues) {
+				// Console.log(issue);
+				await Issue.create({
+					result_id: result.id,
+					code: issue.code,
+					context: issue.context,
+					selector: issue.selector,
+					message: issue.message,
+					issue_types_code: issue.typeCode,
+					runner: issue.runner,
+					runner_extras: issue.runnerExtras || {}
+				})
+					.then(issueItem => {
+						Result.create({
+							url_id: url.get('id'),
+							issue_id: issueItem.id
+						});
+					});
+			}
+
+			response.status(201).send(pa11yResults);
+		} catch (error) {
+			return next(error);
+		}
+	});
 
 }
 

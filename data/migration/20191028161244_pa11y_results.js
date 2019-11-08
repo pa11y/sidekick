@@ -32,24 +32,6 @@ exports.up = async database => {
 		]
 	);
 
-	// Create the issues table
-	await database.schema.createTable('issues', table => {
-
-		// Meta information
-		table.string('id').unique().primary();
-		table.timestamp('created_at').defaultTo(database.fn.now());
-		table.string('issue_description_id');
-		table.string('code');
-		table.string('context');
-		table.string('selector');
-		table.string('message');
-		table.string('issue_types_code');
-
-		// Foreign keys
-		table.foreign('issue_types_code').references('issue_types.code');
-
-	});
-
 	// Create the results table
 	await database.schema.createTable('results', table => {
 
@@ -57,18 +39,37 @@ exports.up = async database => {
 		table.string('id').unique().primary();
 		table.timestamp('created_at').defaultTo(database.fn.now());
 		table.string('url_id');
-		table.string('issue_id');
 
 		// Foreign keys
 		table.foreign('url_id').references('urls.id');
-		table.foreign('issue_id').references('issues.id').onDelete('CASCADE');
+
+	});
+
+	// Create the issues table
+	await database.schema.createTable('issues', table => {
+
+		// Meta information
+		table.string('id').unique().primary();
+		table.timestamp('created_at').defaultTo(database.fn.now());
+		table.string('result_id');
+		table.string('code');
+		table.string('context');
+		table.string('selector');
+		table.string('message');
+		table.string('issue_types_code');
+		table.string('runner');
+		table.jsonb('runner_extras');
+
+		// Foreign keys
+		table.foreign('issue_types_code').references('issue_types.code');
+		table.foreign('result_id').references('results.id').onDelete('CASCADE');
 
 	});
 
 };
 
 exports.down = async database => {
-	await database.schema.dropTable('results');
 	await database.schema.dropTable('issues');
 	await database.schema.dropTable('issue_types');
+	await database.schema.dropTable('results');
 };
