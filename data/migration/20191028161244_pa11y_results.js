@@ -38,10 +38,12 @@ exports.up = async database => {
 		// Meta information
 		table.string('id').unique().primary();
 		table.timestamp('created_at').defaultTo(database.fn.now());
+		table.string('site_id');
 		table.string('url_id');
 
 		// Foreign keys
-		table.foreign('url_id').references('urls.id');
+		table.foreign('url_id').references('urls.id').onDelete('CASCADE');
+		table.foreign('site_id').references('sites.id').onDelete('CASCADE');
 
 	});
 

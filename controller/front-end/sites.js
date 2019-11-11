@@ -13,7 +13,6 @@ const requirePermission = require('../../lib/middleware/require-permission');
 function initSitesController(dashboard, router) {
 	const Issue = dashboard.model.Issue;
 	const Site = dashboard.model.Site;
-	const Result = dashboard.model.Result;
 	const Url = dashboard.model.Url;
 
 	// TODO write integration tests for these routes
@@ -265,24 +264,20 @@ function initSitesController(dashboard, router) {
 	// Run pa11y against a site
 	router.get('/sites/:siteId/run', requirePermission('read'), async (request, response, next) => {
 		try {
-			const site = await Site.fetchOneById(request.params.siteId);
-			const url = await Url.fetchOneBySiteId(site.get('id'));
-			if (!site) {
-				return next();
-			}
 			// TODO check Pa11y config for JSON errors
 			// and pass into the create method
+			const siteId = request.params.siteId;
 
+			const pa11yUrl = await getTestUrl(dashboard, siteId);
+			console.log(pa11yUrl);
 			// Attempt to create a site
 			const pa11yResults = await pa11y(
-				site.get('base_url'),
+				pa11yUrl,
 				{runners: ['htmlcs', 'axe']});
 
 			const pa11yIssues = pa11yResults.issues;
-			const result = await Result.create({
-				url_id: url.get('id')
-			});
 
+			const result = await createResultRecord(dashboard, siteId);
 			const issues = [];
 			pa11yIssues.forEach(issue => issues.push(issue));
 			for (const issue of issues) {
@@ -296,13 +291,7 @@ function initSitesController(dashboard, router) {
 					issue_types_code: issue.typeCode,
 					runner: issue.runner,
 					runner_extras: issue.runnerExtras || {}
-				})
-					.then(issueItem => {
-						Result.create({
-							url_id: url.get('id'),
-							issue_id: issueItem.id
-						});
-					});
+				});
 			}
 
 			response.status(201).send(pa11yResults);
@@ -312,5 +301,45 @@ function initSitesController(dashboard, router) {
 	});
 
 }
+
+async function getTestUrl(dashboard, siteId) {
+	const Site = dashboard.model.Site;
+	const Url = dashboard.model.Url;
+
+	const possibleSite = await Site.fetchOneById(siteId);
+	const possibleUrl = await Url.fetchBySiteId(siteId);
+
+	if (possibleUrl.length === 0) {
+		return possibleSite.get('base_url');
+	}
+
+	const testUrl = await Url.fetchOneBySiteId(siteId);
+	return testUrl.fullAddress();
+
+}
+
+async function createResultRecord(dashboard, siteId) {
+	const Site = dashboard.model.Site;
+	const Url = dashboard.model.Url;
+	const Result = dashboard.model.Result;
+
+	const possibleSite = await Site.fetchOneById(siteId);
+	const possibleUrl = await Url.fetchBySiteId(siteId);
+
+	let result;
+	if (possibleUrl.length === 0) {
+		result = await Result.create({
+			site_id: possibleSite.get('id')
+		});
+	} else {
+		const testUrl = await Url.fetchOneBySiteId(siteId);
+		result = await Result.create({
+			site_id: possibleSite.get('id'),
+			url_id: testUrl.get('id')
+		});
+	}
+	return result;
+}
+
 
 module.exports = initSitesController;

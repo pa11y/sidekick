@@ -12,7 +12,8 @@ function initResultModel(dashboard) {
 
 	// Model validation schema
 	const schema = joi.object().keys({
-		url_id: joi.string().required(),
+		site_id: joi.string().required(),
+		url_id: joi.string(),
 		issue_id: joi.string().required()
 	});
 
@@ -51,6 +52,9 @@ function initResultModel(dashboard) {
 
 		// Update the result with user-provided data
 		async update(data) {
+			if (data.site_id !== undefined) {
+				this.set('site_id', data.site_id);
+			}
 			if (data.url_id !== undefined) {
 				this.set('url_id', data.url_id);
 			}
@@ -62,6 +66,7 @@ function initResultModel(dashboard) {
 		serialize() {
 			return {
 				id: this.get('id'),
+				siteId: this.get('site_id'),
 				urlId: this.get('url_id'),
 				meta: {
 					dateCreated: this.get('created_at')
@@ -70,8 +75,13 @@ function initResultModel(dashboard) {
 		},
 
 		// URL relationship
-		urls() {
-			return this.hasMany(dashboard.model.Url);
+		url() {
+			return this.hasOne(dashboard.model.Url);
+		},
+
+		// URL relationship
+		site() {
+			return this.hasOne(dashboard.model.Site);
 		},
 
 		// Issue relationship
@@ -86,6 +96,7 @@ function initResultModel(dashboard) {
 		// Create a result with user-provided data
 		async create(data) {
 			const result = new Result({
+				site_id: data.site_id,
 				url_id: data.url_id
 			});
 			await result.save();
@@ -114,10 +125,33 @@ function initResultModel(dashboard) {
 			}).fetch();
 		},
 
+		// Fetch all results by url id
+		fetchAllBySiteId(siteId) {
+			return Result.collection().query(qb => {
+				qb.where('site_id', siteId);
+			}).fetch();
+		},
+
 		// Check whether a result with a given ID exists
 		async existsById(resultId) {
 			const count = await Result.collection().query(qb => {
 				qb.where('id', resultId);
+			}).count();
+			return (count > 0);
+		},
+
+		// Check whether a result with a given URL ID exists
+		async existsByUrlId(urlId) {
+			const count = await Result.collection().query(qb => {
+				qb.where('url_id', urlId);
+			}).count();
+			return (count > 0);
+		},
+
+		// Check whether a result with a given Site ID exists
+		async existsBySiteId(siteId) {
+			const count = await Result.collection().query(qb => {
+				qb.where('site_id', siteId);
 			}).count();
 			return (count > 0);
 		}

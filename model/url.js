@@ -173,7 +173,7 @@ function initUrlModel(dashboard) {
 				qb.where('site_id', siteId);
 				qb.orderBy('name', 'asc');
 				qb.orderBy('address', 'asc');
-				qb.orderBy('created_at', 'asc');
+				qb.orderBy('created_at', 'desc');
 			}).fetch({
 				withRelated: ['site']
 			});
@@ -185,7 +185,7 @@ function initUrlModel(dashboard) {
 				qb.where('site_id', siteId);
 				qb.orderBy('name', 'asc');
 				qb.orderBy('address', 'asc');
-				qb.orderBy('created_at', 'asc');
+				qb.orderBy('created_at', 'desc');
 			}).fetchOne({
 				withRelated: ['site']
 			});
