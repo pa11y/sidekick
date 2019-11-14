@@ -42,7 +42,7 @@
    				<thead>
    					<tr>
    						<th>Name</th>
-   						<th>URL to Append</th>
+   						<th>Path</th>
    						<th>Pa11y Config</th>
    						<th>Options</th>
    					</tr>
@@ -67,17 +67,19 @@
                                        </ul>
                                    {/pa11yConfig}
    							</td>
+   							{?permissions.write}
    							<td>
    								<a href="/sites/{site}/urls/{id}/edit">Edit</a>
    								<a href="/sites/{site}/urls/{id}/delete">Delete</a>
    							</td>
+   							{/permissions.write}
    						</tr>
    					{/urls}
    				</tbody>
    			</table>
    		</div>
    	{:else}
-   	<p>You don't have any URLs to test for this site yet; you can <a href="{site.id}/urls/new">add one here</a>.</p>
+   	<p>You don't have any URLs to test for this site yet{?permissions.write}; you can <a href="{site.id}/urls/new">add one here</a>{/permissions.write}.</p>
    	{/urls}
 
 {/content}

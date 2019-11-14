@@ -151,9 +151,9 @@ function initUrlModel(dashboard) {
 		},
 
 		// Fetch a URL by id
-		fetchOneById(siteId) {
+		fetchOneById(urlId) {
 			return Url.collection().query(qb => {
-				qb.where('id', siteId);
+				qb.where('id', urlId);
 			}).fetchOne();
 		},
 
