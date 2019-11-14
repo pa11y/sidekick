@@ -92,20 +92,16 @@ function initSitesController(dashboard, router) {
 			return next(error);
 		}
 	});
-	// List of all URLs associated with site
-	router.get('/sites/:siteId/urls', requirePermission('read'), async (request, response) => {
-		response.render('template/sites/urls', {
-			site: await Site.fetchOneById(request.params.siteId)
-		});
-	});
 
 	// Display the new URLs page
-	router.get('/sites/:siteId/urls/new', requirePermission('write'), async (request, response) => {
+	router.get('/sites/:siteId/urls/new', requirePermission('write'), async (request, response, next) => {
 		try {
 			const site = await Site.fetchOneById(request.params.siteId);
+			if (!site) {
+				return next();
+			}
 			response.render('template/sites/new-url', {
 				site: site.serialize(),
-				urls: (await Url.fetchBySiteId(site.id)).serialize(),
 				form: {
 					url: {
 						created: request.flash.get('form.url.created')
@@ -113,7 +109,7 @@ function initSitesController(dashboard, router) {
 				}
 			});
 		} catch (error) {
-			return error;
+			return next(error);
 		}
 	});
 
@@ -234,7 +230,7 @@ function initSitesController(dashboard, router) {
 		}
 	});
 
-	// Delete a user
+	// Delete a URL
 	router.post('/sites/:siteId/urls/:urlId/delete', requirePermission('write'), express.urlencoded({extended: false}), async (request, response, next) => {
 		try {
 			const site = await Site.fetchOneById(request.params.siteId);
