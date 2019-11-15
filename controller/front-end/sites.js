@@ -155,7 +155,8 @@ function initSitesController(dashboard, router) {
 	router.get('/sites/:siteId/urls/:urlId/edit', requirePermission('write'), async (request, response, next) => {
 		try {
 			const url = await Url.fetchOneById(request.params.urlId);
-			if (!url) {
+			const site = await Site.fetchOneById(request.params.siteId);
+			if (!url || !site) {
 				return next();
 			}
 			response.render('template/sites/edit-url', {
@@ -177,9 +178,9 @@ function initSitesController(dashboard, router) {
 	// Edit a URL
 	router.post('/sites/:siteId/urls/:urlId/edit', requirePermission('write'), express.urlencoded({extended: false}), async (request, response, next) => {
 		try {
-			const site = await Site.fetchOneById(request.params.siteId);
 			const url = await Url.fetchOneById(request.params.urlId);
-			if (!url) {
+			const site = await Site.fetchOneById(request.params.siteId);
+			if (!url || !site) {
 				return next();
 			}
 
@@ -217,7 +218,8 @@ function initSitesController(dashboard, router) {
 	router.get('/sites/:siteId/urls/:urlId/delete', requirePermission('write'), async (request, response, next) => {
 		try {
 			const url = await Url.fetchOneById(request.params.urlId);
-			if (!url) {
+			const site = await Site.fetchOneById(request.params.siteId);
+			if (!url || !site) {
 				return next();
 			}
 			response.render('template/sites/delete-url', {
@@ -235,7 +237,7 @@ function initSitesController(dashboard, router) {
 		try {
 			const site = await Site.fetchOneById(request.params.siteId);
 			const url = await Url.fetchOneById(request.params.urlId);
-			if (!url) {
+			if (!url || !site) {
 				return next();
 			}
 
