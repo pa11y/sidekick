@@ -7,6 +7,9 @@ COPY package.json package-lock.json ./.
 RUN npm ci
 
 FROM node:10.19.0-alpine3.10
+ENV CHROME_BIN="/usr/bin/chromium-browser" \
+    NODE_ENV="development"
+
 WORKDIR /usr/app
 COPY --from=builder /usr/app .
 COPY . .
