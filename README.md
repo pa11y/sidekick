@@ -4,9 +4,9 @@
 ---
 
 ⚠️ **DO NOT USE.** ⚠️  
-⚠️ This repo was a proof of concept for a replacement for Pa11y Dashboard that uses PostgreSQL instead of MongoDB for data storage. ⚠️  
-⚠️ The tool is currently not able to run any tests by itself. ⚠️  
-⚠️ We have no plans to continue its development. ⚠️  
+This repo was a proof of concept for a replacement for Pa11y Dashboard that uses PostgreSQL instead of MongoDB for data storage.  
+The tool is currently not able to run any tests by itself.  
+We have no plans to continue its development.  
 ⚠️ **DO NOT USE.** ⚠️  
 
 ---
