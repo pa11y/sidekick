@@ -1,6 +1,16 @@
 
 # Pa11y Sidekick ![architecture stage][status-badge]
 
+---
+
+⚠️ **DO NOT USE.** ⚠️  
+⚠️ This repo was a proof of concept for a replacement for Pa11y Dashboard that uses PostgreSQL instead of MongoDB for data storage. ⚠️  
+⚠️ The tool is currently not able to run any tests by itself. ⚠️  
+⚠️ We have no plans to continue its development. ⚠️  
+⚠️ **DO NOT USE.** ⚠️  
+
+---
+
 This is a new project based around Pa11y, code-named "Sidekick". Pa11y Sidekick will be a modern and well thought out replacement for [Pa11y Dashboard] and [Pa11y Webservice]. What exactly is Pa11y Sidekick going to do? Still to be defined, but our rough proposal at this stage:
 
   > like Travis, but for a11y testing, and with graphs.
